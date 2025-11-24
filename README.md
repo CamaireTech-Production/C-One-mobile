@@ -1,88 +1,67 @@
-# C-One Mobile App
+# C-One Mobile
 
 Application mobile de voyage tout-en-un développée avec React Native (Expo) et TypeScript.
 
-## 🚀 Setup
+## 🚀 Phase 1: Setup Initial - COMPLÉTÉE
 
-### Prérequis
-- Node.js 18+
-- npm ou yarn
-- Expo Go app sur votre téléphone (pour tester)
+### ✅ Réalisations
 
-### Installation
+- **Projet Expo** initialisé avec TypeScript
+- **Dépendances** installées :
+  - React Navigation (Stack + Bottom Tabs)
+  - React Native Reanimated (animations)
+  - React Native Skeleton Placeholder
+  - Expo Font (fonts custom)
+  - Formik + Yup (validation)
+  - React Native Safe Area Context
+
+- **Structure de dossiers** créée :
+  ```
+  src/
+  ├── components/     # Composants réutilisables
+  ├── screens/        # Écrans de l'application
+  ├── navigation/     # Configuration navigation
+  ├── theme/          # Design System
+  ├── services/       # API & Backend logic
+  ├── store/          # État global
+  ├── hooks/          # Custom hooks
+  ├── utils/          # Helpers & utilities
+  ├── types/          # TypeScript types
+  └── assets/         # Images, fonts, etc.
+  ```
+
+- **TypeScript** configuré avec :
+  - Strict mode activé
+  - Paths aliases (@components, @screens, etc.)
+  - Babel plugin module-resolver
+
+## 📱 Commandes
 
 ```bash
-npm install
-```
-
-### Ajout des polices
-
-Les polices **Urbanist** et **Satoshi Variable** doivent être ajoutées manuellement :
-
-1. Téléchargez les fichiers de polices depuis Figma ou Google Fonts
-2. Placez-les dans `assets/fonts/` avec les noms suivants :
-
-**Urbanist:**
-- `Urbanist-Regular.ttf`
-- `Urbanist-Medium.ttf`
-- `Urbanist-SemiBold.ttf`
-- `Urbanist-Bold.ttf`
-
-**Satoshi Variable:**
-- `Satoshi-Regular.otf`
-- `Satoshi-Medium.otf`
-- `Satoshi-Bold.otf`
-
-3. Mettez à jour `app.json` pour inclure les polices (Expo les chargera automatiquement)
-
-### Lancer l'application
-
-```bash
+# Démarrer l'application
 npm start
+
+# Lancer sur Android
+npm run android
+
+# Lancer sur iOS
+npm run ios
+
+# Lancer sur Web
+npm run web
 ```
 
-Puis scannez le QR code avec Expo Go (iOS) ou l'app Expo (Android).
+## 🎯 Prochaines étapes
 
-## 📁 Structure du Projet
+- **Phase 2**: Design System (couleurs, typographie, spacing)
+- **Phase 3**: Système images centralisé
+- **Phase 4**: Composants de base
+- **Phase 5**: Écrans d'authentification
+- **Phase 6**: Animations
 
-```
-src/
-├── components/        # Composants réutilisables
-│   ├── common/       # Button, Input, Card, Modal
-│   ├── navigation/   # BottomNav, Header
-│   └── skeleton/     # Skeleton loaders
-├── screens/          # Écrans complets
-│   ├── auth/         # Login, Signup, ForgotPassword
-│   ├── onboarding/  # 3 écrans d'onboarding
-│   └── main/         # Home, Hotels, etc.
-├── navigation/       # Configuration navigation
-├── theme/            # Design System (colors, typography, spacing)
-├── services/         # API & Backend logic
-├── store/            # État global (Zustand/Context)
-├── hooks/            # Custom hooks
-├── utils/            # Helpers & utilities
-└── types/            # TypeScript types
-```
+## 📝 Notes
 
-## 🎨 Design System
-
-Le Design System est centralisé dans `src/theme/` :
-
-- **Colors**: Palette de couleurs extraite de Figma
-- **Typography**: Urbanist (titres) et Satoshi Variable (corps, formulaires)
-- **Spacing**: Système basé sur 4px
-- **Shadows**: Élévations pour cards et modals
-
-## 📦 Dépendances Principales
-
-- `@react-navigation/native` - Navigation
-- `react-native-reanimated` - Animations fade in/out
-- `react-native-skeleton-placeholder` - Skeleton loaders
-- `expo-font` - Chargement des polices custom
-
-## 🔄 Prochaines Étapes
-
-1. ✅ Setup initial et Design System
-2. ⏳ Composants de base (Button, Input, Card, Modal)
-3. ⏳ Écrans d'auth (Onboarding → Login → Signup)
+- Utilisation d'Expo pour le développement et le testing
+- Fonts custom : Urbanist (titles) + Satoshi Variable (body/forms)
+- Design System basé sur les designs Figma
 
