@@ -63,7 +63,7 @@ export const OnboardingNavigator: React.FC<OnboardingNavigatorProps> = ({
 
   return (
     <View style={styles.container}>
-      <View pointerEvents="box-none" style={styles.tapOverlay}>
+      <View style={styles.tapOverlay}>
         <Pressable
           style={styles.tapZone}
           onPress={handlePrevious}
@@ -96,18 +96,21 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background.primary,
   },
   tapOverlay: {
-    ...StyleSheet.absoluteFillObject,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: height * 0.65,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    zIndex: 1,
+    zIndex: 3,
   },
   tapZone: {
     flex: 1,
-    height: height * 0.65,
   },
   screenWrapper: {
     flex: 1,
-    zIndex: 2,
+    zIndex: 1,
   },
 });
 

@@ -36,8 +36,8 @@ export const OnboardingSlide: React.FC<OnboardingSlideProps> = ({
   primaryLabel = 'Commencer',
 }) => {
   const bottomOverlayHeight = height * 0.65;
-  const progress = Math.min(Math.max(step / totalSteps, 0), 1);
-  const progressWidth = `${progress * 100}%`;
+  const clampedIndex = Math.min(Math.max(Math.floor(step) - 1, 0), totalSteps - 1);
+  const segments = Array.from({ length: totalSteps });
 
   return (
     <View style={styles.container}>
@@ -73,8 +73,19 @@ export const OnboardingSlide: React.FC<OnboardingSlideProps> = ({
             </AnimatedView>
 
             <AnimatedView delay={350}>
-              <View style={styles.progressTrack}>
-                <View style={[styles.progressFill, { width: progressWidth }]} />
+              <View style={styles.pagination}>
+                {segments.map((_, index) => {
+                  const isFilled = index === clampedIndex;
+                  return (
+                    <View
+                      key={`pagination-${index}`}
+                      style={[
+                        styles.paginationDot,
+                        isFilled && styles.paginationDotActive,
+                      ]}
+                    />
+                  );
+                })}
               </View>
             </AnimatedView>
 
@@ -146,22 +157,24 @@ const styles = StyleSheet.create({
     textTransform: 'none',
   },
   description: {
-    ...typography.styles.body,
+    ...typography.styles.bodyLarge,
     color: colors.text.secondary,
     lineHeight: 24,
   },
-  progressTrack: {
-    width: 64,
+  pagination: {
+    flexDirection: 'row',
+    alignSelf: 'center',
+    gap: spacing.xs,
+  },
+  paginationDot: {
+    width: 12,
     height: 4,
     borderRadius: 999,
     backgroundColor: colors.border.normal,
-    overflow: 'hidden',
-    alignSelf: 'center',
   },
-  progressFill: {
-    height: '100%',
+  paginationDotActive: {
     backgroundColor: colors.primary.normal,
-    borderRadius: 999,
+    width: 32,
   },
   ctaSection: {
     gap: spacing.sm,
@@ -172,11 +185,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   signupText: {
-    ...typography.styles.bodySmall,
+    ...typography.styles.bodyLarge,
     color: colors.text.secondary,
   },
   signupLink: {
-    ...typography.styles.bodySmall,
+    ...typography.styles.bodyLarge,
     color: colors.primary.normal,
     fontWeight: '600',
   },
