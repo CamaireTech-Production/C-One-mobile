@@ -125,7 +125,7 @@ export const AppNavigator = () => {
                     // Navigate to reset password screen after OTP verification
                     navigation.navigate('ResetPassword');
                   }}
-                  onBack={() => navigation.navigate('ForgotPassword')}
+                  onBack={() => navigation.navigate('Login')}
                 />
               )}
             </Stack.Screen>
@@ -136,7 +136,7 @@ export const AppNavigator = () => {
                     // TODO: Show success modal and navigate to login
                     navigation.navigate('Login');
                   }}
-                  onBack={() => navigation.navigate('OtpVerification')}
+                  onBack={() => navigation.navigate('Login')}
                 />
               )}
             </Stack.Screen>

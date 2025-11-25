@@ -91,6 +91,10 @@ export const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
     onComplete();
   };
 
+  const handleSuccessModalClose = () => {
+    setShowSuccessModal(false);
+  };
+
   return (
     <ScreenBackground backgroundColor={colors.background.primary}>
       <KeyboardAvoidingView
@@ -155,8 +159,10 @@ export const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
         visible={showSuccessModal}
         message="Votre mot de passe a été réinitialisé avec succès"
         primaryButtonLabel="Se connecter"
+        secondaryButtonLabel="Close"
         onPrimaryPress={handleSuccessModalPrimary}
-        onClose={handleSuccessModalPrimary}
+        onSecondaryPress={handleSuccessModalClose}
+        onClose={handleSuccessModalClose}
       />
     </ScreenBackground>
   );

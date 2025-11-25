@@ -42,15 +42,17 @@ export const SuccessModal: React.FC<SuccessModalProps> = ({
       transparent
       animationType="fade"
       onRequestClose={onClose}
+      statusBarTranslucent
     >
       <View style={styles.overlay}>
         <View style={[styles.modal, style]}>
           <View style={styles.iconContainer}>
             <View style={styles.iconCircle}>
               <Icon
-                name="checkmark-circle"
-                size={48}
+                name="task-alt"
+                size={40}
                 color={colors.success}
+                family="material"
               />
             </View>
           </View>
@@ -87,6 +89,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: spacing.lg,
+    paddingTop: 0, // Overlay couvre la barre de statut
   },
   modal: {
     backgroundColor: colors.background.primary,
