@@ -10,3 +10,4 @@ export { OnboardingNavigator } from './onboarding/OnboardingNavigator';
 export { LoginScreen } from './auth/login/LoginScreen';
 export { SignUpScreen } from './auth/signup/SignUpScreen';
 export { ForgotPasswordScreen } from './auth/forgotPassword/ForgotPasswordScreen';
+export { ResetPasswordScreen } from './auth/resetPassword/ResetPasswordScreen';
