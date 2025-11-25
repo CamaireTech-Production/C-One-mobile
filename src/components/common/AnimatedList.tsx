@@ -54,7 +54,7 @@ export function AnimatedList<T>({
   return (
     <Animated.FlatList
       {...flatListProps}
-      data={data}
+      data={data as any}
       renderItem={renderAnimatedItem}
     />
   );

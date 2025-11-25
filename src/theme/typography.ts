@@ -85,6 +85,134 @@ export const typography = {
       fontWeight: '400' as const,
       lineHeight: 21, // 14 * 1.5
     },
+    
+    // Body Regular - Satoshi Variable
+    bodyRegular12: {
+      fontFamily: 'Satoshi-Regular',
+      fontSize: 12,
+      fontWeight: '400' as const,
+      lineHeight: 18, // 12 * 1.5
+    },
+    bodyRegular14: {
+      fontFamily: 'Satoshi-Regular',
+      fontSize: 14,
+      fontWeight: '400' as const,
+      lineHeight: 21, // 14 * 1.5
+    },
+    bodyRegular16: {
+      fontFamily: 'Satoshi-Regular',
+      fontSize: 16,
+      fontWeight: '400' as const,
+      lineHeight: 24, // 16 * 1.5
+    },
+    bodyRegular18: {
+      fontFamily: 'Satoshi-Regular',
+      fontSize: 18,
+      fontWeight: '400' as const,
+      lineHeight: 27, // 18 * 1.5
+    },
+    bodyRegular20: {
+      fontFamily: 'Satoshi-Regular',
+      fontSize: 20,
+      fontWeight: '400' as const,
+      lineHeight: 30, // 20 * 1.5
+    },
+
+    // Body Medium - Satoshi Variable
+    bodyMedium12: {
+      fontFamily: 'Satoshi-Medium',
+      fontSize: 12,
+      fontWeight: '500' as const,
+      lineHeight: 18, // 12 * 1.5
+    },
+    bodyMedium14: {
+      fontFamily: 'Satoshi-Medium',
+      fontSize: 14,
+      fontWeight: '500' as const,
+      lineHeight: 21, // 14 * 1.5
+    },
+    bodyMedium16: {
+      fontFamily: 'Satoshi-Medium',
+      fontSize: 16,
+      fontWeight: '500' as const,
+      lineHeight: 24, // 16 * 1.5
+    },
+    bodyMedium18: {
+      fontFamily: 'Satoshi-Medium',
+      fontSize: 18,
+      fontWeight: '500' as const,
+      lineHeight: 27, // 18 * 1.5
+    },
+    bodyMedium20: {
+      fontFamily: 'Satoshi-Medium',
+      fontSize: 20,
+      fontWeight: '500' as const,
+      lineHeight: 30, // 20 * 1.5
+    },
+
+    // Body Semibold - Satoshi Variable
+    bodySemibold12: {
+      fontFamily: 'Satoshi-Medium',
+      fontSize: 12,
+      fontWeight: '600' as const,
+      lineHeight: 18, // 12 * 1.5
+    },
+    bodySemibold14: {
+      fontFamily: 'Satoshi-Medium',
+      fontSize: 14,
+      fontWeight: '600' as const,
+      lineHeight: 21, // 14 * 1.5
+    },
+    bodySemibold16: {
+      fontFamily: 'Satoshi-Medium',
+      fontSize: 16,
+      fontWeight: '600' as const,
+      lineHeight: 24, // 16 * 1.5
+    },
+    bodySemibold18: {
+      fontFamily: 'Satoshi-Medium',
+      fontSize: 18,
+      fontWeight: '600' as const,
+      lineHeight: 27, // 18 * 1.5
+    },
+    bodySemibold20: {
+      fontFamily: 'Satoshi-Medium',
+      fontSize: 20,
+      fontWeight: '600' as const,
+      lineHeight: 30, // 20 * 1.5
+    },
+
+    // Body Bold - Satoshi Variable
+    bodyBold12: {
+      fontFamily: 'Satoshi-Bold',
+      fontSize: 12,
+      fontWeight: '700' as const,
+      lineHeight: 18, // 12 * 1.5
+    },
+    bodyBold14: {
+      fontFamily: 'Satoshi-Bold',
+      fontSize: 14,
+      fontWeight: '700' as const,
+      lineHeight: 21, // 14 * 1.5
+    },
+    bodyBold16: {
+      fontFamily: 'Satoshi-Bold',
+      fontSize: 16,
+      fontWeight: '700' as const,
+      lineHeight: 24, // 16 * 1.5
+    },
+    bodyBold18: {
+      fontFamily: 'Satoshi-Bold',
+      fontSize: 18,
+      fontWeight: '700' as const,
+      lineHeight: 27, // 18 * 1.5
+    },
+    bodyBold20: {
+      fontFamily: 'Satoshi-Bold',
+      fontSize: 20,
+      fontWeight: '700' as const,
+      lineHeight: 30, // 20 * 1.5
+    },
 
     // Form Elements - Satoshi Variable
     input: {

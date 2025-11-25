@@ -8,11 +8,12 @@ import {
   TouchableOpacity,
   Text,
   StyleSheet,
-  ActivityIndicator,
   ViewStyle,
   TextStyle,
+  View,
 } from 'react-native';
 import { colors, typography, spacing, shadows } from '../../theme';
+import { Spinner } from './Spinner';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'text';
 export type ButtonSize = 'small' | 'medium' | 'large';
@@ -38,20 +39,20 @@ export const Button: React.FC<ButtonProps> = ({
   fullWidth = false,
   style,
 }) => {
-  const buttonStyles: ViewStyle[] = [
+  const buttonStyles: (ViewStyle | undefined)[] = [
     styles.base,
     styles[variant],
     styles[`${size}Size`],
-    fullWidth && styles.fullWidth,
-    (disabled || loading) && styles.disabled,
+    fullWidth ? styles.fullWidth : undefined,
+    (disabled || loading) ? styles.disabled : undefined,
     style,
   ];
 
-  const textStyles: TextStyle[] = [
+  const textStyles: (TextStyle | undefined)[] = [
     styles.textBase,
     styles[`${variant}Text`],
     styles[`${size}Text`],
-    (disabled || loading) && styles.disabledText,
+    (disabled || loading) ? styles.disabledText : undefined,
   ];
 
   return (
@@ -62,10 +63,12 @@ export const Button: React.FC<ButtonProps> = ({
       activeOpacity={0.7}
     >
       {loading ? (
-        <ActivityIndicator
-          size="small"
-          color={variant === 'primary' ? colors.text.inverse : colors.primary.normal}
-        />
+        <View style={styles.loadingContainer}>
+          <Spinner
+            size="small"
+            color={variant === 'primary' ? colors.text.inverse : colors.primary.normal}
+          />
+        </View>
       ) : (
         <Text style={textStyles}>{title}</Text>
       )}
@@ -149,6 +152,10 @@ const styles = StyleSheet.create({
   },
   disabledText: {
     opacity: 0.7,
+  },
+  loadingContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

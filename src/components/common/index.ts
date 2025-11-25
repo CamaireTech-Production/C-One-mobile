@@ -17,3 +17,25 @@ export type { ModalVariant } from './Modal';
 export { AnimatedCard } from './AnimatedCard';
 export { AnimatedView } from './AnimatedView';
 export { AnimatedList } from './AnimatedList';
+
+export { SocialButton } from './SocialButton';
+export type { SocialProvider } from './SocialButton';
+
+export { Icon } from './Icon';
+export type { IconFamily } from './Icon';
+
+export { ScreenBackground } from './ScreenBackground';
+export type { ScreenBackgroundProps, GradientConfig } from './ScreenBackground';
+
+export { OtpInput } from './OtpInput';
+export type { OtpInputType } from './OtpInput';
+
+export { Spinner } from './Spinner';
+export type { SpinnerSize } from './Spinner';
+
+export { LoadingOverlay } from './LoadingOverlay';
+
+export { VerificationModal } from './VerificationModal';
+export type { VerificationVariant } from './VerificationModal';
+
+export { SuccessModal } from './SuccessModal';

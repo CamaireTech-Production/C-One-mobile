@@ -1,5 +1,6 @@
 /**
  * Login Screen
+ * Pixel perfect implementation matching Figma design
  */
 
 import React, { useState } from 'react';
@@ -12,7 +13,7 @@ import {
   Platform,
   TouchableOpacity,
 } from 'react-native';
-import { Input, Button, AnimatedView } from '../../../components/common';
+import { Input, Button, AnimatedView, SocialButton, Icon, ScreenBackground } from '../../../components/common';
 import { colors, typography, spacing } from '../../../theme';
 import { VALIDATION } from '../../../utils/constants';
 
@@ -32,6 +33,25 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const [loading, setLoading] = useState(false);
 
+  const clearFieldError = (field: keyof typeof errors) => {
+    setErrors((prev) => {
+      if (!prev[field]) {
+        return prev;
+      }
+      return { ...prev, [field]: undefined };
+    });
+  };
+
+  const handleEmailChange = (value: string) => {
+    setEmail(value);
+    clearFieldError('email');
+  };
+
+  const handlePasswordChange = (value: string) => {
+    setPassword(value);
+    clearFieldError('password');
+  };
+
   const validate = () => {
     const newErrors: { email?: string; password?: string } = {};
 
@@ -44,7 +64,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
     if (!password) {
       newErrors.password = 'Mot de passe requis';
     } else if (password.length < VALIDATION.passwordMinLength) {
-      newErrors.password = `Minimum ${VALIDATION.passwordMinLength} caractères`;
+      newErrors.password = 'Ceci est un mot de passe incorrect';
     }
 
     setErrors(newErrors);
@@ -63,46 +83,58 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    >
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        keyboardShouldPersistTaps="handled"
+    <ScreenBackground backgroundColor={colors.background.primary}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        <AnimatedView style={styles.content} delay={100}>
-          <AnimatedView delay={200}>
+        <ScrollView keyboardShouldPersistTaps="handled">
+          <View style={styles.content}>
+          <TouchableOpacity onPress={onSignUp} style={styles.signUpLink}>
+            <Text style={styles.signUpLinkText}>S'inscrire</Text>
+          </TouchableOpacity>
+
+          <AnimatedView delay={100}>
             <Text style={styles.title}>Bienvenue de nouveau !</Text>
-            <Text style={styles.subtitle}>Connectez-vous à votre compte C-one</Text>
+            <Text style={styles.subtitle}>
+              Entrez vos informations pour vous connecter
+            </Text>
           </AnimatedView>
 
-          <AnimatedView style={styles.form} delay={300}>
+          <AnimatedView style={styles.form} delay={200}>
             <Input
               label="Email"
-              placeholder="email@email.com"
+              placeholder="olivia@untitledui.com"
               value={email}
-              onChangeText={setEmail}
+              onChangeText={handleEmailChange}
               error={errors.email}
               keyboardType="email-address"
               autoCapitalize="none"
               autoComplete="email"
+              leftIcon={<Icon name="mail-outline" size={20} color={colors.text.secondary} />}
+              rightIcon={<Icon name="help-circle-outline" size={20} color={colors.text.secondary} />}
             />
 
             <Input
               label="Mot de passe"
-              placeholder="Mot de passe"
+              placeholder="Danielle 123"
               value={password}
-              onChangeText={setPassword}
+              onChangeText={handlePasswordChange}
               error={errors.password}
               secureTextEntry
               autoCapitalize="none"
               autoComplete="password"
+              showPasswordToggle
+              leftIcon={<Icon name="eye-outline" size={20} color={colors.text.secondary} />}
             />
 
-            <TouchableOpacity onPress={onForgotPassword} style={styles.forgotPassword}>
-              <Text style={styles.forgotPasswordText}>Mot de passe oublié ?</Text>
-            </TouchableOpacity>
+            <View style={styles.forgotPasswordContainer}>
+              <TouchableOpacity onPress={onForgotPassword}>
+                <Text style={styles.forgotPasswordText}>
+                  mot de passe oublié ?
+                </Text>
+              </TouchableOpacity>
+            </View>
 
             <Button
               title="Se connecter"
@@ -115,55 +147,53 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
             />
           </AnimatedView>
 
-          <AnimatedView style={styles.socialSection} delay={400}>
+          <AnimatedView style={styles.socialSection} delay={300}>
             <View style={styles.separator}>
               <View style={styles.separatorLine} />
-              <Text style={styles.separatorText}>Ou continuer avec</Text>
+              <Text style={styles.separatorText}>ou connexion avec</Text>
               <View style={styles.separatorLine} />
             </View>
 
             <View style={styles.socialButtons}>
-              <Button
-                title="Google"
+              <SocialButton
+                provider="google"
                 onPress={() => {}}
-                variant="outline"
-                size="medium"
                 style={styles.socialButton}
               />
-              <Button
-                title="Apple"
+              <SocialButton
+                provider="facebook"
                 onPress={() => {}}
-                variant="outline"
-                size="medium"
+                style={styles.socialButton}
+              />
+              <SocialButton
+                provider="apple"
+                onPress={() => {}}
                 style={styles.socialButton}
               />
             </View>
           </AnimatedView>
-
-          <AnimatedView style={styles.signUpLink} delay={500}>
-            <Text style={styles.signUpText}>Vous n'avez pas de compte ? </Text>
-            <TouchableOpacity onPress={onSignUp}>
-              <Text style={styles.signUpLinkText}>S'inscrire</Text>
-            </TouchableOpacity>
-          </AnimatedView>
-        </AnimatedView>
-      </ScrollView>
-    </KeyboardAvoidingView>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </ScreenBackground>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background.primary,
-  },
-  scrollContent: {
-    flexGrow: 1,
   },
   content: {
-    flex: 1,
     padding: spacing.lg,
-    justifyContent: 'center',
+    paddingTop: spacing['4xl'],
+  },
+  signUpLink: {
+    alignSelf: 'flex-end',
+    marginBottom: spacing.xl,
+  },
+  signUpLinkText: {
+    ...typography.styles.bodyBold16,
+    color: colors.primary.normal,
   },
   title: {
     ...typography.styles.h1,
@@ -171,23 +201,30 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
   },
   subtitle: {
-    ...typography.styles.body,
+    ...typography.styles.bodyRegular16,
     color: colors.text.secondary,
     marginBottom: spacing.xl,
   },
   form: {
     marginBottom: spacing.xl,
   },
-  forgotPassword: {
-    alignSelf: 'flex-end',
+  errorMessage: {
+    ...typography.styles.caption,
+    color: colors.error,
+    marginTop: spacing.xs,
+    marginBottom: spacing.sm,
+  },
+  forgotPasswordContainer: {
+    alignItems: 'flex-end',
     marginBottom: spacing.lg,
   },
   forgotPasswordText: {
-    ...typography.styles.bodySmall,
+    ...typography.styles.bodyBold16,
     color: colors.primary.normal,
+    textDecorationLine: 'underline',
   },
   socialSection: {
-    marginBottom: spacing.xl,
+    marginTop: spacing.md,
   },
   separator: {
     flexDirection: 'row',
@@ -198,6 +235,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 1,
     backgroundColor: colors.border.normal,
+    opacity: 0.5,
   },
   separatorText: {
     ...typography.styles.bodySmall,
@@ -210,20 +248,6 @@ const styles = StyleSheet.create({
   },
   socialButton: {
     flex: 1,
-  },
-  signUpLink: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: spacing.lg,
-  },
-  signUpText: {
-    ...typography.styles.body,
-    color: colors.text.secondary,
-  },
-  signUpLinkText: {
-    ...typography.styles.body,
-    color: colors.primary.normal,
-    fontWeight: '600',
   },
 });
 

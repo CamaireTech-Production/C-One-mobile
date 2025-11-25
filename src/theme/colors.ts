@@ -59,7 +59,9 @@ export const colors = {
 
   // Semantic Colors
   success: '#10b981', // Green for success states
+  successLight: '#D1FADF', // Light green background for success icons
   error: '#ef4444', // Red for error states
+  errorLight: '#FEE4E2', // Light red background for error icons
   warning: '#f59e0b', // Orange for warnings
   info: '#3b82f6', // Blue for info
 

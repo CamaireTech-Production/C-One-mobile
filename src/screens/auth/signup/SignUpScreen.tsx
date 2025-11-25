@@ -1,5 +1,6 @@
 /**
  * Sign Up Screen
+ * Pixel perfect implementation matching Figma design
  */
 
 import React, { useState } from 'react';
@@ -12,7 +13,7 @@ import {
   Platform,
   TouchableOpacity,
 } from 'react-native';
-import { Input, Button } from '../../../components/common';
+import { Input, Button, AnimatedView, SocialButton, Icon, ScreenBackground } from '../../../components/common';
 import { colors, typography, spacing } from '../../../theme';
 import { VALIDATION } from '../../../utils/constants';
 
@@ -25,23 +26,45 @@ export const SignUpScreen: React.FC<SignUpScreenProps> = ({
   onSignUp,
   onLogin,
 }) => {
-  const [username, setUsername] = useState('');
+  const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [errors, setErrors] = useState<{
-    username?: string;
+    fullName?: string;
     email?: string;
     password?: string;
-    confirmPassword?: string;
   }>({});
   const [loading, setLoading] = useState(false);
+
+  const clearFieldError = (field: keyof typeof errors) => {
+    setErrors((prev) => {
+      if (!prev[field]) {
+        return prev;
+      }
+      return { ...prev, [field]: undefined };
+    });
+  };
+
+  const handleFullNameChange = (value: string) => {
+    setFullName(value);
+    clearFieldError('fullName');
+  };
+
+  const handleEmailChange = (value: string) => {
+    setEmail(value);
+    clearFieldError('email');
+  };
+
+  const handlePasswordChange = (value: string) => {
+    setPassword(value);
+    clearFieldError('password');
+  };
 
   const validate = () => {
     const newErrors: typeof errors = {};
 
-    if (!username || username.length < 2) {
-      newErrors.username = 'Nom d\'utilisateur requis (min. 2 caractères)';
+    if (!fullName || fullName.length < 2) {
+      newErrors.fullName = 'Nom complet requis (min. 2 caractères)';
     }
 
     if (!email) {
@@ -56,10 +79,6 @@ export const SignUpScreen: React.FC<SignUpScreenProps> = ({
       newErrors.password = `Minimum ${VALIDATION.passwordMinLength} caractères`;
     }
 
-    if (password !== confirmPassword) {
-      newErrors.confirmPassword = 'Les mots de passe ne correspondent pas';
-    }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -69,127 +88,127 @@ export const SignUpScreen: React.FC<SignUpScreenProps> = ({
 
     setLoading(true);
     try {
-      await onSignUp({ username, email, password });
+      await onSignUp({ username: fullName, email, password });
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    >
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        keyboardShouldPersistTaps="handled"
+    <ScreenBackground backgroundColor={colors.background.primary}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        <View style={styles.content}>
-          <Text style={styles.title}>Bienvenue sur C-One !</Text>
-          <Text style={styles.subtitle}>Créez votre compte C-one</Text>
-
-          <View style={styles.form}>
-            <Input
-              label="Nom d'utilisateur"
-              placeholder="Nom d'utilisateur"
-              value={username}
-              onChangeText={setUsername}
-              error={errors.username}
-              autoCapitalize="none"
-            />
-
-            <Input
-              label="Email"
-              placeholder="email@email.com"
-              value={email}
-              onChangeText={setEmail}
-              error={errors.email}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              autoComplete="email"
-            />
-
-            <Input
-              label="Mot de passe"
-              placeholder="Mot de passe"
-              value={password}
-              onChangeText={setPassword}
-              error={errors.password}
-              secureTextEntry
-              autoCapitalize="none"
-              autoComplete="password"
-            />
-
-            <Input
-              label="Confirmer mot de passe"
-              placeholder="Confirmer mot de passe"
-              value={confirmPassword}
-              onChangeText={setConfirmPassword}
-              error={errors.confirmPassword}
-              secureTextEntry
-              autoCapitalize="none"
-            />
-
-            <Button
-              title="S'inscrire"
-              onPress={handleSignUp}
-              variant="primary"
-              size="large"
-              fullWidth
-              loading={loading}
-              disabled={!username || !email || !password || !confirmPassword}
-            />
-          </View>
-
-          <View style={styles.socialSection}>
-            <View style={styles.separator}>
-              <View style={styles.separatorLine} />
-              <Text style={styles.separatorText}>Ou continuer avec</Text>
-              <View style={styles.separatorLine} />
-            </View>
-
-            <View style={styles.socialButtons}>
-              <Button
-                title="Google"
-                onPress={() => {}}
-                variant="outline"
-                size="medium"
-                style={styles.socialButton}
-              />
-              <Button
-                title="Apple"
-                onPress={() => {}}
-                variant="outline"
-                size="medium"
-                style={styles.socialButton}
-              />
-            </View>
-          </View>
-
-          <View style={styles.loginLink}>
-            <Text style={styles.loginText}>Vous avez déjà un compte ? </Text>
-            <TouchableOpacity onPress={onLogin}>
-              <Text style={styles.loginLinkText}>Se connecter</Text>
+        <ScrollView keyboardShouldPersistTaps="handled">
+          <View style={styles.content}>
+            <TouchableOpacity onPress={onLogin} style={styles.loginLink}>
+              <Text style={styles.loginLinkText}>Connexion</Text>
             </TouchableOpacity>
+
+            <AnimatedView delay={100}>
+              <Text style={styles.title}>Bienvenue sur C-one !</Text>
+              <Text style={styles.subtitle}>
+                Entrez vos informations pour l'inscription
+              </Text>
+            </AnimatedView>
+
+            <AnimatedView style={styles.form} delay={200}>
+              <Input
+                label="Nom complet"
+                placeholder="Danielle mckeny"
+                value={fullName}
+                onChangeText={handleFullNameChange}
+                error={errors.fullName}
+                autoCapitalize="words"
+                leftIcon={<Icon name="person-outline" size={20} color={colors.text.secondary} />}
+                rightIcon={<Icon name="help-circle-outline" size={20} color={colors.text.secondary} />}
+              />
+
+              <Input
+                label="Email"
+                placeholder="olivia@untitledui.com"
+                value={email}
+                onChangeText={handleEmailChange}
+                error={errors.email}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoComplete="email"
+                leftIcon={<Icon name="mail-outline" size={20} color={colors.text.secondary} />}
+                rightIcon={<Icon name="help-circle-outline" size={20} color={colors.text.secondary} />}
+              />
+
+              <Input
+                label="Mot de passe"
+                placeholder="Danielle 123"
+                value={password}
+                onChangeText={handlePasswordChange}
+                error={errors.password}
+                secureTextEntry
+                autoCapitalize="none"
+                autoComplete="password"
+                showPasswordToggle
+                leftIcon={<Icon name="eye-outline" size={20} color={colors.text.secondary} />}
+              />
+
+              <Button
+                title="S'inscrire"
+                onPress={handleSignUp}
+                variant="primary"
+                size="large"
+                fullWidth
+                loading={loading}
+                disabled={!fullName || !email || !password}
+              />
+            </AnimatedView>
+
+            <AnimatedView style={styles.socialSection} delay={300}>
+              <View style={styles.separator}>
+                <View style={styles.separatorLine} />
+                <Text style={styles.separatorText}>ou inscrivez-vous avec</Text>
+                <View style={styles.separatorLine} />
+              </View>
+
+              <View style={styles.socialButtons}>
+                <SocialButton
+                  provider="google"
+                  onPress={() => {}}
+                  style={styles.socialButton}
+                />
+                <SocialButton
+                  provider="facebook"
+                  onPress={() => {}}
+                  style={styles.socialButton}
+                />
+                <SocialButton
+                  provider="apple"
+                  onPress={() => {}}
+                  style={styles.socialButton}
+                />
+              </View>
+            </AnimatedView>
           </View>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </ScreenBackground>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background.primary,
-  },
-  scrollContent: {
-    flexGrow: 1,
   },
   content: {
-    flex: 1,
     padding: spacing.lg,
-    justifyContent: 'center',
+    paddingTop: spacing['4xl'],
+  },
+  loginLink: {
+    alignSelf: 'flex-end',
+    marginBottom: spacing.xl,
+  },
+  loginLinkText: {
+    ...typography.styles.bodyBold16,
+    color: colors.primary.normal,
   },
   title: {
     ...typography.styles.h1,
@@ -197,7 +216,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
   },
   subtitle: {
-    ...typography.styles.body,
+    ...typography.styles.bodyRegular16,
     color: colors.text.secondary,
     marginBottom: spacing.xl,
   },
@@ -205,7 +224,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xl,
   },
   socialSection: {
-    marginBottom: spacing.xl,
+    marginTop: spacing.md,
   },
   separator: {
     flexDirection: 'row',
@@ -216,6 +235,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 1,
     backgroundColor: colors.border.normal,
+    opacity: 0.5,
   },
   separatorText: {
     ...typography.styles.bodySmall,
@@ -228,20 +248,6 @@ const styles = StyleSheet.create({
   },
   socialButton: {
     flex: 1,
-  },
-  loginLink: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: spacing.lg,
-  },
-  loginText: {
-    ...typography.styles.body,
-    color: colors.text.secondary,
-  },
-  loginLinkText: {
-    ...typography.styles.body,
-    color: colors.primary.normal,
-    fontWeight: '600',
   },
 });
 
