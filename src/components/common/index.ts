@@ -17,3 +17,6 @@ export type { ModalVariant } from './Modal';
 export { AnimatedCard } from './AnimatedCard';
 export { AnimatedView } from './AnimatedView';
 export { AnimatedList } from './AnimatedList';
+
+export { SocialButton } from './SocialButton';
+export type { SocialProvider } from './SocialButton';
