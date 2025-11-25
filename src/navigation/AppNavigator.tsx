@@ -19,12 +19,14 @@ export const AppNavigator = () => {
   const [showSplash, setShowSplash] = useState(true);
   const [hasSeenOnboarding, setHasSeenOnboarding] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [requestedAuthScreen, setRequestedAuthScreen] = useState<'Login' | 'SignUp'>('Login');
 
   const handleSplashFinish = () => {
     setShowSplash(false);
   };
 
-  const handleOnboardingComplete = () => {
+  const handleOnboardingComplete = (nextScreen: 'Login' | 'SignUp' = 'Login') => {
+    setRequestedAuthScreen(nextScreen);
     setHasSeenOnboarding(true);
   };
 
@@ -44,14 +46,32 @@ export const AppNavigator = () => {
     setIsAuthenticated(true);
   };
 
+  const navigatorKey = showSplash
+    ? 'splash'
+    : !hasSeenOnboarding
+      ? 'onboarding'
+      : !isAuthenticated
+        ? `auth-${requestedAuthScreen}`
+        : 'main';
+
+  const initialRouteName = showSplash
+    ? 'Splash'
+    : !hasSeenOnboarding
+      ? 'Onboarding'
+      : !isAuthenticated
+        ? requestedAuthScreen
+        : 'Main';
+
   return (
     <NavigationContainer>
       <Stack.Navigator
+        key={navigatorKey}
         screenOptions={{
           headerShown: false,
           animation: 'fade', // Smooth fade transition
           animationDuration: 300, // Animation duration
         }}
+        initialRouteName={initialRouteName}
       >
         {showSplash ? (
           <Stack.Screen name="Splash">
@@ -59,7 +79,12 @@ export const AppNavigator = () => {
           </Stack.Screen>
         ) : !hasSeenOnboarding ? (
           <Stack.Screen name="Onboarding">
-            {() => <OnboardingNavigator onComplete={handleOnboardingComplete} />}
+            {() => (
+              <OnboardingNavigator
+                onComplete={() => handleOnboardingComplete('Login')}
+                onSignUp={() => handleOnboardingComplete('SignUp')}
+              />
+            )}
           </Stack.Screen>
         ) : !isAuthenticated ? (
           <>

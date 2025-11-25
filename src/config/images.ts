@@ -14,9 +14,9 @@ export const images = {
   splashLogo: require('../../assets/splash-icon.png'),
 
   // Onboarding
-  onboardingScreen1: require('../../assets/icon.png'),
-  onboardingScreen2: require('../../assets/icon.png'),
-  onboardingScreen3: require('../../assets/icon.png'),
+  onboardingScreen1: require('../../assets/images/onboarding-1-bg.png'),
+  onboardingScreen2: require('../../assets/images/onboarding-2-bg.jpg'),
+  onboardingScreen3: require('../../assets/images/onboarding-3-bg.png'),
 
   // Auth
   loginBackground: require('../../assets/icon.png'),
