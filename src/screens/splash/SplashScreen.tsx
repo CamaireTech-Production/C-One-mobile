@@ -11,6 +11,7 @@ import {
   Animated,
   Dimensions,
   ImageStyle,
+  Easing,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -28,26 +29,44 @@ const { width, height } = Dimensions.get('window');
 export const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
   const [fadeAnim] = useState(new Animated.Value(0));
   const [logoFadeAnim] = useState(new Animated.Value(0));
+  const [logoScaleAnim] = useState(new Animated.Value(0.85));
 
   useEffect(() => {
     // Sequence: Background fade in → Logo fade in
     Animated.sequence([
-      // Background image fade in
       Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 500,
+        duration: 600,
+        easing: Easing.out(Easing.cubic),
         useNativeDriver: true,
       }),
-      // Wait a bit
-      Animated.delay(300),
-      // Logo fade in
-      Animated.timing(logoFadeAnim, {
-        toValue: 1,
-        duration: 400,
-        useNativeDriver: true,
-      }),
+      Animated.delay(400),
+      Animated.parallel([
+        Animated.timing(logoFadeAnim, {
+          toValue: 1,
+          duration: 700,
+          easing: Easing.out(Easing.ease),
+          useNativeDriver: true,
+        }),
+        Animated.spring(logoScaleAnim, {
+          toValue: 1,
+          tension: 30,
+          friction: 8,
+          useNativeDriver: true,
+        }),
+      ]),
     ]).start();
-  }, []);
+  }, [fadeAnim, logoFadeAnim, logoScaleAnim]);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      onFinish();
+    }, 5000);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [onFinish]);
 
   // Calculate gradient overlay height (30-35% of screen)
   const gradientHeight = height * 0.45;
@@ -89,6 +108,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
             styles.logoContent,
             {
               opacity: logoFadeAnim,
+              transform: [{ scale: logoScaleAnim }],
             },
           ]}
         >
