@@ -13,7 +13,7 @@ import {
   Platform,
   TouchableOpacity,
 } from 'react-native';
-import { Input, Button, AnimatedView, SocialButton } from '../../../components/common';
+import { Input, Button, AnimatedView, SocialButton, Icon } from '../../../components/common';
 import { colors, typography, spacing } from '../../../theme';
 import { VALIDATION } from '../../../utils/constants';
 
@@ -91,8 +91,8 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
               keyboardType="email-address"
               autoCapitalize="none"
               autoComplete="email"
-              leftIcon={<Text style={styles.iconText}>✉️</Text>}
-              rightIcon={<Text style={styles.iconText}>❓</Text>}
+                leftIcon={<Icon name="mail-outline" size={20} color={colors.text.secondary} />}
+                rightIcon={<Icon name="help-circle-outline" size={20} color={colors.text.secondary} />}
             />
 
             <Input
@@ -104,15 +104,15 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
               secureTextEntry
               autoCapitalize="none"
               autoComplete="password"
-              showPasswordToggle
-              leftIcon={<Text style={styles.iconText}>👁️</Text>}
-              rightIcon={
-                errors.password ? (
-                  <View style={styles.errorIconContainer}>
-                    <Text style={styles.errorIcon}>!</Text>
-                  </View>
-                ) : null
-              }
+                showPasswordToggle
+                leftIcon={<Icon name="eye-outline" size={20} color={colors.text.secondary} />}
+                rightIcon={
+                  errors.password ? (
+                    <View style={styles.errorIconContainer}>
+                      <Icon name="alert-circle" size={12} color={colors.text.inverse} />
+                    </View>
+                  ) : null
+                }
             />
 
             {errors.password && (
@@ -200,9 +200,6 @@ const styles = StyleSheet.create({
   },
   form: {
     marginBottom: spacing.xl,
-  },
-  iconText: {
-    fontSize: 18,
   },
   errorIconContainer: {
     width: 20,

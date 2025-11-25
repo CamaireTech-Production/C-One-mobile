@@ -20,3 +20,6 @@ export { AnimatedList } from './AnimatedList';
 
 export { SocialButton } from './SocialButton';
 export type { SocialProvider } from './SocialButton';
+
+export { Icon } from './Icon';
+export type { IconFamily } from './Icon';
