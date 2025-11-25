@@ -12,3 +12,4 @@ export { SignUpScreen } from './auth/signup/SignUpScreen';
 export { ForgotPasswordScreen } from './auth/forgotPassword/ForgotPasswordScreen';
 export { OtpVerificationScreen } from './auth/otpVerification/OtpVerificationScreen';
 export { ResetPasswordScreen } from './auth/resetPassword/ResetPasswordScreen';
+export { HomeScreen } from './home/HomeScreen';

@@ -3,9 +3,10 @@
  * Handles navigation between auth and main app flows
  */
 
-import React, { useState } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import React, { useState, useEffect } from 'react';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
 import { SplashScreen } from '../screens/splash/SplashScreen';
 import { OnboardingNavigator } from '../screens/onboarding/OnboardingNavigator';
@@ -14,8 +15,26 @@ import { SignUpScreen } from '../screens/auth/signup/SignUpScreen';
 import { ForgotPasswordScreen } from '../screens/auth/forgotPassword/ForgotPasswordScreen';
 import { OtpVerificationScreen } from '../screens/auth/otpVerification/OtpVerificationScreen';
 import { ResetPasswordScreen } from '../screens/auth/resetPassword/ResetPasswordScreen';
+import { MainTabNavigator } from './MainTabNavigator';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
+
+// Internal component to handle navigation after authentication
+const AuthNavigationHandler: React.FC<{ isAuthenticated: boolean }> = ({ isAuthenticated }) => {
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      // Navigate to Main when authenticated
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Main' }],
+      });
+    }
+  }, [isAuthenticated, navigation]);
+
+  return null;
+};
 
 export const AppNavigator = () => {
   const [showSplash, setShowSplash] = useState(true);
@@ -66,6 +85,7 @@ export const AppNavigator = () => {
 
   return (
     <NavigationContainer>
+      <AuthNavigationHandler isAuthenticated={isAuthenticated} />
       <Stack.Navigator
         key={navigatorKey}
         screenOptions={{
@@ -88,64 +108,66 @@ export const AppNavigator = () => {
               />
             )}
           </Stack.Screen>
-        ) : !isAuthenticated ? (
+        ) : (
           <>
-            <Stack.Screen name="Login">
-              {({ navigation }) => (
-                <LoginScreen
-                  onLogin={handleLogin}
-                  onSignUp={() => navigation.navigate('SignUp')}
-                  onForgotPassword={() => navigation.navigate('ForgotPassword')}
-                />
-              )}
-            </Stack.Screen>
-            <Stack.Screen name="SignUp">
-              {({ navigation }) => (
-                <SignUpScreen
-                  onSignUp={handleSignUp}
-                  onLogin={() => navigation.navigate('Login')}
-                />
-              )}
-            </Stack.Screen>
-            <Stack.Screen name="ForgotPassword">
-              {({ navigation }) => (
-                <ForgotPasswordScreen
-                  onComplete={() => {
-                    // Navigate to OTP verification screen after email is sent
-                    navigation.navigate('OtpVerification');
-                  }}
-                  onBack={() => navigation.navigate('Login')}
-                />
-              )}
-            </Stack.Screen>
-            <Stack.Screen name="OtpVerification">
-              {({ navigation }) => (
-                <OtpVerificationScreen
-                  onComplete={(code) => {
-                    // Navigate to reset password screen after OTP verification
-                    navigation.navigate('ResetPassword');
-                  }}
-                  onBack={() => navigation.navigate('Login')}
-                />
-              )}
-            </Stack.Screen>
-            <Stack.Screen name="ResetPassword">
-              {({ navigation }) => (
-                <ResetPasswordScreen
-                  onComplete={() => {
-                    // TODO: Show success modal and navigate to login
-                    navigation.navigate('Login');
-                  }}
-                  onBack={() => navigation.navigate('Login')}
-                />
-              )}
+            {!isAuthenticated ? (
+              <>
+                <Stack.Screen name="Login">
+                  {({ navigation }) => (
+                    <LoginScreen
+                      onLogin={handleLogin}
+                      onSignUp={() => navigation.navigate('SignUp')}
+                      onForgotPassword={() => navigation.navigate('ForgotPassword')}
+                    />
+                  )}
+                </Stack.Screen>
+                <Stack.Screen name="SignUp">
+                  {({ navigation }) => (
+                    <SignUpScreen
+                      onSignUp={handleSignUp}
+                      onLogin={() => navigation.navigate('Login')}
+                    />
+                  )}
+                </Stack.Screen>
+                <Stack.Screen name="ForgotPassword">
+                  {({ navigation }) => (
+                    <ForgotPasswordScreen
+                      onComplete={() => {
+                        // Navigate to OTP verification screen after email is sent
+                        navigation.navigate('OtpVerification');
+                      }}
+                      onBack={() => navigation.navigate('Login')}
+                    />
+                  )}
+                </Stack.Screen>
+                <Stack.Screen name="OtpVerification">
+                  {({ navigation }) => (
+                    <OtpVerificationScreen
+                      onComplete={(code) => {
+                        // Navigate to reset password screen after OTP verification
+                        navigation.navigate('ResetPassword');
+                      }}
+                      onBack={() => navigation.navigate('Login')}
+                    />
+                  )}
+                </Stack.Screen>
+                <Stack.Screen name="ResetPassword">
+                  {({ navigation }) => (
+                    <ResetPasswordScreen
+                      onComplete={() => {
+                        // TODO: Show success modal and navigate to login
+                        navigation.navigate('Login');
+                      }}
+                      onBack={() => navigation.navigate('Login')}
+                    />
+                  )}
+                </Stack.Screen>
+              </>
+            ) : null}
+            <Stack.Screen name="Main">
+              {() => <MainTabNavigator />}
             </Stack.Screen>
           </>
-        ) : (
-          // TODO: Add Main navigator when authenticated
-          <Stack.Screen name="Main">
-            {() => null}
-          </Stack.Screen>
         )}
       </Stack.Navigator>
     </NavigationContainer>
