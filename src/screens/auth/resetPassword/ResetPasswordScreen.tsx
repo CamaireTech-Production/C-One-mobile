@@ -13,7 +13,7 @@ import {
   Platform,
   TouchableOpacity,
 } from 'react-native';
-import { Input, Button, AnimatedView, Icon, ScreenBackground } from '../../../components/common';
+import { Input, Button, AnimatedView, Icon, ScreenBackground, SuccessModal, LoadingOverlay } from '../../../components/common';
 import { colors, typography, spacing } from '../../../theme';
 import { VALIDATION } from '../../../utils/constants';
 
@@ -33,6 +33,7 @@ export const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
     confirmPassword?: string;
   }>({});
   const [loading, setLoading] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const clearFieldError = (field: keyof typeof errors) => {
     setErrors((prev) => {
@@ -78,11 +79,16 @@ export const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
     setLoading(true);
     try {
       // TODO: Call API to reset password
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      onComplete();
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      setShowSuccessModal(true);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSuccessModalPrimary = () => {
+    setShowSuccessModal(false);
+    onComplete();
   };
 
   return (
@@ -141,6 +147,17 @@ export const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+      <LoadingOverlay
+        visible={loading}
+        message="Réinitialisation du mot de passe..."
+      />
+      <SuccessModal
+        visible={showSuccessModal}
+        message="Votre mot de passe a été réinitialisé avec succès"
+        primaryButtonLabel="Se connecter"
+        onPrimaryPress={handleSuccessModalPrimary}
+        onClose={handleSuccessModalPrimary}
+      />
     </ScreenBackground>
   );
 };

@@ -14,7 +14,7 @@ import {
   Platform,
   TouchableOpacity,
 } from 'react-native';
-import { Input, Button, AnimatedView, Icon, ScreenBackground } from '../../../components/common';
+import { Input, Button, AnimatedView, Icon, ScreenBackground, LoadingOverlay } from '../../../components/common';
 import { colors, typography, spacing } from '../../../theme';
 import { VALIDATION } from '../../../utils/constants';
 
@@ -65,8 +65,8 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
     setLoading(true);
     try {
       // TODO: Call API to send reset code
-      // Pour l'instant, on redirige directement après validation
-      // await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Simuler un délai pour l'envoi de l'email
+      await new Promise((resolve) => setTimeout(resolve, 1500));
       onComplete();
     } finally {
       setLoading(false);
@@ -119,6 +119,10 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+      <LoadingOverlay
+        visible={loading}
+        message="Envoi du code de vérification..."
+      />
     </ScreenBackground>
   );
 };

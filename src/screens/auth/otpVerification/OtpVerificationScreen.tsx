@@ -13,7 +13,7 @@ import {
   Platform,
   TouchableOpacity,
 } from 'react-native';
-import { Button, AnimatedView, OtpInput, ScreenBackground } from '../../../components/common';
+import { Button, AnimatedView, OtpInput, ScreenBackground, VerificationModal, LoadingOverlay } from '../../../components/common';
 import { colors, typography, spacing } from '../../../theme';
 
 interface OtpVerificationScreenProps {
@@ -30,6 +30,8 @@ export const OtpVerificationScreen: React.FC<OtpVerificationScreenProps> = ({
   const [code, setCode] = useState('');
   const [error, setError] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState(false);
+  const [showVerificationModal, setShowVerificationModal] = useState(false);
+  const [verificationResult, setVerificationResult] = useState<'success' | 'error'>('success');
 
   const handleCodeChange = (value: string) => {
     setCode(value);
@@ -46,14 +48,28 @@ export const OtpVerificationScreen: React.FC<OtpVerificationScreenProps> = ({
     setError(undefined);
     try {
       // TODO: Call API to verify code
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      onComplete(code);
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      
+      // Cas de test : si le code est "2002", afficher le modal d'échec
+      // En production, cela dépendra de la réponse de l'API
+      const isValid = code !== '2002';
+      
+      if (isValid) {
+        setVerificationResult('success');
+        setShowVerificationModal(true);
+      } else {
+        setVerificationResult('error');
+        setError('Code invalide');
+        setShowVerificationModal(true);
+      }
     } catch (err: any) {
+      setVerificationResult('error');
       setError(err.message || 'Code invalide');
+      setShowVerificationModal(true);
     } finally {
       setLoading(false);
     }
-  }, [code, onComplete]);
+  }, [code]);
 
   const handleCodeComplete = useCallback(async (value: string) => {
     // Auto-verify when code is complete
@@ -64,6 +80,13 @@ export const OtpVerificationScreen: React.FC<OtpVerificationScreenProps> = ({
     setCode('');
     setError(undefined);
     // TODO: Call API to resend code
+  };
+
+  const handleVerificationModalClose = () => {
+    setShowVerificationModal(false);
+    if (verificationResult === 'success') {
+      onComplete(code);
+    }
   };
 
   return (
@@ -117,6 +140,17 @@ export const OtpVerificationScreen: React.FC<OtpVerificationScreenProps> = ({
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+      <LoadingOverlay
+        visible={loading}
+        message="Vérification du code..."
+      />
+      <VerificationModal
+        visible={showVerificationModal}
+        variant={verificationResult}
+        onClose={handleVerificationModalClose}
+        onButtonPress={handleVerificationModalClose}
+        buttonLabel={verificationResult === 'success' ? 'vérification terminée' : 'Échec de la vérification'}
+      />
     </ScreenBackground>
   );
 };
