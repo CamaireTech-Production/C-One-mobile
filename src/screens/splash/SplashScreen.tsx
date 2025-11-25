@@ -1,6 +1,6 @@
 /**
  * Splash Screen
- * Initial loading screen with logo animation
+ * Pixel perfect implementation matching Figma design
  */
 
 import React, { useEffect, useState } from 'react';
@@ -10,7 +10,10 @@ import {
   StyleSheet,
   Animated,
   Dimensions,
+  ImageStyle,
 } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Image } from '../../components/media';
 import { colors, typography, spacing } from '../../theme';
 import { images } from '../../config/images';
@@ -24,29 +27,19 @@ const { width, height } = Dimensions.get('window');
 
 export const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
   const [fadeAnim] = useState(new Animated.Value(0));
-  const [scaleAnim] = useState(new Animated.Value(0.8));
   const [logoFadeAnim] = useState(new Animated.Value(0));
 
   useEffect(() => {
     // Sequence: Background fade in → Logo fade in
-    // No automatic redirect - user will manually trigger onFinish when ready
     Animated.sequence([
       // Background image fade in
-      Animated.parallel([
-        Animated.timing(fadeAnim, {
-          toValue: 1,
-          duration: 500,
-          useNativeDriver: true,
-        }),
-        Animated.spring(scaleAnim, {
-          toValue: 1,
-          tension: 50,
-          friction: 7,
-          useNativeDriver: true,
-        }),
-      ]),
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: true,
+      }),
       // Wait a bit
-      Animated.delay(500),
+      Animated.delay(300),
       // Logo fade in
       Animated.timing(logoFadeAnim, {
         toValue: 1,
@@ -54,31 +47,43 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
         useNativeDriver: true,
       }),
     ]).start();
-    // Removed automatic onFinish() call - will be triggered manually
   }, []);
+
+  // Calculate gradient overlay height (30-35% of screen)
+  const gradientHeight = height * 0.45;
 
   return (
     <View style={styles.container}>
-      {/* Background Image */}
+      <StatusBar style="dark" translucent backgroundColor="transparent" />
+      {/* Full Screen Background Image */}
       <Animated.View
         style={[
           styles.imageContainer,
           {
             opacity: fadeAnim,
-            transform: [{ scale: scaleAnim }],
           },
         ]}
       >
         <Image
           source={images.splashBackground}
-          style={styles.image}
+          style={styles.backgroundImage}
           resizeMode="cover"
           showLoader={false}
         />
       </Animated.View>
 
-      {/* Bottom White Section with Logo */}
-      <View style={styles.logoContainer}>
+      <LinearGradient
+        colors={[
+          'rgba(255,255,255,0.06)',
+          'rgba(255,255,255,0.3)',
+          'rgba(255,255,255,0.7)',
+          '#ffffff',
+        ]}
+        locations={[0.2, 0.3, 0.5, 1]}
+        style={[styles.gradientOverlay, { height: gradientHeight }]}
+      />
+
+      <View style={[styles.logoContainer, { height: gradientHeight }]}>
         <Animated.View
           style={[
             styles.logoContent,
@@ -87,16 +92,13 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
             },
           ]}
         >
-          {/* C-One Logo */}
-          <View style={styles.logoWrapper}>
-            <View style={styles.logoC}>
-              <View style={styles.logoCInner} />
-            </View>
-            <View style={styles.logoTextContainer}>
-              <Text style={styles.logoText}>{APP_NAME}</Text>
-            </View>
-          </View>
-          <Text style={styles.tagline}>{APP_TAGLINE}</Text>
+          {/* Logo Icon */}
+          <Image
+            source={images.splashLogo}
+            style={styles.logoIcon}
+            resizeMode="contain"
+            showLoader={false}
+          />
         </Animated.View>
       </View>
     </View>
@@ -109,61 +111,57 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background.primary,
   },
   imageContainer: {
-    height: height * 0.6,
-    width: '100%',
-  },
-  image: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     width: '100%',
     height: '100%',
   },
+  backgroundImage: {
+    width: '100%',
+    height: '100%',
+  },
+  gradientOverlay: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    width: '100%',
+  },
   logoContainer: {
-    flex: 1,
-    backgroundColor: colors.background.primary,
-    justifyContent: 'center',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    width: '100%',
+    justifyContent: 'flex-end',
     alignItems: 'center',
     paddingHorizontal: spacing.lg,
+    paddingBottom: spacing['2xl'],
   },
   logoContent: {
     alignItems: 'center',
-  },
-  logoWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: spacing.md,
-  },
-  logoC: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    borderWidth: 4,
-    borderColor: colors.primary.normal,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: spacing.md,
-    backgroundColor: 'transparent',
-  },
-  logoCInner: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    borderWidth: 3,
-    borderColor: colors.primary.light,
-    backgroundColor: 'transparent',
-  },
-  logoTextContainer: {
     justifyContent: 'center',
   },
+  logoIcon: {
+    width: 200,
+    height: 200,
+  } as ImageStyle,
   logoText: {
     ...typography.styles.h1,
     color: colors.text.primary,
     fontSize: 36,
     fontWeight: '700',
     letterSpacing: -0.5,
+    marginBottom: spacing.xs,
+    textAlign: 'center',
   },
   tagline: {
     ...typography.styles.body,
     color: colors.text.secondary,
     fontSize: 14,
+    textAlign: 'center',
   },
 });
-
