@@ -1,77 +1,82 @@
 # C-One Mobile
 
-Application mobile de voyage tout-en-un développée avec React Native (Expo) et TypeScript.
+Application mobile de voyage tout-en-un développée avec React Native (Expo) et TypeScript. C-One centralise tous vos besoins de voyage dans une seule interface premium : réservations de vols, hôtels, voitures, activités et services locaux.
 
-## 🚀 Phase 1: Setup Initial - COMPLÉTÉE
+## 📱 À propos
 
-### ✅ Réalisations
+C-One vise à créer une application de voyage complète, comparable à une "WeChat du voyage", offrant une expérience utilisateur fluide et moderne pour tous vos besoins de voyage.
 
-- **Projet Expo** initialisé avec TypeScript
-- **Dépendances** installées :
-  - React Navigation (Stack + Bottom Tabs)
-  - React Native Reanimated (animations)
-  - React Native Skeleton Placeholder
-  - Expo Font (fonts custom)
-  - Formik + Yup (validation)
-  - React Native Safe Area Context
+## ✨ Fonctionnalités
 
-- **Structure de dossiers** créée :
-  ```
-  src/
-  ├── components/     # Composants réutilisables
-  ├── screens/        # Écrans de l'application
-  ├── navigation/     # Configuration navigation
-  ├── theme/          # Design System
-  ├── services/       # API & Backend logic
-  ├── store/          # État global
-  ├── hooks/          # Custom hooks
-  ├── utils/          # Helpers & utilities
-  ├── types/          # TypeScript types
-  └── assets/         # Images, fonts, etc.
-  ```
+### 🔐 Authentification
+- **Onboarding** : 3 écrans d'introduction avec animations fluides
+- **Connexion** : Email/mot de passe avec validation
+- **Inscription** : Création de compte avec validation complète
+- **Mot de passe oublié** : Processus en 3 étapes (email → code → réinitialisation)
+- **Connexion sociale** : Support Google et Apple (à venir)
 
-- **TypeScript** configuré avec :
-  - Strict mode activé
-  - Paths aliases (@components, @screens, etc.)
-  - Babel plugin module-resolver
+### 🎨 Design System
+- **Couleurs** : Palette complète basée sur les designs Figma
+- **Typographie** : Urbanist (titres) et Satoshi Variable (corps de texte)
+- **Spacing** : Système basé sur une grille 4px
+- **Shadows** : Élévations pour iOS et Android
+- **Animations** : Transitions fluides et animations fade in/out
 
-## 🎨 Phase 2: Design System - COMPLÉTÉE
+### 🧩 Composants réutilisables
+- **Button** : Variants (Primary, Secondary, Outline, Text) avec états loading/disabled
+- **Input** : Validation, erreurs, états focused
+- **Card** : Container avec élévation optionnelle
+- **Modal** : Variants (Success, Error, Info) avec animations
+- **AppImage** : Gestion d'images avec placeholder et fallback
+- **Skeleton Loaders** : Placeholders pour les états de chargement
 
-### ✅ Réalisations
+## 🚀 Technologies
 
-- **Couleurs** (`src/theme/colors.ts`) :
-  - Palette Primary Blue complète (normal, light, dark, darker)
-  - Palette Grey pour text/borders
-  - Palette Secondary Blue pour backgrounds
-  - Palette Yellow pour accents
-  - Couleurs sémantiques (success, error, warning, info)
-  - Couleurs pour backgrounds, text, borders
+- **React Native** (Expo) - Framework mobile
+- **TypeScript** - Typage statique
+- **React Navigation** - Navigation entre écrans
+- **React Native Reanimated** - Animations performantes
+- **Formik + Yup** - Gestion et validation de formulaires
+- **Expo Font** - Chargement de polices personnalisées
 
-- **Typographie** (`src/theme/typography.ts`) :
-  - Urbanist pour les titres (H1, H2, H3, H4)
-  - Satoshi Variable pour body, forms, buttons
-  - Tailles, poids, line-heights définis
-  - Styles prêts à l'emploi (h1, h2, body, button, etc.)
+## 📋 Prérequis
 
-- **Spacing** (`src/theme/spacing.ts`) :
-  - Système basé sur 4px (xs: 4, sm: 8, md: 12, base: 16, lg: 24, xl: 32, etc.)
+- Node.js (v16 ou supérieur)
+- npm ou yarn
+- Expo CLI (`npm install -g expo-cli`)
+- Un appareil iOS/Android ou un émulateur
 
-- **Shadows** (`src/theme/shadows.ts`) :
-  - Small, Medium, Large, XLarge
-  - Compatible iOS et Android
+## 🛠️ Installation
 
-- **Fonts** (`src/hooks/useFonts.ts`) :
-  - Hook configuré pour charger Urbanist et Satoshi
-  - Fallback sur system fonts en attendant les fichiers
+1. **Cloner le repository**
+   ```bash
+   git clone <repository-url>
+   cd C-One-mobile
+   ```
 
-- **Export centralisé** (`src/theme/index.ts`) :
-  - Tous les éléments du design system exportés depuis un seul point
+2. **Installer les dépendances**
+   ```bash
+   npm install
+   ```
 
-## 📱 Commandes
+3. **Ajouter les polices personnalisées** (optionnel)
+   - Téléchargez les polices Urbanist et Satoshi Variable
+   - Placez-les dans `assets/fonts/` selon les instructions dans `assets/fonts/README.md`
+   - Décommentez le code dans `src/hooks/useFonts.ts`
+
+4. **Démarrer l'application**
+   ```bash
+   npm start
+   ```
+
+## 📱 Commandes disponibles
 
 ```bash
-# Démarrer l'application
+# Démarrer le serveur de développement
 npm start
+
+# Démarrer avec cache vidé
+npm run start:clear
 
 # Lancer sur Android
 npm run android
@@ -83,183 +88,99 @@ npm run ios
 npm run web
 ```
 
-## 🖼️ Phase 3: Système Images Centralisé - COMPLÉTÉE
+## 📁 Structure du projet
 
-### ✅ Réalisations
+```
+C-One-mobile/
+├── src/
+│   ├── components/      # Composants réutilisables
+│   │   ├── common/      # Composants de base (Button, Input, Card, etc.)
+│   │   └── skeleton/    # Composants de chargement
+│   ├── screens/         # Écrans de l'application
+│   │   ├── auth/        # Écrans d'authentification
+│   │   ├── onboarding/  # Écrans d'introduction
+│   │   └── splash/      # Écran de démarrage
+│   ├── navigation/      # Configuration de navigation
+│   ├── theme/           # Design System (couleurs, typographie, spacing)
+│   ├── hooks/           # Custom hooks React
+│   ├── utils/           # Utilitaires et helpers
+│   ├── types/           # Types TypeScript
+│   └── assets/          # Images, polices, etc.
+├── assets/              # Assets statiques
+└── App.tsx             # Point d'entrée de l'application
+```
 
-- **Structure images** (`src/assets/images/`) :
-  - Organisation par catégories (auth, common, onboarding)
-  - Exports centralisés avec types TypeScript
-  - Helper function `getImage()` pour accès dynamique
+## 🎯 Utilisation
 
-- **Composant AppImage** (`src/components/common/AppImage.tsx`) :
-  - Placeholder automatique pendant le chargement
-  - Gestion d'erreur avec image de fallback
-  - Animation fade in/out
-  - Loading indicator optionnel
-  - Support URLs et require() local
-
-- **Usage** :
-  ```typescript
-  import { AppImage } from '@components/common';
-  import { images } from '@assets/images';
-  
-  // Avec image locale
-  <AppImage source={images.auth.splash1} />
-  
-  // Avec URL
-  <AppImage source="https://example.com/image.jpg" />
-  ```
-
-## 🧩 Phase 4: Composants de Base - COMPLÉTÉE
-
-### ✅ Réalisations
-
-- **Button** (`src/components/common/Button.tsx`) :
-  - Variants : Primary, Secondary, Outline, Text
-  - Sizes : Small, Medium, Large
-  - États : Disabled, Loading
-  - Support fullWidth
-  - Animations avec activeOpacity
-
-- **Input** (`src/components/common/Input.tsx`) :
-  - États : Default, Focused, Error
-  - Label et hint text
-  - Validation avec messages d'erreur
-  - Border color change selon l'état
-
-- **Card** (`src/components/common/Card.tsx`) :
-  - Container réutilisable
-  - Shadow/elevation optionnelle
-  - Border radius et padding selon design system
-
-- **Modal** (`src/components/common/Modal.tsx`) :
-  - Variants : Success, Error, Info
-  - Animations fade in/out et scale
-  - Boutons primaires et secondaires
-  - Backdrop cliquable pour fermer
-
-- **Skeleton Loaders** (`src/components/skeleton/`) :
-  - SkeletonCard : Pour cards avec image et texte
-  - SkeletonText : Pour lignes de texte
-  - Personnalisable (width, height, lines)
-
-- **AppImage** (`src/components/common/AppImage.tsx`) :
-  - Placeholder automatique
-  - Gestion d'erreur avec fallback
-  - Animation fade in
-
-## 🔐 Phase 5: Écrans d'Authentification - COMPLÉTÉE
-
-### ✅ Réalisations
-
-- **3 Écrans Onboarding** (`src/screens/onboarding/`) :
-  - OnboardingScreen1 : "La Centralisation"
-  - OnboardingScreen2 : "La Simplicité"
-  - OnboardingScreen3 : "Expertise locale"
-  - Pagination avec indicateurs visuels
-  - Utilisation d'AppImage pour les images
-  - OnboardingNavigator pour gérer la navigation
-
-- **Login Screen** (`src/screens/auth/login/LoginScreen.tsx`) :
-  - Validation avec messages d'erreur
-  - Social login buttons (Google, Apple)
-  - Lien "Mot de passe oublié"
-  - Lien vers Signup
-  - États loading et disabled
-
-- **Signup Screen** (`src/screens/auth/signup/SignUpScreen.tsx`) :
-  - Validation complète (username, email, password, confirm)
-  - Messages d'erreur détaillés
-  - Social login buttons
-  - Lien vers Login
-
-- **Forgot Password Screen** (`src/screens/auth/forgotPassword/ForgotPasswordScreen.tsx`) :
-  - **Étape 1** : Saisie email
-  - **Étape 2** : Vérification code à 4 chiffres (inputs individuels avec auto-focus)
-  - **Étape 3** : Réinitialisation mot de passe
-  - Navigation entre étapes
-  - Bouton "Renvoyer le code"
-
-- **Schémas de Validation Yup** (`src/utils/validation.ts`) :
-  - `loginSchema` : Email + Password
-  - `signupSchema` : Username + Email + Password + Confirm
-  - `forgotPasswordEmailSchema` : Email
-  - `forgotPasswordCodeSchema` : Code 4 chiffres
-  - `resetPasswordSchema` : New password + Confirm
-
-- **Navigation Complète** (`src/navigation/AppNavigator.tsx`) :
-  - Stack Navigator avec transitions fade
-  - Flow : Onboarding → Login/Signup → ForgotPassword
-  - Gestion de l'état d'authentification
-  - Navigation conditionnelle selon l'état
-
-- **App.tsx** mis à jour :
-  - Utilise AppNavigator au lieu de l'écran de démonstration
-  - Chargement des fonts avant affichage
-
-## 🎬 Phase 6: Animations - COMPLÉTÉE
-
-### ✅ Réalisations
-
-- **Hooks d'animation réutilisables** (`src/hooks/`) :
-  - `useFadeAnimation` : Animation fade in/out avec contrôle manuel
-  - `useScaleAnimation` : Animation scale avec support spring
-  - `useSlideAnimation` : Animation slide depuis différentes directions
-
-- **Composants animés** (`src/components/common/`) :
-  - `AnimatedCard` : Card avec animations fade + scale
-  - `AnimatedView` : View générique avec fade in
-  - `AnimatedList` : Liste avec animations progressives pour les items
-
-- **Utilitaires d'animation** (`src/utils/animations.ts`) :
-  - Fonctions helper pour créer des animations (fade, scale, spring)
-  - Support pour stagger, sequence, parallel animations
-
-- **Transitions d'écran** :
-  - Transitions fade entre écrans dans `AppNavigator`
-  - Durée d'animation configurée (300ms)
-
-- **Animations appliquées** :
-  - ✅ SplashScreen : Animations séquentielles (background → logo)
-  - ✅ Onboarding screens : Animations progressives pour titre, description, bouton
-  - ✅ LoginScreen : Animations fade in pour sections (titre, formulaire, social, liens)
-  - ✅ Modal : Animations fade + scale existantes améliorées
-
-### 📖 Usage
+### Importer des composants
 
 ```typescript
-// Utiliser AnimatedView pour fade in
-import { AnimatedView } from '@components/common';
+import { Button, Input, Card } from '@components/common';
+import { colors, typography, spacing } from '@theme';
+```
+
+### Utiliser les animations
+
+```typescript
+import { AnimatedView, AnimatedCard } from '@components/common';
 
 <AnimatedView delay={200}>
   <Text>Contenu animé</Text>
 </AnimatedView>
-
-// Utiliser AnimatedCard pour cards animées
-import { AnimatedCard } from '@components/common';
-
-<AnimatedCard delay={100} animationType="both">
-  <Text>Card avec fade + scale</Text>
-</AnimatedCard>
-
-// Utiliser les hooks directement
-import { useFadeAnimation } from '@hooks';
-
-const { fadeAnim, fadeIn, fadeOut } = useFadeAnimation({
-  duration: 300,
-  delay: 100,
-});
 ```
 
-## 🎯 Prochaines étapes
+### Utiliser les images
 
-- **Phase 7**: Écrans principaux (Home, Search, Bookings, Profile)
-- **Phase 8**: Intégration API et services backend
+```typescript
+import { AppImage } from '@components/common';
+import { images } from '@assets/images';
 
-## 📝 Notes
+<AppImage source={images.auth.splash1} />
+```
 
-- Utilisation d'Expo pour le développement et le testing
-- Fonts custom : Urbanist (titles) + Satoshi Variable (body/forms)
-- Design System basé sur les designs Figma
+## 🔧 Configuration
 
+### Paths Aliases
+
+Le projet utilise des alias pour simplifier les imports :
+
+- `@components` → `src/components`
+- `@screens` → `src/screens`
+- `@navigation` → `src/navigation`
+- `@theme` → `src/theme`
+- `@hooks` → `src/hooks`
+- `@utils` → `src/utils`
+- `@types` → `src/types`
+- `@assets` → `src/assets`
+
+### TypeScript
+
+Le projet utilise TypeScript en mode strict. Les types sont définis dans `src/types/` et exportés depuis `src/types/index.ts`.
+
+## 📝 Notes de développement
+
+- **Polices** : Les polices Urbanist et Satoshi Variable doivent être ajoutées manuellement dans `assets/fonts/`
+- **Images** : Le système d'images est centralisé dans `src/assets/images/index.ts`
+- **Validation** : Les schémas de validation sont définis dans `src/utils/validation.ts` avec Yup
+- **Animations** : Les animations utilisent `react-native-reanimated` et l'API Animated de React Native
+
+## 🚧 Fonctionnalités à venir
+
+- Écrans principaux (Home, Search, Bookings, Profile)
+- Intégration API backend
+- Système de réservation
+- Paiements sécurisés
+- Géolocalisation
+- Notifications push
+
+## 📄 Licence
+
+Ce projet est privé et propriétaire.
+
+## 👥 Équipe
+
+Développé par l'équipe C-One.
+
+---
+
+Pour plus d'informations, contactez l'équipe de développement.
