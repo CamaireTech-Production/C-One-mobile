@@ -5,11 +5,12 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    env:
+      EXPO_TOKEN: ${{ secrets.EAS_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 18
       - run: npm install
-      - run: npx eas login --token ${{ secrets.EAS_TOKEN }}
-      - run: npx eas update --branch preview --message "CI update from prod"
+      - run: npx eas update --branch prod --message "CI update from prod"
