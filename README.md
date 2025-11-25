@@ -132,10 +132,10 @@ import { AnimatedView, AnimatedCard } from '@components/common';
 ### Utiliser les images
 
 ```typescript
-import { AppImage } from '@components/common';
-import { images } from '@assets/images';
+import { Image } from '@components/media';
+import { images } from '@config/images';
 
-<AppImage source={images.auth.splash1} />
+<Image source={images.splashBackground} />
 ```
 
 ## 🔧 Configuration
@@ -145,13 +145,14 @@ import { images } from '@assets/images';
 Le projet utilise des alias pour simplifier les imports :
 
 - `@components` → `src/components`
+- `@media` → `src/components/media`
 - `@screens` → `src/screens`
 - `@navigation` → `src/navigation`
 - `@theme` → `src/theme`
+- `@config` → `src/config`
 - `@hooks` → `src/hooks`
 - `@utils` → `src/utils`
 - `@types` → `src/types`
-- `@assets` → `src/assets`
 
 ### TypeScript
 

@@ -7,6 +7,9 @@
       "@components/*": [
         "src/components/*"
       ],
+      "@media/*": [
+        "src/components/media/*"
+      ],
       "@screens/*": [
         "src/screens/*"
       ],
@@ -15,6 +18,9 @@
       ],
       "@theme/*": [
         "src/theme/*"
+      ],
+      "@config/*": [
+        "src/config/*"
       ],
       "@services/*": [
         "src/services/*"
@@ -30,9 +36,6 @@
       ],
       "@types/*": [
         "src/types/*"
-      ],
-      "@assets/*": [
-        "src/assets/*"
       ]
     }
   },

@@ -1,17 +1,11 @@
 /**
- * AppImage Component
- * Centralized image component with placeholder, cache, and optimizations
- * 
- * Features:
- * - Automatic placeholder while loading
- * - Error handling with fallback image
- * - Fade in animation
- * - Optimized rendering
+ * Image Component
+ * Optimized image component with placeholder, error handling, and animations
  */
 
 import React, { useState } from 'react';
 import {
-  Image,
+  Image as RNImage,
   ImageProps,
   ImageSourcePropType,
   StyleSheet,
@@ -19,21 +13,21 @@ import {
   ActivityIndicator,
   Animated,
 } from 'react-native';
-import { colors, spacing } from '../../theme';
-import { images } from '../../assets/images';
+import { colors } from '../../theme';
+import { images } from '../../config/images';
 
-interface AppImageProps extends Omit<ImageProps, 'source'> {
+interface ImageComponentProps extends Omit<ImageProps, 'source'> {
   source: ImageSourcePropType | string;
-  placeholder?: ImageSourcePropType;
-  fallback?: ImageSourcePropType;
+  placeholder?: ImageSourcePropType | string;
+  fallback?: ImageSourcePropType | string;
   showLoader?: boolean;
   containerStyle?: ImageProps['style'];
 }
 
-export const AppImage: React.FC<AppImageProps> = ({
+export const Image: React.FC<ImageComponentProps> = ({
   source,
-  placeholder = images.common.placeholder,
-  fallback = images.common.placeholder,
+  placeholder = images.placeholder,
+  fallback = images.placeholder,
   showLoader = true,
   containerStyle,
   style,
@@ -50,6 +44,16 @@ export const AppImage: React.FC<AppImageProps> = ({
     typeof source === 'string'
       ? { uri: source }
       : (source as ImageSourcePropType);
+
+  const placeholderSource: ImageSourcePropType =
+    typeof placeholder === 'string'
+      ? { uri: placeholder }
+      : (placeholder as ImageSourcePropType);
+
+  const fallbackSource: ImageSourcePropType =
+    typeof fallback === 'string'
+      ? { uri: fallback }
+      : (fallback as ImageSourcePropType);
 
   const handleLoad = (event: any) => {
     setIsLoading(false);
@@ -71,15 +75,15 @@ export const AppImage: React.FC<AppImageProps> = ({
     onError?.(error);
   };
 
-  const displaySource = hasError ? fallback : imageSource;
+  const displaySource = hasError ? fallbackSource : imageSource;
   const showPlaceholder = isLoading && !hasError;
 
   return (
     <View style={[styles.container, containerStyle]}>
       {/* Placeholder/Background */}
       {showPlaceholder && (
-        <Image
-          source={placeholder}
+        <RNImage
+          source={placeholderSource}
           style={[styles.image, styles.placeholder, style]}
           resizeMode="cover"
         />

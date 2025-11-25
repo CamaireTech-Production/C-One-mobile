@@ -13,7 +13,7 @@ export { Card } from './Card';
 export { Modal } from './Modal';
 export type { ModalVariant } from './Modal';
 
-export { AppImage } from './AppImage';
+// Image component moved to @components/media
 export { AnimatedCard } from './AnimatedCard';
 export { AnimatedView } from './AnimatedView';
 export { AnimatedList } from './AnimatedList';

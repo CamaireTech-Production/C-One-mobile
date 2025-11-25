@@ -11,9 +11,9 @@ import {
   Animated,
   Dimensions,
 } from 'react-native';
-import { AppImage } from '../../components/common';
+import { Image } from '../../components/media';
 import { colors, typography, spacing } from '../../theme';
-import { images } from '../../assets/images';
+import { images } from '../../config/images';
 import { APP_NAME, APP_TAGLINE } from '../../utils/constants';
 
 interface SplashScreenProps {
@@ -28,7 +28,8 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
   const [logoFadeAnim] = useState(new Animated.Value(0));
 
   useEffect(() => {
-    // Sequence: Background fade in → Logo fade in → Finish
+    // Sequence: Background fade in → Logo fade in
+    // No automatic redirect - user will manually trigger onFinish when ready
     Animated.sequence([
       // Background image fade in
       Animated.parallel([
@@ -52,11 +53,8 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
         duration: 400,
         useNativeDriver: true,
       }),
-      // Wait before finishing
-      Animated.delay(1000),
-    ]).start(() => {
-      onFinish();
-    });
+    ]).start();
+    // Removed automatic onFinish() call - will be triggered manually
   }, []);
 
   return (
@@ -71,8 +69,8 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
           },
         ]}
       >
-        <AppImage
-          source={images.auth.splash1}
+        <Image
+          source={images.splashBackground}
           style={styles.image}
           resizeMode="cover"
           showLoader={false}

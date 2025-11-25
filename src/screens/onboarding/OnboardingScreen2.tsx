@@ -9,9 +9,10 @@ import {
   StyleSheet,
   Dimensions,
 } from 'react-native';
-import { Button, AppImage, AnimatedView } from '../../components/common';
+import { Button, AnimatedView } from '../../components/common';
+import { Image } from '../../components/media';
 import { colors, typography, spacing } from '../../theme';
-import { images } from '../../assets/images';
+import { images } from '../../config/images';
 
 interface OnboardingScreen2Props {
   onContinue: () => void;
@@ -25,8 +26,8 @@ export const OnboardingScreen2: React.FC<OnboardingScreen2Props> = ({
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
-        <AppImage
-          source={images.onboarding.screen2}
+        <Image
+          source={images.onboardingScreen2}
           style={styles.image}
           resizeMode="cover"
         />
