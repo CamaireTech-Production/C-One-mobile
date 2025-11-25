@@ -94,7 +94,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
           </TouchableOpacity>
 
           <AnimatedView delay={100}>
-            <Text style={styles.title}>Bienvenue de nouveau!</Text>
+            <Text style={styles.title}>Bienvenue de nouveau !</Text>
             <Text style={styles.subtitle}>
               Entrez vos informations pour vous connecter
             </Text>
