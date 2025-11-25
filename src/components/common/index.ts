@@ -26,3 +26,6 @@ export type { IconFamily } from './Icon';
 
 export { ScreenBackground } from './ScreenBackground';
 export type { ScreenBackgroundProps, GradientConfig } from './ScreenBackground';
+
+export { OtpInput } from './OtpInput';
+export type { OtpInputType } from './OtpInput';

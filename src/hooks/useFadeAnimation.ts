@@ -39,7 +39,9 @@ export const useFadeAnimation = (options: UseFadeAnimationOptions = {}) => {
         animation.stop();
       };
     }
-  }, [autoStart, duration, delay, fadeAnim]);
+    // fadeAnim is a ref, so it doesn't need to be in dependencies
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoStart, duration, delay]);
 
   const fadeIn = (callback?: () => void) => {
     Animated.timing(fadeAnim, {

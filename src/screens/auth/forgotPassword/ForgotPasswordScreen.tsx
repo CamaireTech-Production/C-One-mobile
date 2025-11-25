@@ -59,12 +59,14 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
   };
 
   const handleContinue = async () => {
+    // Valider l'email avant de continuer
     if (!validate()) return;
 
     setLoading(true);
     try {
       // TODO: Call API to send reset code
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Pour l'instant, on redirige directement après validation
+      // await new Promise((resolve) => setTimeout(resolve, 1000));
       onComplete();
     } finally {
       setLoading(false);

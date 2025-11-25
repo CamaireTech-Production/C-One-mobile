@@ -12,6 +12,7 @@ import { OnboardingNavigator } from '../screens/onboarding/OnboardingNavigator';
 import { LoginScreen } from '../screens/auth/login/LoginScreen';
 import { SignUpScreen } from '../screens/auth/signup/SignUpScreen';
 import { ForgotPasswordScreen } from '../screens/auth/forgotPassword/ForgotPasswordScreen';
+import { OtpVerificationScreen } from '../screens/auth/otpVerification/OtpVerificationScreen';
 import { ResetPasswordScreen } from '../screens/auth/resetPassword/ResetPasswordScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -110,10 +111,21 @@ export const AppNavigator = () => {
               {({ navigation }) => (
                 <ForgotPasswordScreen
                   onComplete={() => {
-                    // Navigate to reset password screen after email is sent
-                    navigation.navigate('ResetPassword');
+                    // Navigate to OTP verification screen after email is sent
+                    navigation.navigate('OtpVerification');
                   }}
                   onBack={() => navigation.navigate('Login')}
+                />
+              )}
+            </Stack.Screen>
+            <Stack.Screen name="OtpVerification">
+              {({ navigation }) => (
+                <OtpVerificationScreen
+                  onComplete={(code) => {
+                    // Navigate to reset password screen after OTP verification
+                    navigation.navigate('ResetPassword');
+                  }}
+                  onBack={() => navigation.navigate('ForgotPassword')}
                 />
               )}
             </Stack.Screen>
@@ -124,7 +136,7 @@ export const AppNavigator = () => {
                     // TODO: Show success modal and navigate to login
                     navigation.navigate('Login');
                   }}
-                  onBack={() => navigation.navigate('ForgotPassword')}
+                  onBack={() => navigation.navigate('OtpVerification')}
                 />
               )}
             </Stack.Screen>
