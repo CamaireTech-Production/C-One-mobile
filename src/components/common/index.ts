@@ -23,3 +23,6 @@ export type { SocialProvider } from './SocialButton';
 
 export { Icon } from './Icon';
 export type { IconFamily } from './Icon';
+
+export { ScreenBackground } from './ScreenBackground';
+export type { ScreenBackgroundProps, GradientConfig } from './ScreenBackground';

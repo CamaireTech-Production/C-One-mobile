@@ -13,7 +13,7 @@ import {
   Platform,
   TouchableOpacity,
 } from 'react-native';
-import { Input, Button, AnimatedView, SocialButton, Icon } from '../../../components/common';
+import { Input, Button, AnimatedView, SocialButton, Icon, ScreenBackground } from '../../../components/common';
 import { colors, typography, spacing } from '../../../theme';
 import { VALIDATION } from '../../../utils/constants';
 
@@ -83,12 +83,13 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    >
-      <ScrollView keyboardShouldPersistTaps="handled">
-        <View style={styles.content}>
+    <ScreenBackground backgroundColor={colors.background.primary}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
+        <ScrollView keyboardShouldPersistTaps="handled">
+          <View style={styles.content}>
           <TouchableOpacity onPress={onSignUp} style={styles.signUpLink}>
             <Text style={styles.signUpLinkText}>S'inscrire</Text>
           </TouchableOpacity>
@@ -171,16 +172,16 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
               />
             </View>
           </AnimatedView>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </ScreenBackground>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.secondary.light,
   },
   content: {
     padding: spacing.lg,
