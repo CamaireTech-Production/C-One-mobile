@@ -38,20 +38,20 @@ export const Button: React.FC<ButtonProps> = ({
   fullWidth = false,
   style,
 }) => {
-  const buttonStyles: ViewStyle[] = [
+  const buttonStyles: (ViewStyle | undefined)[] = [
     styles.base,
     styles[variant],
     styles[`${size}Size`],
-    fullWidth && styles.fullWidth,
-    (disabled || loading) && styles.disabled,
+    fullWidth ? styles.fullWidth : undefined,
+    (disabled || loading) ? styles.disabled : undefined,
     style,
   ];
 
-  const textStyles: TextStyle[] = [
+  const textStyles: (TextStyle | undefined)[] = [
     styles.textBase,
     styles[`${variant}Text`],
     styles[`${size}Text`],
-    (disabled || loading) && styles.disabledText,
+    (disabled || loading) ? styles.disabledText : undefined,
   ];
 
   return (

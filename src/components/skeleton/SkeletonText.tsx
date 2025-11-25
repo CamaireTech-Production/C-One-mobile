@@ -4,12 +4,12 @@
  */
 
 import React from 'react';
-import { View, StyleSheet, ViewStyle } from 'react-native';
+import { View, StyleSheet, ViewStyle, DimensionValue } from 'react-native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { colors, spacing } from '../../theme';
 
 interface SkeletonTextProps {
-  width?: number | string;
+  width?: DimensionValue;
   height?: number;
   lines?: number;
   style?: ViewStyle;
