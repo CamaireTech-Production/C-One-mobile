@@ -10,10 +10,12 @@ import { colors } from '../../theme';
 
 interface OnboardingNavigatorProps {
   onComplete: () => void;
+  onSignUp?: () => void;
 }
 
 export const OnboardingNavigator: React.FC<OnboardingNavigatorProps> = ({
   onComplete,
+  onSignUp,
 }) => {
   const [currentScreen, setCurrentScreen] = useState(1);
   const fadeAnim = useRef(new Animated.Value(1)).current;
@@ -50,7 +52,9 @@ export const OnboardingNavigator: React.FC<OnboardingNavigatorProps> = ({
   return (
     <View style={styles.container}>
       <Animated.View style={[styles.screenWrapper, { opacity: fadeAnim }]}>
-        {currentScreen === 1 && <OnboardingScreen1 onContinue={handleContinue} />}
+        {currentScreen === 1 && (
+          <OnboardingScreen1 onContinue={handleContinue} onSignUp={onSignUp} />
+        )}
         {currentScreen === 2 && <OnboardingScreen2 onContinue={handleContinue} />}
         {currentScreen === 3 && <OnboardingScreen3 onContinue={handleContinue} />}
       </Animated.View>
