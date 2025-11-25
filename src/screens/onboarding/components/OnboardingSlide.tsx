@@ -7,10 +7,13 @@ import {
   ImageBackground,
   TouchableOpacity,
   ImageSourcePropType,
+  Animated,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Button, AnimatedView } from '../../../components/common';
+import { Button } from '../../../components/common';
 import { colors, spacing, typography } from '../../../theme';
+import { useFadeAnimation } from '../../../hooks/useFadeAnimation';
+import { useSlideAnimation } from '../../../hooks/useSlideAnimation';
 
 interface OnboardingSlideProps {
   title: string;
@@ -63,16 +66,16 @@ export const OnboardingSlide: React.FC<OnboardingSlideProps> = ({
         />
 
         <View style={styles.contentWrapper}>
-          <AnimatedView style={styles.content} delay={200}>
-            <AnimatedView delay={250}>
+          <SlideFadeIn delay={150} style={styles.content}>
+            <SlideFadeIn delay={250}>
               <Text style={styles.title}>{title}</Text>
-            </AnimatedView>
+            </SlideFadeIn>
 
-            <AnimatedView delay={300}>
+            <SlideFadeIn delay={300}>
               <Text style={styles.description}>{description}</Text>
-            </AnimatedView>
+            </SlideFadeIn>
 
-            <AnimatedView delay={350}>
+            <SlideFadeIn delay={350}>
               <View style={styles.pagination}>
                 {segments.map((_, index) => {
                   const isFilled = index === clampedIndex;
@@ -87,9 +90,9 @@ export const OnboardingSlide: React.FC<OnboardingSlideProps> = ({
                   );
                 })}
               </View>
-            </AnimatedView>
+            </SlideFadeIn>
 
-            <AnimatedView delay={450}>
+            <SlideFadeIn delay={450}>
               <View style={styles.ctaSection}>
                 <Button
                   title={primaryLabel}
@@ -109,8 +112,8 @@ export const OnboardingSlide: React.FC<OnboardingSlideProps> = ({
                   </TouchableOpacity>
                 </View>
               </View>
-            </AnimatedView>
-          </AnimatedView>
+            </SlideFadeIn>
+          </SlideFadeIn>
         </View>
       </ImageBackground>
     </View>
@@ -194,4 +197,38 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 });
+
+interface SlideFadeInProps {
+  children: React.ReactNode;
+  delay?: number;
+  style?: any;
+}
+
+const SlideFadeIn: React.FC<SlideFadeInProps> = ({ children, delay = 0, style }) => {
+  const { fadeAnim } = useFadeAnimation({
+    delay,
+    duration: 350,
+  });
+
+  const { translateY } = useSlideAnimation({
+    direction: 'bottom',
+    distance: 24,
+    delay,
+    duration: 400,
+  });
+
+  return (
+    <Animated.View
+      style={[
+        {
+          opacity: fadeAnim,
+          transform: [{ translateY }],
+        },
+        style,
+      ]}
+    >
+      {children}
+    </Animated.View>
+  );
+};
 

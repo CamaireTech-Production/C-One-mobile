@@ -49,9 +49,18 @@ export const OnboardingNavigator: React.FC<OnboardingNavigatorProps> = ({
   };
 
   const handleContinue = () => {
+    // Le bouton "Commencer" redirige toujours vers le login
+    if (!isAnimatingRef.current) {
+      onComplete();
+    }
+  };
+
+  const handleNext = () => {
+    // Navigation par tap droit vers l'écran suivant
     if (currentScreen < 3) {
       runSlideTransition(currentScreen + 1, 'forward');
     } else {
+      // Si on est sur le dernier écran, rediriger vers le login
       if (!isAnimatingRef.current) {
         onComplete();
       }
@@ -76,7 +85,7 @@ export const OnboardingNavigator: React.FC<OnboardingNavigatorProps> = ({
         />
         <Pressable
           style={styles.tapZone}
-          onPress={handleContinue}
+          onPress={handleNext}
           android_disableSound
         />
       </View>
