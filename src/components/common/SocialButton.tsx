@@ -1,17 +1,16 @@
 /**
  * SocialButton Component
- * Social login button with icon/logo
+ * Social login button with icon/logo from Figma
  */
 
 import React from 'react';
 import {
   TouchableOpacity,
-  Text,
   StyleSheet,
   ViewStyle,
-  TextStyle,
 } from 'react-native';
 import { colors, spacing, shadows } from '../../theme';
+import { GoogleIcon, FacebookIcon, AppleIcon } from './social-icons';
 
 export type SocialProvider = 'google' | 'facebook' | 'apple';
 
@@ -30,29 +29,33 @@ export const SocialButton: React.FC<SocialButtonProps> = ({
     switch (provider) {
       case 'google':
         return {
-          label: 'G',
+          Icon: GoogleIcon,
           backgroundColor: colors.background.primary,
-          textColor: colors.text.primary,
           borderColor: colors.border.normal,
+          iconSize: 24,
+          iconColor: undefined,
         };
       case 'facebook':
         return {
-          label: 'f',
+          Icon: FacebookIcon,
           backgroundColor: '#1877F2',
-          textColor: colors.text.inverse,
           borderColor: '#1877F2',
+          iconSize: 24,
+          iconColor: colors.text.inverse,
         };
       case 'apple':
         return {
-          label: '🍎',
+          Icon: AppleIcon,
           backgroundColor: colors.text.primary,
-          textColor: colors.text.inverse,
           borderColor: colors.text.primary,
+          iconSize: 24,
+          iconColor: colors.text.inverse,
         };
     }
   };
 
   const config = getProviderConfig();
+  const { Icon } = config;
 
   return (
     <TouchableOpacity
@@ -67,16 +70,11 @@ export const SocialButton: React.FC<SocialButtonProps> = ({
       onPress={onPress}
       activeOpacity={0.7}
     >
-      <Text
-        style={[
-          styles.text,
-          {
-            color: config.textColor,
-          },
-        ]}
-      >
-        {config.label}
-      </Text>
+      <Icon
+        width={config.iconSize}
+        height={config.iconSize}
+        color={config.iconColor}
+      />
     </TouchableOpacity>
   );
 };
@@ -90,10 +88,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     ...shadows.small,
-  },
-  text: {
-    fontSize: 20,
-    fontWeight: '600',
   },
 });
 

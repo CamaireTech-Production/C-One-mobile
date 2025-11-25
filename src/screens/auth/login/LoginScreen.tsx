@@ -218,11 +218,12 @@ const styles = StyleSheet.create({
     marginBottom: spacing.lg,
   },
   forgotPasswordText: {
-    ...typography.styles.bodySmall,
+    ...typography.styles.bodyBold16,
     color: colors.primary.normal,
+    textDecorationLine: 'underline',
   },
   socialSection: {
-    marginTop: spacing.xl,
+    marginTop: spacing.md,
   },
   separator: {
     flexDirection: 'row',
