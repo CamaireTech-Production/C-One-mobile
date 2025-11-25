@@ -3,7 +3,7 @@
  * Text input with validation states
  */
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   View,
   TextInput,
@@ -14,15 +14,26 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { colors, typography, spacing } from '../../theme';
+import { Icon } from './Icon';
 
 interface InputProps extends TextInputProps {
   label?: string;
   error?: string;
   hint?: string;
   containerStyle?: ViewStyle;
+  // Normal icons
   leftIcon?: React.ReactNode;
+  leftIconStyle?: ViewStyle;
   rightIcon?: React.ReactNode;
+  rightIconStyle?: ViewStyle;
   onRightIconPress?: () => void;
+  // Error icons (shown when error exists)
+  errorLeftIcon?: React.ReactNode;
+  errorLeftIconStyle?: ViewStyle;
+  errorRightIcon?: React.ReactNode;
+  errorRightIconStyle?: ViewStyle;
+  onErrorRightIconPress?: () => void;
+  // Password toggle
   showPasswordToggle?: boolean;
   onTogglePassword?: () => void;
 }
@@ -36,8 +47,15 @@ export const Input: React.FC<InputProps> = ({
   onFocus,
   onBlur,
   leftIcon,
+  leftIconStyle,
   rightIcon,
+  rightIconStyle,
   onRightIconPress,
+  errorLeftIcon,
+  errorLeftIconStyle,
+  errorRightIcon,
+  errorRightIconStyle,
+  onErrorRightIconPress,
   showPasswordToggle,
   onTogglePassword,
   secureTextEntry,
@@ -62,6 +80,17 @@ export const Input: React.FC<InputProps> = ({
   };
 
   const displaySecureTextEntry = secureTextEntry && !showPassword;
+  const shouldShowPasswordToggle = showPasswordToggle && !error;
+  const defaultErrorIcon = useMemo(
+    () => <Icon name="alert-circle-outline" size={20} color={colors.error} />,
+    []
+  );
+
+  // Determine which icons to show based on error state
+  const displayLeftIcon = error ? errorLeftIcon || leftIcon : leftIcon;
+  const displayRightIcon = error ? errorRightIcon || defaultErrorIcon : rightIcon;
+  const displayLeftIconStyle = error ? errorLeftIconStyle || leftIconStyle : leftIconStyle;
+  const displayRightIconStyle = error ? errorRightIconStyle || rightIconStyle : rightIconStyle;
 
   return (
     <View style={[styles.container, containerStyle]}>
@@ -73,12 +102,16 @@ export const Input: React.FC<InputProps> = ({
           error && styles.inputError,
         ]}
       >
-        {leftIcon && <View style={styles.leftIcon}>{leftIcon}</View>}
+        {displayLeftIcon && (
+          <View style={[styles.leftIcon, displayLeftIconStyle]}>
+            {displayLeftIcon}
+          </View>
+        )}
         <TextInput
           style={[
             styles.input,
-            leftIcon && styles.inputWithLeftIcon,
-            (rightIcon || showPasswordToggle) && styles.inputWithRightIcon,
+            displayLeftIcon ? styles.inputWithLeftIcon : undefined,
+            (displayRightIcon || shouldShowPasswordToggle) ? styles.inputWithRightIcon : undefined,
             style,
           ]}
           placeholderTextColor={colors.text.tertiary}
@@ -87,23 +120,27 @@ export const Input: React.FC<InputProps> = ({
           secureTextEntry={displaySecureTextEntry}
           {...textInputProps}
         />
-        {showPasswordToggle && (
+        {shouldShowPasswordToggle && (
           <TouchableOpacity
-            style={styles.rightIcon}
+            style={[styles.rightIcon, displayRightIconStyle]}
             onPress={handleTogglePassword}
             activeOpacity={0.7}
           >
-            <Text style={styles.iconText}>{showPassword ? '👁️' : '👁️‍🗨️'}</Text>
+            <Icon
+              name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+              size={20}
+              color={colors.text.secondary}
+            />
           </TouchableOpacity>
         )}
-        {rightIcon && !showPasswordToggle && (
+        {displayRightIcon && !shouldShowPasswordToggle && (
           <TouchableOpacity
-            style={styles.rightIcon}
-            onPress={onRightIconPress}
+            style={[styles.rightIcon, displayRightIconStyle]}
+            onPress={error ? onErrorRightIconPress || onRightIconPress : onRightIconPress}
             activeOpacity={0.7}
-            disabled={!onRightIconPress}
+            disabled={!onErrorRightIconPress && !onRightIconPress}
           >
-            {rightIcon}
+            {displayRightIcon}
           </TouchableOpacity>
         )}
       </View>
@@ -156,9 +193,6 @@ const styles = StyleSheet.create({
     paddingRight: spacing.base,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  iconText: {
-    fontSize: 20,
   },
   inputFocused: {
     borderColor: colors.primary.normal,

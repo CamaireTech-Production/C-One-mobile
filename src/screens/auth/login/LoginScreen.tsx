@@ -45,7 +45,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
     if (!password) {
       newErrors.password = 'Mot de passe requis';
     } else if (password.length < VALIDATION.passwordMinLength) {
-      newErrors.password = `Minimum ${VALIDATION.passwordMinLength} caractères`;
+      newErrors.password = 'Ceci est un mot de passe incorrect';
     }
 
     setErrors(newErrors);
@@ -91,8 +91,8 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
               keyboardType="email-address"
               autoCapitalize="none"
               autoComplete="email"
-                leftIcon={<Icon name="mail-outline" size={20} color={colors.text.secondary} />}
-                rightIcon={<Icon name="help-circle-outline" size={20} color={colors.text.secondary} />}
+              leftIcon={<Icon name="mail-outline" size={20} color={colors.text.secondary} />}
+              rightIcon={<Icon name="help-circle-outline" size={20} color={colors.text.secondary} />}
             />
 
             <Input
@@ -104,22 +104,9 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
               secureTextEntry
               autoCapitalize="none"
               autoComplete="password"
-                showPasswordToggle
-                leftIcon={<Icon name="eye-outline" size={20} color={colors.text.secondary} />}
-                rightIcon={
-                  errors.password ? (
-                    <View style={styles.errorIconContainer}>
-                      <Icon name="alert-circle" size={12} color={colors.text.inverse} />
-                    </View>
-                  ) : null
-                }
+              showPasswordToggle
+              leftIcon={<Icon name="eye-outline" size={20} color={colors.text.secondary} />}
             />
-
-            {errors.password && (
-              <Text style={styles.errorMessage}>
-                Ceci est un mot de passe incorrect
-              </Text>
-            )}
 
             <View style={styles.forgotPasswordContainer}>
               <TouchableOpacity onPress={onForgotPassword}>
@@ -185,7 +172,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xl,
   },
   signUpLinkText: {
-    ...typography.styles.bodyBold18,
+    ...typography.styles.bodyBold16,
     color: colors.primary.normal,
   },
   title: {
@@ -200,20 +187,6 @@ const styles = StyleSheet.create({
   },
   form: {
     marginBottom: spacing.xl,
-  },
-  errorIconContainer: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: colors.error,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  errorIcon: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: colors.text.inverse,
-    lineHeight: 14,
   },
   errorMessage: {
     ...typography.styles.caption,
