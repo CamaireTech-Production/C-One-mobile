@@ -33,6 +33,25 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const [loading, setLoading] = useState(false);
 
+  const clearFieldError = (field: keyof typeof errors) => {
+    setErrors((prev) => {
+      if (!prev[field]) {
+        return prev;
+      }
+      return { ...prev, [field]: undefined };
+    });
+  };
+
+  const handleEmailChange = (value: string) => {
+    setEmail(value);
+    clearFieldError('email');
+  };
+
+  const handlePasswordChange = (value: string) => {
+    setPassword(value);
+    clearFieldError('password');
+  };
+
   const validate = () => {
     const newErrors: { email?: string; password?: string } = {};
 
@@ -86,7 +105,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
               label="Email"
               placeholder="olivia@untitledui.com"
               value={email}
-              onChangeText={setEmail}
+              onChangeText={handleEmailChange}
               error={errors.email}
               keyboardType="email-address"
               autoCapitalize="none"
@@ -99,7 +118,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
               label="Mot de passe"
               placeholder="Danielle 123"
               value={password}
-              onChangeText={setPassword}
+              onChangeText={handlePasswordChange}
               error={errors.password}
               secureTextEntry
               autoCapitalize="none"
