@@ -6,13 +6,12 @@ import React from 'react';
 import {
   View,
   Text,
-  Image,
   StyleSheet,
   Dimensions,
-  ImageSourcePropType,
 } from 'react-native';
-import { Button } from '../../components/common';
+import { Button, AppImage, AnimatedView } from '../../components/common';
 import { colors, typography, spacing } from '../../theme';
+import { images } from '../../assets/images';
 
 interface OnboardingScreen1Props {
   onContinue: () => void;
@@ -23,37 +22,42 @@ const { width, height } = Dimensions.get('window');
 export const OnboardingScreen1: React.FC<OnboardingScreen1Props> = ({
   onContinue,
 }) => {
-  // TODO: Replace with actual image from assets
-  const imageSource: ImageSourcePropType = require('../../../assets/icon.png');
-
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
-        <Image
-          source={imageSource}
+        <AppImage
+          source={images.onboarding.screen1}
           style={styles.image}
           resizeMode="cover"
         />
       </View>
-      <View style={styles.content}>
-        <Text style={styles.title}>La Centralisation</Text>
-        <Text style={styles.description}>
-          Tous vos besoins de voyage en un seul endroit. Réservez vos vols, hôtels,
-          voitures et activités sans quitter l'application.
-        </Text>
-        <Button
-          title="Continuer"
-          onPress={onContinue}
-          variant="primary"
-          size="large"
-          fullWidth
-        />
-        <View style={styles.pagination}>
-          <View style={[styles.dot, styles.dotActive]} />
-          <View style={styles.dot} />
-          <View style={styles.dot} />
-        </View>
-      </View>
+      <AnimatedView style={styles.content} delay={200}>
+        <AnimatedView delay={300}>
+          <Text style={styles.title}>La Centralisation</Text>
+        </AnimatedView>
+        <AnimatedView delay={400}>
+          <Text style={styles.description}>
+            Tous vos besoins de voyage en un seul endroit. Réservez vos vols, hôtels,
+            voitures et activités sans quitter l'application.
+          </Text>
+        </AnimatedView>
+        <AnimatedView delay={500}>
+          <Button
+            title="Continuer"
+            onPress={onContinue}
+            variant="primary"
+            size="large"
+            fullWidth
+          />
+        </AnimatedView>
+        <AnimatedView delay={600}>
+          <View style={styles.pagination}>
+            <View style={[styles.dot, styles.dotActive]} />
+            <View style={styles.dot} />
+            <View style={styles.dot} />
+          </View>
+        </AnimatedView>
+      </AnimatedView>
     </View>
   );
 };

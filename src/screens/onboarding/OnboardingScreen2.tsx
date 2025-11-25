@@ -6,13 +6,12 @@ import React from 'react';
 import {
   View,
   Text,
-  Image,
   StyleSheet,
   Dimensions,
-  ImageSourcePropType,
 } from 'react-native';
-import { Button } from '../../components/common';
+import { Button, AppImage, AnimatedView } from '../../components/common';
 import { colors, typography, spacing } from '../../theme';
+import { images } from '../../assets/images';
 
 interface OnboardingScreen2Props {
   onContinue: () => void;
@@ -23,36 +22,42 @@ const { width, height } = Dimensions.get('window');
 export const OnboardingScreen2: React.FC<OnboardingScreen2Props> = ({
   onContinue,
 }) => {
-  const imageSource: ImageSourcePropType = require('../../../assets/icon.png');
-
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
-        <Image
-          source={imageSource}
+        <AppImage
+          source={images.onboarding.screen2}
           style={styles.image}
           resizeMode="cover"
         />
       </View>
-      <View style={styles.content}>
-        <Text style={styles.title}>La Simplicité</Text>
-        <Text style={styles.description}>
-          Une interface intuitive et moderne pour une expérience de voyage
-          fluide et agréable. Tout est conçu pour votre confort.
-        </Text>
-        <Button
-          title="Continuer"
-          onPress={onContinue}
-          variant="primary"
-          size="large"
-          fullWidth
-        />
-        <View style={styles.pagination}>
-          <View style={styles.dot} />
-          <View style={[styles.dot, styles.dotActive]} />
-          <View style={styles.dot} />
-        </View>
-      </View>
+      <AnimatedView style={styles.content} delay={200}>
+        <AnimatedView delay={300}>
+          <Text style={styles.title}>La Simplicité</Text>
+        </AnimatedView>
+        <AnimatedView delay={400}>
+          <Text style={styles.description}>
+            Une interface intuitive et moderne pour une expérience de voyage
+            fluide et agréable. Tout est conçu pour votre confort.
+          </Text>
+        </AnimatedView>
+        <AnimatedView delay={500}>
+          <Button
+            title="Continuer"
+            onPress={onContinue}
+            variant="primary"
+            size="large"
+            fullWidth
+          />
+        </AnimatedView>
+        <AnimatedView delay={600}>
+          <View style={styles.pagination}>
+            <View style={styles.dot} />
+            <View style={[styles.dot, styles.dotActive]} />
+            <View style={styles.dot} />
+          </View>
+        </AnimatedView>
+      </AnimatedView>
     </View>
   );
 };

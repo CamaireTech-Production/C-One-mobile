@@ -3,7 +3,7 @@
  * Text input with validation states
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   TextInput,
@@ -27,18 +27,35 @@ export const Input: React.FC<InputProps> = ({
   hint,
   containerStyle,
   style,
+  onFocus,
+  onBlur,
   ...textInputProps
 }) => {
+  const [isFocused, setIsFocused] = useState(false);
+
+  const handleFocus = (e: any) => {
+    setIsFocused(true);
+    onFocus?.(e);
+  };
+
+  const handleBlur = (e: any) => {
+    setIsFocused(false);
+    onBlur?.(e);
+  };
+
   return (
     <View style={[styles.container, containerStyle]}>
       {label && <Text style={styles.label}>{label}</Text>}
       <TextInput
         style={[
           styles.input,
+          isFocused && !error && styles.inputFocused,
           error && styles.inputError,
           style,
         ]}
         placeholderTextColor={colors.text.tertiary}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
         {...textInputProps}
       />
       {error ? (
@@ -70,8 +87,13 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.md,
     minHeight: 48,
   },
+  inputFocused: {
+    borderColor: colors.primary.normal,
+    borderWidth: 2,
+  },
   inputError: {
     borderColor: colors.error,
+    borderWidth: 1,
   },
   errorText: {
     ...typography.styles.caption,

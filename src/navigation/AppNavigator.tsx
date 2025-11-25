@@ -7,15 +7,22 @@ import React, { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
+import { SplashScreen } from '../screens/splash/SplashScreen';
 import { OnboardingNavigator } from '../screens/onboarding/OnboardingNavigator';
 import { LoginScreen } from '../screens/auth/login/LoginScreen';
 import { SignUpScreen } from '../screens/auth/signup/SignUpScreen';
+import { ForgotPasswordScreen } from '../screens/auth/forgotPassword/ForgotPasswordScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export const AppNavigator = () => {
+  const [showSplash, setShowSplash] = useState(true);
   const [hasSeenOnboarding, setHasSeenOnboarding] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const handleSplashFinish = () => {
+    setShowSplash(false);
+  };
 
   const handleOnboardingComplete = () => {
     setHasSeenOnboarding(true);
@@ -42,10 +49,15 @@ export const AppNavigator = () => {
       <Stack.Navigator
         screenOptions={{
           headerShown: false,
-          animation: 'fade', // Fade in/out animation
+          animation: 'fade', // Smooth fade transition
+          animationDuration: 300, // Animation duration
         }}
       >
-        {!hasSeenOnboarding ? (
+        {showSplash ? (
+          <Stack.Screen name="Splash">
+            {() => <SplashScreen onFinish={handleSplashFinish} />}
+          </Stack.Screen>
+        ) : !hasSeenOnboarding ? (
           <Stack.Screen name="Onboarding">
             {() => <OnboardingNavigator onComplete={handleOnboardingComplete} />}
           </Stack.Screen>
@@ -56,9 +68,7 @@ export const AppNavigator = () => {
                 <LoginScreen
                   onLogin={handleLogin}
                   onSignUp={() => navigation.navigate('SignUp')}
-                  onForgotPassword={() => {
-                    // TODO: Navigate to ForgotPassword
-                  }}
+                  onForgotPassword={() => navigation.navigate('ForgotPassword')}
                 />
               )}
             </Stack.Screen>
@@ -67,6 +77,17 @@ export const AppNavigator = () => {
                 <SignUpScreen
                   onSignUp={handleSignUp}
                   onLogin={() => navigation.navigate('Login')}
+                />
+              )}
+            </Stack.Screen>
+            <Stack.Screen name="ForgotPassword">
+              {({ navigation }) => (
+                <ForgotPasswordScreen
+                  onComplete={() => {
+                    // TODO: Show success modal and navigate to login
+                    navigation.navigate('Login');
+                  }}
+                  onBack={() => navigation.navigate('Login')}
                 />
               )}
             </Stack.Screen>
@@ -81,4 +102,3 @@ export const AppNavigator = () => {
     </NavigationContainer>
   );
 };
-

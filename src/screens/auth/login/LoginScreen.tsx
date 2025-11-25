@@ -12,7 +12,7 @@ import {
   Platform,
   TouchableOpacity,
 } from 'react-native';
-import { Input, Button } from '../../../components/common';
+import { Input, Button, AnimatedView } from '../../../components/common';
 import { colors, typography, spacing } from '../../../theme';
 import { VALIDATION } from '../../../utils/constants';
 
@@ -71,11 +71,13 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
       >
-        <View style={styles.content}>
-          <Text style={styles.title}>Bienvenue de nouveau !</Text>
-          <Text style={styles.subtitle}>Connectez-vous à votre compte C-one</Text>
+        <AnimatedView style={styles.content} delay={100}>
+          <AnimatedView delay={200}>
+            <Text style={styles.title}>Bienvenue de nouveau !</Text>
+            <Text style={styles.subtitle}>Connectez-vous à votre compte C-one</Text>
+          </AnimatedView>
 
-          <View style={styles.form}>
+          <AnimatedView style={styles.form} delay={300}>
             <Input
               label="Email"
               placeholder="email@email.com"
@@ -111,9 +113,9 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
               loading={loading}
               disabled={!email || !password}
             />
-          </View>
+          </AnimatedView>
 
-          <View style={styles.socialSection}>
+          <AnimatedView style={styles.socialSection} delay={400}>
             <View style={styles.separator}>
               <View style={styles.separatorLine} />
               <Text style={styles.separatorText}>Ou continuer avec</Text>
@@ -136,15 +138,15 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
                 style={styles.socialButton}
               />
             </View>
-          </View>
+          </AnimatedView>
 
-          <View style={styles.signUpLink}>
+          <AnimatedView style={styles.signUpLink} delay={500}>
             <Text style={styles.signUpText}>Vous n'avez pas de compte ? </Text>
             <TouchableOpacity onPress={onSignUp}>
               <Text style={styles.signUpLinkText}>S'inscrire</Text>
             </TouchableOpacity>
-          </View>
-        </View>
+          </AnimatedView>
+        </AnimatedView>
       </ScrollView>
     </KeyboardAvoidingView>
   );

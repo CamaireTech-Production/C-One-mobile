@@ -1,28 +1,22 @@
 /**
- * Global TypeScript Types
+ * TypeScript Types
+ * Central export for all types
  */
 
-// Auth Types
-export interface User {
-  id: string;
-  email: string;
-  username?: string;
-  firstName?: string;
-  lastName?: string;
-}
+import { NavigatorScreenParams } from '@react-navigation/native';
 
-export interface AuthState {
-  user: User | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-}
-
-// Navigation Types
 export type RootStackParamList = {
+  Splash: undefined;
   Onboarding: undefined;
   Login: undefined;
   SignUp: undefined;
   ForgotPassword: undefined;
-  Main: undefined;
+  Main: NavigatorScreenParams<MainTabParamList> | undefined;
 };
 
+export type MainTabParamList = {
+  Home: undefined;
+  Search: undefined;
+  Bookings: undefined;
+  Profile: undefined;
+};
