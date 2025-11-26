@@ -105,7 +105,7 @@ const PlaceCard: React.FC<PlaceCardProps> = ({
       onPress={onPress}
     >
       <Image
-        source={imageUrl}
+        source={{ uri: imageUrl }}
         style={styles.placeImage}
         resizeMode="cover"
       />

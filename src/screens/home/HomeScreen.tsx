@@ -10,6 +10,7 @@ import {
   StyleSheet,
   ScrollView,
   TextInput,
+  TouchableOpacity,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
@@ -59,7 +60,14 @@ export const HomeScreen: React.FC = () => {
             </Text>
             <Text style={styles.headerUser}>{data?.hero.userName}</Text>
           </View>
-          <TouchableIcon />
+          <View style={styles.headerIcons}>
+            <TouchableOpacity style={styles.iconButton} activeOpacity={0.7}>
+              <Icon name="search" size={20} color={colors.text.primary} />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.iconButtonActive} activeOpacity={0.7}>
+              <Icon name="home" size={20} color={colors.primary.normal} />
+            </TouchableOpacity>
+          </View>
         </View>
 
         <View style={styles.sectionSpacing}>
@@ -171,11 +179,6 @@ export const HomeScreen: React.FC = () => {
   );
 };
 
-const TouchableIcon = () => (
-  <View style={styles.iconButton}>
-    <Icon name="notifications-outline" size={20} color={colors.text.primary} />
-  </View>
-);
 
 interface SectionProps {
   title: string;
@@ -238,6 +241,11 @@ const styles = StyleSheet.create({
     color: colors.text.primary,
     marginTop: spacing.xs,
   },
+  headerIcons: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+    alignItems: 'center',
+  },
   iconButton: {
     width: 44,
     height: 44,
@@ -247,6 +255,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: colors.background.primary,
+  },
+  iconButtonActive: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.primary.light,
   },
   sectionSpacing: {
     marginTop: spacing.xl,

@@ -9,7 +9,7 @@ import {
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { colors, spacing, typography, shadows } from '../../theme';
+import { colors, spacing, typography } from '../../theme';
 
 /**
  * Custom bottom tab bar matching Figma design.
@@ -85,10 +85,12 @@ export const BottomTabBar: React.FC<BottomTabBarProps> = ({
               accessibilityLabel={options.tabBarAccessibilityLabel}
               onPress={onPress}
               onLongPress={onLongPress}
-              style={[styles.tab, isFocused && styles.tabFocused]}
+              style={styles.tab}
               activeOpacity={0.9}
             >
-              <View style={styles.iconContainer}>{icon}</View>
+              <View style={[styles.iconContainer, isFocused && styles.iconContainerActive]}>
+                {icon}
+              </View>
               <Text
                 style={[
                   styles.label,
@@ -108,36 +110,52 @@ export const BottomTabBar: React.FC<BottomTabBarProps> = ({
 const styles = StyleSheet.create({
   wrapper: {
     backgroundColor: 'transparent',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
   container: {
     flexDirection: 'row',
     backgroundColor: colors.background.primary,
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
+    borderTopLeftRadius: 36,
+    borderTopRightRadius: 36,
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
-    paddingHorizontal: spacing.base,
-    paddingVertical: spacing.sm,
-    borderWidth: 1,
-    borderColor: colors.border.light,
-    borderBottomWidth: 0,
-    ...shadows.medium,
+    minHeight: 72,
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.md,
+    paddingBottom: spacing.md,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#4B3425',
+        shadowOpacity: 0.12,
+        shadowRadius: 32,
+        shadowOffset: { width: 0, height: -4 },
+      },
+      android: {
+        elevation: 8,
+      },
+    }),
   },
   tab: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: spacing.xs,
-    borderRadius: 24,
-  },
-  tabFocused: {
-    backgroundColor: colors.primary.light,
   },
   iconContainer: {
-    height: 24,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: spacing.xs / 2,
+  },
+  iconContainerActive: {
+    backgroundColor: colors.primary.light,
   },
   label: {
     ...typography.styles.bodyRegular12,
