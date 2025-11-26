@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { homeData, type HomeData } from '../data/homeData';
+import { homeData, type HomeData } from '../data/data';
 
 interface UseHomeDataOptions {
   delay?: number;

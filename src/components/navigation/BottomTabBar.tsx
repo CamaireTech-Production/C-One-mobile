@@ -104,16 +104,19 @@ export const BottomTabBar: React.FC<BottomTabBarProps> = ({
 const styles = StyleSheet.create({
   wrapper: {
     backgroundColor: 'transparent',
-    paddingHorizontal: spacing.lg,
   },
   container: {
     flexDirection: 'row',
     backgroundColor: colors.background.primary,
-    borderRadius: 32,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
     paddingHorizontal: spacing.base,
     paddingVertical: spacing.sm,
     borderWidth: 1,
     borderColor: colors.border.light,
+    borderBottomWidth: 0,
     ...shadows.medium,
   },
   tab: {
