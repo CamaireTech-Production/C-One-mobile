@@ -27,7 +27,7 @@ export const BottomTabBar: React.FC<BottomTabBarProps> = ({
       style={[
         styles.wrapper,
         {
-          paddingBottom: Math.max(insets.bottom, spacing.sm),
+          paddingBottom: Math.max(insets.bottom, spacing.md),
         },
       ]}
     >
@@ -109,25 +109,20 @@ export const BottomTabBar: React.FC<BottomTabBarProps> = ({
 
 const styles = StyleSheet.create({
   wrapper: {
-    backgroundColor: 'transparent',
+    backgroundColor: colors.background.primary,
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-  },
-  container: {
-    flexDirection: 'row',
-    backgroundColor: colors.background.primary,
     borderTopLeftRadius: 36,
     borderTopRightRadius: 36,
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
-    minHeight: 72,
-    paddingHorizontal: spacing.lg,
+    borderColor: colors.border.light,
+    borderWidth: 1,
+    // paddingHorizontal: spacing.lg,
     paddingTop: spacing.md,
-    paddingBottom: spacing.md,
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    minHeight: 72,
     ...Platform.select({
       ios: {
         shadowColor: '#4B3425',
@@ -139,6 +134,11 @@ const styles = StyleSheet.create({
         elevation: 8,
       },
     }),
+  },
+  container: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   tab: {
     flex: 1,
