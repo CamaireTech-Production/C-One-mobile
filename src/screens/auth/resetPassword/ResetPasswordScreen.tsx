@@ -13,6 +13,8 @@ import {
   Platform,
   TouchableOpacity,
 } from 'react-native';
+import { useTranslation } from 'react-i18next';
+
 import { Input, Button, AnimatedView, Icon, ScreenBackground, SuccessModal, LoadingOverlay } from '../../../components/common';
 import { colors, typography, spacing } from '../../../theme';
 import { VALIDATION } from '../../../utils/constants';
@@ -26,6 +28,7 @@ export const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
   onComplete,
   onBack,
 }) => {
+  const { t } = useTranslation();
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errors, setErrors] = useState<{
@@ -58,15 +61,15 @@ export const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
     const newErrors: typeof errors = {};
 
     if (!newPassword) {
-      newErrors.newPassword = 'Nouveau mot de passe requis';
+      newErrors.newPassword = t('validation.newPassword.required');
     } else if (newPassword.length < VALIDATION.passwordMinLength) {
-      newErrors.newPassword = `Minimum ${VALIDATION.passwordMinLength} caractères`;
+      newErrors.newPassword = t('validation.newPassword.minLength');
     }
 
     if (!confirmPassword) {
-      newErrors.confirmPassword = 'Confirmation requise';
+      newErrors.confirmPassword = t('validation.confirmPassword.required');
     } else if (newPassword !== confirmPassword) {
-      newErrors.confirmPassword = 'Les mots de passe ne correspondent pas';
+      newErrors.confirmPassword = t('validation.confirmPassword.mismatch');
     }
 
     setErrors(newErrors);
@@ -104,17 +107,17 @@ export const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
         <ScrollView keyboardShouldPersistTaps="handled">
           <View style={styles.content}>
             <TouchableOpacity onPress={onBack} style={styles.backLink}>
-              <Text style={styles.backLinkText}>Retourner</Text>
+              <Text style={styles.backLinkText}>{t('common.actions.return')}</Text>
             </TouchableOpacity>
 
             <AnimatedView delay={100}>
-              <Text style={styles.title}>Réinitialiser votre mot de passe</Text>
+              <Text style={styles.title}>{t('auth.resetPassword.title')}</Text>
             </AnimatedView>
 
             <AnimatedView style={styles.form} delay={200}>
               <Input
-                label="Nouveau mot de passe"
-                placeholder="Nouveau mot de passe"
+                label={t('common.labels.newPassword')}
+                placeholder={t('common.placeholders.newPassword')}
                 value={newPassword}
                 onChangeText={handleNewPasswordChange}
                 error={errors.newPassword}
@@ -126,8 +129,8 @@ export const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
               />
 
               <Input
-                label="Confirmer le mot de passe"
-                placeholder="Confirmer le mot de passe"
+                label={t('common.labels.confirmPassword')}
+                placeholder={t('common.placeholders.confirmPassword')}
                 value={confirmPassword}
                 onChangeText={handleConfirmPasswordChange}
                 error={errors.confirmPassword}
@@ -139,7 +142,7 @@ export const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
               />
 
               <Button
-                title="réinitialiser le mot de passe"
+                title={t('auth.resetPassword.button')}
                 onPress={handleResetPassword}
                 variant="primary"
                 size="large"
@@ -153,13 +156,13 @@ export const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
       </KeyboardAvoidingView>
       <LoadingOverlay
         visible={loading}
-        message="Réinitialisation du mot de passe..."
+        message={t('common.messages.loadingResetPassword')}
       />
       <SuccessModal
         visible={showSuccessModal}
-        message="Votre mot de passe a été réinitialisé avec succès"
-        primaryButtonLabel="Se connecter"
-        secondaryButtonLabel="Close"
+        message={t('auth.resetPassword.successMessage')}
+        primaryButtonLabel={t('auth.resetPassword.successPrimary')}
+        secondaryButtonLabel={t('auth.resetPassword.successSecondary')}
         onPrimaryPress={handleSuccessModalPrimary}
         onSecondaryPress={handleSuccessModalClose}
         onClose={handleSuccessModalClose}

@@ -3,6 +3,8 @@
  */
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
+
 import { images } from '../../config/images';
 import { OnboardingSlide } from './components/OnboardingSlide';
 
@@ -15,10 +17,11 @@ export const OnboardingScreen2: React.FC<OnboardingScreen2Props> = ({
   onContinue,
   onSignUp,
 }) => {
+  const { t } = useTranslation();
   return (
     <OnboardingSlide
-      title="la Simplicité"
-      description="Une expérience fluide de la recherche au paiement sécurisé."
+      title={t('onboarding.slide2.title')}
+      description={t('onboarding.slide2.description')}
       image={images.onboardingScreen2}
       step={2}
       totalSteps={3}

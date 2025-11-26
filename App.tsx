@@ -2,6 +2,8 @@ import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+
+import './src/i18n';
 import { useFonts } from './src/hooks/useFonts';
 import { AppNavigator } from './src/navigation/AppNavigator';
 import { colors } from './src/theme';

@@ -5,6 +5,8 @@
 
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { useTranslation } from 'react-i18next';
+
 import { MainTabParamList } from '../types';
 import { HomeScreen } from '../screens/home/HomeScreen';
 import { Icon } from '../components/common';
@@ -13,6 +15,7 @@ import { colors, typography } from '../theme';
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
 export const MainTabNavigator: React.FC = () => {
+  const { t } = useTranslation();
   return (
     <Tab.Navigator
       screenOptions={{
@@ -36,7 +39,7 @@ export const MainTabNavigator: React.FC = () => {
         name="Home"
         component={HomeScreen}
         options={{
-          tabBarLabel: 'Accueil',
+          tabBarLabel: t('navigation.tabs.home'),
           tabBarIcon: ({ color, size }) => (
             <Icon name="home" size={size} color={color} family="ionicons" />
           ),
@@ -46,7 +49,7 @@ export const MainTabNavigator: React.FC = () => {
         name="Search"
         component={HomeScreen} // Placeholder - will be replaced later
         options={{
-          tabBarLabel: 'Recherche',
+          tabBarLabel: t('navigation.tabs.search'),
           tabBarIcon: ({ color, size }) => (
             <Icon name="search" size={size} color={color} family="ionicons" />
           ),
@@ -56,7 +59,7 @@ export const MainTabNavigator: React.FC = () => {
         name="Bookings"
         component={HomeScreen} // Placeholder - will be replaced later
         options={{
-          tabBarLabel: 'Réservations',
+          tabBarLabel: t('navigation.tabs.bookings'),
           tabBarIcon: ({ color, size }) => (
             <Icon name="calendar" size={size} color={color} family="ionicons" />
           ),
@@ -66,7 +69,7 @@ export const MainTabNavigator: React.FC = () => {
         name="Profile"
         component={HomeScreen} // Placeholder - will be replaced later
         options={{
-          tabBarLabel: 'Profil',
+          tabBarLabel: t('navigation.tabs.profile'),
           tabBarIcon: ({ color, size }) => (
             <Icon name="person" size={size} color={color} family="ionicons" />
           ),

@@ -1,0 +1,162 @@
+{
+  "common": {
+    "appName": "C-One",
+    "actions": {
+      "back": "Retour",
+      "return": "Retourner",
+      "continue": "Continuer",
+      "login": "Se connecter",
+      "signup": "S'inscrire",
+      "resendCode": "Renvoyer le code",
+      "resetPassword": "Réinitialiser le mot de passe",
+      "send": "Envoyer",
+      "close": "Fermer",
+      "start": "Commencer"
+    },
+    "labels": {
+      "email": "Email",
+      "password": "Mot de passe",
+      "fullName": "Nom complet",
+      "newPassword": "Nouveau mot de passe",
+      "confirmPassword": "Confirmer le mot de passe"
+    },
+    "placeholders": {
+      "email": "olivia@untitledui.com",
+      "password": "Danielle 123",
+      "fullName": "Danielle McKeny",
+      "newPassword": "Nouveau mot de passe",
+      "confirmPassword": "Confirmer le mot de passe"
+    },
+    "messages": {
+      "loadingSendCode": "Envoi du code de vérification...",
+      "loadingVerifyCode": "Vérification du code...",
+      "loadingResetPassword": "Réinitialisation du mot de passe...",
+      "orLoginWith": "ou connexion avec",
+      "orSignupWith": "ou inscrivez-vous avec",
+      "noAccountPrompt": "Vous n'avez pas de compte ?",
+      "loggedInInfo": "Vous êtes maintenant connecté à C-one"
+    }
+  },
+  "navigation": {
+    "tabs": {
+      "home": "Accueil",
+      "search": "Recherche",
+      "bookings": "Réservations",
+      "profile": "Profil"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Bienvenue de nouveau !",
+      "subtitle": "Entrez vos informations pour vous connecter",
+      "forgotPassword": "mot de passe oublié ?",
+      "signupLink": "S'inscrire",
+      "socialDivider": "ou connexion avec",
+      "button": "Se connecter"
+    },
+    "signup": {
+      "title": "Bienvenue sur C-one !",
+      "subtitle": "Entrez vos informations pour l'inscription",
+      "loginLink": "Connexion",
+      "socialDivider": "ou inscrivez-vous avec",
+      "button": "S'inscrire",
+      "fullNameError": "Nom complet requis (min. 2 caractères)"
+    },
+    "forgotPassword": {
+      "title": "Mot de passe oublié",
+      "subtitle": "Veuillez entrer votre e-mail",
+      "button": "Continuer"
+    },
+    "otp": {
+      "title": "Vérification",
+      "subtitle": "Entrez le code envoyé à votre e-mail",
+      "errorLength": "Le code doit contenir 4 chiffres",
+      "errorInvalid": "Code invalide",
+      "resend": "Renvoyer le code",
+      "button": "Continuer",
+      "modalSuccessButton": "vérification terminée",
+      "modalErrorButton": "Échec de la vérification"
+    },
+    "resetPassword": {
+      "title": "Réinitialiser votre mot de passe",
+      "button": "réinitialiser le mot de passe",
+      "successMessage": "Votre mot de passe a été réinitialisé avec succès",
+      "successPrimary": "Se connecter",
+      "successSecondary": "Fermer"
+    }
+  },
+  "onboarding": {
+    "cta": {
+      "prompt": "Vous n'avez pas de compte ?",
+      "link": "Inscrivez-vous",
+      "primary": "Commencer"
+    },
+    "slide1": {
+      "title": "La centralisation",
+      "description": "Mettez fin au casse-tête de la planification. Vols, hôtels, activités et plus. Tout organisé pour vous."
+    },
+    "slide2": {
+      "title": "La simplicité",
+      "description": "Une expérience fluide de la recherche au paiement sécurisé."
+    },
+    "slide3": {
+      "title": "Expertise locale",
+      "description": "Découvrez des activités et des services locaux uniques, hors des sentiers battus."
+    }
+  },
+  "home": {
+    "title": "Bienvenue !",
+    "subtitle": "Vous êtes maintenant connecté à C-one",
+    "cards": {
+      "main": {
+        "title": "Page d'accueil",
+        "description": "Cette page sera développée avec les fonctionnalités principales de l'application."
+      },
+      "upcoming": {
+        "title": "Fonctionnalités à venir",
+        "description": "• Navigation par onglets\n• Recherche\n• Réservations\n• Profil utilisateur"
+      }
+    }
+  },
+  "modals": {
+    "verification": {
+      "title": "Vérification"
+    }
+  },
+  "validation": {
+    "email": {
+      "required": "Email requis",
+      "invalid": "Email invalide",
+      "format": "Format email invalide"
+    },
+    "username": {
+      "required": "Nom d'utilisateur requis",
+      "min": "Minimum 2 caractères",
+      "max": "Maximum 30 caractères"
+    },
+    "password": {
+      "required": "Mot de passe requis",
+      "minLength": "Ceci est un mot de passe incorrect",
+      "uppercase": "Doit contenir au moins une majuscule",
+      "number": "Doit contenir au moins un chiffre"
+    },
+    "fullName": {
+      "required": "Nom complet requis (min. 2 caractères)"
+    },
+    "otp": {
+      "required": "Code requis",
+      "length": "Le code doit contenir 4 chiffres",
+      "digitsOnly": "Le code doit contenir uniquement des chiffres",
+      "invalid": "Code invalide"
+    },
+    "newPassword": {
+      "required": "Nouveau mot de passe requis",
+      "minLength": "Minimum 8 caractères"
+    },
+    "confirmPassword": {
+      "required": "Confirmation requise",
+      "mismatch": "Les mots de passe ne correspondent pas"
+    }
+  }
+}
+

@@ -14,6 +14,8 @@ import {
   Platform,
   StatusBar,
 } from 'react-native';
+import { useTranslation } from 'react-i18next';
+
 import { Icon } from '../icons/Icon';
 import { colors, typography, spacing, shadows } from '../../../theme';
 
@@ -36,6 +38,7 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
   buttonLabel,
   style,
 }) => {
+  const { t } = useTranslation();
   const isSuccess = variant === 'success';
   const backgroundColor = isSuccess ? colors.success : colors.error;
   const iconBackgroundColor = isSuccess ? colors.successLight : colors.errorLight;
@@ -43,7 +46,9 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
   // task-alt pour succès, error pour erreur
   const iconName = isSuccess ? 'task-alt' : 'error';
   const iconFamily = 'material'; // Toutes les icônes utilisent Material Icons
-  const defaultButtonLabel = isSuccess ? 'verification completed' : 'verification failed';
+  const defaultButtonLabel = isSuccess
+    ? t('auth.otp.modalSuccessButton')
+    : t('auth.otp.modalErrorButton');
 
   const handleButtonPress = () => {
     if (onButtonPress) {
@@ -65,7 +70,7 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
         <View style={[styles.modal, style]}>
           {/* Header avec titre et bouton de fermeture sur la même ligne */}
           <View style={styles.header}>
-            <Text style={styles.title}>Vérification</Text>
+            <Text style={styles.title}>{t('modals.verification.title')}</Text>
             <TouchableOpacity
               style={styles.closeButton}
               onPress={onClose}

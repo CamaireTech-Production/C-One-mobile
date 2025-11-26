@@ -14,6 +14,8 @@ import {
   Platform,
   TouchableOpacity,
 } from 'react-native';
+import { useTranslation } from 'react-i18next';
+
 import { Input, Button, AnimatedView, Icon, ScreenBackground, LoadingOverlay } from '../../../components/common';
 import { colors, typography, spacing } from '../../../theme';
 import { VALIDATION } from '../../../utils/constants';
@@ -27,6 +29,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
   onComplete,
   onBack,
 }) => {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [errors, setErrors] = useState<{ email?: string }>({});
   const [loading, setLoading] = useState(false);
@@ -49,9 +52,9 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
     const newErrors: { email?: string } = {};
 
     if (!email) {
-      newErrors.email = 'Email requis';
+      newErrors.email = t('validation.email.required');
     } else if (!VALIDATION.email.test(email)) {
-      newErrors.email = 'Email invalide';
+      newErrors.email = t('validation.email.invalid');
     }
 
     setErrors(newErrors);
@@ -82,20 +85,20 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
         <ScrollView keyboardShouldPersistTaps="handled">
           <View style={styles.content}>
             <TouchableOpacity onPress={onBack} style={styles.backLink}>
-              <Text style={styles.backLinkText}>Retour</Text>
+              <Text style={styles.backLinkText}>{t('common.actions.back')}</Text>
             </TouchableOpacity>
 
             <AnimatedView delay={100}>
-              <Text style={styles.title}>Mot de passe oublié</Text>
+              <Text style={styles.title}>{t('auth.forgotPassword.title')}</Text>
               <Text style={styles.subtitle}>
-                Veuillez entrer votre e-mail
+                {t('auth.forgotPassword.subtitle')}
               </Text>
             </AnimatedView>
 
             <AnimatedView style={styles.form} delay={200}>
               <Input
-                label="E-mail"
-                placeholder="olivia@untitledui.com"
+                label={t('common.labels.email')}
+                placeholder={t('common.placeholders.email')}
                 value={email}
                 onChangeText={handleEmailChange}
                 error={errors.email}
@@ -107,7 +110,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
               />
 
               <Button
-                title="Continuer"
+                title={t('auth.forgotPassword.button')}
                 onPress={handleContinue}
                 variant="primary"
                 size="large"
@@ -121,7 +124,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
       </KeyboardAvoidingView>
       <LoadingOverlay
         visible={loading}
-        message="Envoi du code de vérification..."
+        message={t('common.messages.loadingSendCode')}
       />
     </ScreenBackground>
   );

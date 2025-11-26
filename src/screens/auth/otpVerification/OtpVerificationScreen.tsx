@@ -13,6 +13,8 @@ import {
   Platform,
   TouchableOpacity,
 } from 'react-native';
+import { useTranslation } from 'react-i18next';
+
 import { Button, AnimatedView, OtpInput, ScreenBackground, VerificationModal, LoadingOverlay } from '../../../components/common';
 import { colors, typography, spacing } from '../../../theme';
 
@@ -27,6 +29,7 @@ export const OtpVerificationScreen: React.FC<OtpVerificationScreenProps> = ({
   onBack,
   email,
 }) => {
+  const { t } = useTranslation();
   const [code, setCode] = useState('');
   const [error, setError] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState(false);
@@ -40,7 +43,7 @@ export const OtpVerificationScreen: React.FC<OtpVerificationScreenProps> = ({
 
   const handleContinue = useCallback(async () => {
     if (code.length !== 4) {
-      setError('Le code doit contenir 4 chiffres');
+      setError(t('validation.otp.length'));
       return;
     }
 
@@ -59,17 +62,17 @@ export const OtpVerificationScreen: React.FC<OtpVerificationScreenProps> = ({
         setShowVerificationModal(true);
       } else {
         setVerificationResult('error');
-        setError('Code invalide');
+        setError(t('validation.otp.invalid'));
         setShowVerificationModal(true);
       }
     } catch (err: any) {
       setVerificationResult('error');
-      setError(err.message || 'Code invalide');
+      setError(err.message || t('validation.otp.invalid'));
       setShowVerificationModal(true);
     } finally {
       setLoading(false);
     }
-  }, [code]);
+  }, [code, t]);
 
   const handleCodeComplete = useCallback(async (value: string) => {
     // Auto-verify when code is complete
@@ -98,13 +101,13 @@ export const OtpVerificationScreen: React.FC<OtpVerificationScreenProps> = ({
         <ScrollView keyboardShouldPersistTaps="handled">
           <View style={styles.content}>
             <TouchableOpacity onPress={onBack} style={styles.backLink}>
-              <Text style={styles.backLinkText}>Retourner</Text>
+              <Text style={styles.backLinkText}>{t('common.actions.return')}</Text>
             </TouchableOpacity>
 
             <AnimatedView delay={100}>
-              <Text style={styles.title}>Vérification</Text>
+              <Text style={styles.title}>{t('auth.otp.title')}</Text>
               <Text style={styles.subtitle}>
-                Entrez le code envoyé à votre e-mail
+                {t('auth.otp.subtitle')}
               </Text>
             </AnimatedView>
 
@@ -124,11 +127,11 @@ export const OtpVerificationScreen: React.FC<OtpVerificationScreenProps> = ({
               )}
 
               <TouchableOpacity onPress={handleResendCode} style={styles.resendContainer}>
-                <Text style={styles.resendText}>Renvoyer le code</Text>
+                <Text style={styles.resendText}>{t('auth.otp.resend')}</Text>
               </TouchableOpacity>
 
               <Button
-                title="Continuer"
+                title={t('auth.otp.button')}
                 onPress={handleContinue}
                 variant="primary"
                 size="large"
@@ -142,14 +145,14 @@ export const OtpVerificationScreen: React.FC<OtpVerificationScreenProps> = ({
       </KeyboardAvoidingView>
       <LoadingOverlay
         visible={loading}
-        message="Vérification du code..."
+        message={t('common.messages.loadingVerifyCode')}
       />
       <VerificationModal
         visible={showVerificationModal}
         variant={verificationResult}
         onClose={handleVerificationModalClose}
         onButtonPress={handleVerificationModalClose}
-        buttonLabel={verificationResult === 'success' ? 'vérification terminée' : 'Échec de la vérification'}
+        buttonLabel={verificationResult === 'success' ? t('auth.otp.modalSuccessButton') : t('auth.otp.modalErrorButton')}
       />
     </ScreenBackground>
   );

@@ -10,33 +10,33 @@ import {
   StyleSheet,
   ScrollView,
 } from 'react-native';
+import { useTranslation } from 'react-i18next';
+
 import { ScreenBackground } from '../../components/common';
 import { colors, typography, spacing } from '../../theme';
 
 export const HomeScreen: React.FC = () => {
+  const { t } = useTranslation();
   return (
     <ScreenBackground backgroundColor={colors.background.primary}>
       <ScrollView style={styles.container}>
         <View style={styles.content}>
-          <Text style={styles.title}>Bienvenue !</Text>
+          <Text style={styles.title}>{t('home.title')}</Text>
           <Text style={styles.subtitle}>
-            Vous êtes maintenant connecté à C-one
+            {t('home.subtitle')}
           </Text>
 
           <View style={styles.card}>
-            <Text style={styles.cardTitle}>Page d'accueil</Text>
+            <Text style={styles.cardTitle}>{t('home.cards.main.title')}</Text>
             <Text style={styles.cardDescription}>
-              Cette page sera développée avec les fonctionnalités principales de l'application.
+              {t('home.cards.main.description')}
             </Text>
           </View>
 
           <View style={styles.card}>
-            <Text style={styles.cardTitle}>Fonctionnalités à venir</Text>
+            <Text style={styles.cardTitle}>{t('home.cards.upcoming.title')}</Text>
             <Text style={styles.cardDescription}>
-              • Navigation par onglets{'\n'}
-              • Recherche{'\n'}
-              • Réservations{'\n'}
-              • Profil utilisateur
+              {t('home.cards.upcoming.description')}
             </Text>
           </View>
         </View>
