@@ -35,10 +35,15 @@ export const BottomTabBar: React.FC<BottomTabBarProps> = ({
         {state.routes.map((route, index) => {
           const isFocused = state.index === index;
           const { options } = descriptors[route.key];
-          const label =
+          const labelValue =
             options.tabBarLabel ??
             options.title ??
-            (route.name as string);
+            route.name;
+          
+          // Ensure label is always a string for Text component
+          const label: string = typeof labelValue === 'string' 
+            ? labelValue 
+            : route.name;
 
           const onPress = () => {
             const event = navigation.emit({
@@ -78,7 +83,6 @@ export const BottomTabBar: React.FC<BottomTabBarProps> = ({
               accessibilityRole="button"
               accessibilityState={isFocused ? { selected: true } : {}}
               accessibilityLabel={options.tabBarAccessibilityLabel}
-              testID={options.tabBarTestID}
               onPress={onPress}
               onLongPress={onLongPress}
               style={[styles.tab, isFocused && styles.tabFocused]}
