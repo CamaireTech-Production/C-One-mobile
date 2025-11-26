@@ -11,6 +11,7 @@ import { MainTabParamList } from '../types';
 import { HomeScreen } from '../screens/home/HomeScreen';
 import { Icon } from '../components/common';
 import { colors, typography } from '../theme';
+import { BottomTabBar } from '../components/navigation';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
@@ -22,18 +23,12 @@ export const MainTabNavigator: React.FC = () => {
         headerShown: false,
         tabBarActiveTintColor: colors.primary.normal,
         tabBarInactiveTintColor: colors.text.secondary,
-        tabBarStyle: {
-          borderTopWidth: 1,
-          borderTopColor: colors.border.light,
-          paddingTop: 8,
-          paddingBottom: 8,
-          height: 60,
-        },
         tabBarLabelStyle: {
           ...typography.styles.bodyRegular12,
           marginTop: 4,
         },
       }}
+      tabBar={(props) => <BottomTabBar {...props} />}
     >
       <Tab.Screen
         name="Home"

@@ -4,4 +4,5 @@
 
 export { SkeletonCard } from './SkeletonCard';
 export { SkeletonText } from './SkeletonText';
+export { SkeletonBlock } from './SkeletonBlock';
 

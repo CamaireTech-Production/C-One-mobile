@@ -105,16 +105,60 @@
     }
   },
   "home": {
-    "title": "Bienvenue !",
-    "subtitle": "Vous êtes maintenant connecté à C-one",
-    "cards": {
-      "main": {
-        "title": "Page d'accueil",
-        "description": "Cette page sera développée avec les fonctionnalités principales de l'application."
-      },
-      "upcoming": {
-        "title": "Fonctionnalités à venir",
-        "description": "• Navigation par onglets\n• Recherche\n• Réservations\n• Profil utilisateur"
+    "header": {
+      "greeting": "Bienvenue de nouveau !",
+      "subtitle": "Heureux de vous revoir sur C-one"
+    },
+    "tabs": {
+      "otherCountries": "Autres pays",
+      "myPosition": "Ma position"
+    },
+    "sections": {
+      "countries": "Autres pays",
+      "cities": "Nos villes",
+      "popular": "Places populaires",
+      "bookings": "Réservations récentes"
+    },
+    "search": {
+      "label": "Où voulez-vous vous rendre ?",
+      "placeholder": "Ex: Douala, Yaoundé, Kribi..."
+    },
+    "filters": {
+      "transport": "Transports",
+      "hotels": "Hôtels",
+      "tourism": "Tourisme",
+      "restaurant": "Restaurant"
+    },
+    "countries": {
+      "unitedStates": "États-Unis",
+      "canada": "Canada",
+      "france": "France"
+    },
+    "cities": {
+      "yaounde": "Yaoundé",
+      "douala": "Douala",
+      "dschang": "Dschang"
+    },
+    "places": {
+      "timesSquare": "Times Square - New York",
+      "santiago": "Santiago - Chili",
+      "hiltonYaounde": "Hôtel Hilton - Yaoundé",
+      "city": {
+        "newYork": "États-Unis",
+        "chile": "Chili",
+        "yaounde": "Cameroun"
+      }
+    },
+    "bookings": {
+      "parisDakar": "Vol Paris - Dakar",
+      "tgvParis": "TGV Paris - Dakar",
+      "yaoundeMaroua": "Vol Yaoundé - Maroua",
+      "flight": "Vol",
+      "train": "Train",
+      "status": {
+        "confirmed": "Confirmé",
+        "pending": "En attente",
+        "cancelled": "Annulé"
       }
     }
   },
