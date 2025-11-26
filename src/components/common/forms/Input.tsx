@@ -13,8 +13,8 @@ import {
   ViewStyle,
   TouchableOpacity,
 } from 'react-native';
-import { colors, typography, spacing } from '../../theme';
-import { Icon } from './Icon';
+import { colors, typography, spacing } from '../../../theme';
+import { Icon } from '../icons/Icon';
 
 interface InputProps extends TextInputProps {
   label?: string;

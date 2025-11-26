@@ -5,7 +5,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import { View, StyleSheet, Animated, ViewStyle, Easing } from 'react-native';
-import { colors } from '../../theme';
+import { colors } from '../../../theme';
 
 export type SpinnerSize = 'small' | 'medium' | 'large';
 

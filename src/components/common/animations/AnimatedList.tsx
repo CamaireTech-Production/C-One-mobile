@@ -5,7 +5,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import { Animated, ViewStyle, FlatListProps } from 'react-native';
-import { ANIMATION_DURATION } from '../../utils/constants';
+import { ANIMATION_DURATION } from '../../../utils/constants';
 
 interface AnimatedListProps<T> extends Omit<FlatListProps<T>, 'renderItem'> {
   data: T[];

@@ -6,7 +6,7 @@
 
 import React from 'react';
 import { Ionicons, MaterialIcons, FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
-import { colors } from '../../theme';
+import { colors } from '../../../theme';
 
 export type IconFamily = 'ionicons' | 'material' | 'fontawesome' | 'materialcommunity';
 

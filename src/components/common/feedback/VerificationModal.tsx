@@ -14,8 +14,8 @@ import {
   Platform,
   StatusBar,
 } from 'react-native';
-import { Icon } from './Icon';
-import { colors, typography, spacing, shadows } from '../../theme';
+import { Icon } from '../icons/Icon';
+import { colors, typography, spacing, shadows } from '../../../theme';
 
 export type VerificationVariant = 'success' | 'error';
 

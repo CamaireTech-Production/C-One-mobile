@@ -12,8 +12,8 @@ import {
   TextStyle,
   View,
 } from 'react-native';
-import { colors, typography, spacing, shadows } from '../../theme';
-import { Spinner } from './Spinner';
+import { colors, typography, spacing, shadows } from '../../../theme';
+import { Spinner } from '../feedback/Spinner';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'text';
 export type ButtonSize = 'small' | 'medium' | 'large';

@@ -12,8 +12,8 @@ import {
   Modal,
   ViewStyle,
 } from 'react-native';
-import { Icon } from './Icon';
-import { colors, typography, spacing, shadows } from '../../theme';
+import { Icon } from '../icons/Icon';
+import { colors, typography, spacing, shadows } from '../../../theme';
 
 interface SuccessModalProps {
   visible: boolean;

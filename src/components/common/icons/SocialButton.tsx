@@ -9,7 +9,7 @@ import {
   StyleSheet,
   ViewStyle,
 } from 'react-native';
-import { colors, spacing, shadows } from '../../theme';
+import { colors, spacing, shadows } from '../../../theme';
 import { GoogleIcon, FacebookIcon, AppleIcon } from './social-icons';
 
 export type SocialProvider = 'google' | 'facebook' | 'apple';
