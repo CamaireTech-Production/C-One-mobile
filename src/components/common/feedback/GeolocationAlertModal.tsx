@@ -115,9 +115,11 @@ export const GeolocationAlertModal: React.FC<GeolocationAlertModalProps> = ({
     >
       <View style={styles.overlay}>
         <View style={[styles.modal, style]}>
-          {/* Header avec titre et bouton de fermeture */}
+          {/* Header avec label "Alerte" et bouton de fermeture */}
           <View style={styles.header}>
-            <Text style={styles.title}>{config.title}</Text>
+            <Text style={styles.label}>
+              {t('geolocation.alert.label')}
+            </Text>
             <TouchableOpacity
               style={styles.closeButton}
               onPress={onClose}
@@ -132,24 +134,26 @@ export const GeolocationAlertModal: React.FC<GeolocationAlertModalProps> = ({
             </TouchableOpacity>
           </View>
 
+          {/* Titre */}
+          <Text style={styles.title}>
+            {config.title}
+          </Text>
+
           {/* Séparateur */}
           <View style={styles.separator} />
 
-          {/* Icône d'alerte */}
-          <View style={styles.iconContainer}>
-            <View style={[styles.iconCircle, { backgroundColor: config.iconColor + '20' }]}>
-              <Icon
-                name={config.icon}
-                size={32}
-                color={config.iconColor}
-                family="ionicons"
-              />
-            </View>
-          </View>
-
           {/* Message */}
           <View style={styles.messageContainer}>
-            <Text style={styles.message}>{config.message}</Text>
+            {config.message.includes('•') ? (
+              <Text style={styles.message}>
+                {config.message.split('•').map((line, index) => {
+                  if (index === 0) return line.trim();
+                  return `\n• ${line.trim()}`;
+                }).join('')}
+              </Text>
+            ) : (
+              <Text style={styles.message}>{config.message}</Text>
+            )}
           </View>
 
           {/* Boutons d'action */}
@@ -160,27 +164,11 @@ export const GeolocationAlertModal: React.FC<GeolocationAlertModalProps> = ({
                 onPress={handleOpenSettings}
                 activeOpacity={0.8}
               >
-                <Icon
-                  name="settings-outline"
-                  size={20}
-                  color={colors.text.inverse}
-                  family="ionicons"
-                />
                 <Text style={styles.settingsButtonText}>
                   {t('geolocation.alert.openSettings')}
                 </Text>
               </TouchableOpacity>
             )}
-
-            <TouchableOpacity
-              style={styles.closeButtonAction}
-              onPress={onClose}
-              activeOpacity={0.7}
-            >
-              <Text style={styles.closeButtonText}>
-                {t('common.actions.close')}
-              </Text>
-            </TouchableOpacity>
           </View>
         </View>
       </View>
@@ -209,15 +197,25 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: spacing.md,
+    marginBottom: spacing.sm,
+    paddingHorizontal: spacing.xs,
+  },
+  label: {
+    fontFamily: 'Satoshi-Regular',
+    fontSize: 13,
+    fontWeight: '400' as const,
+    lineHeight: 19.5, // 13 * 1.5
+    color: colors.text.secondary,
   },
   title: {
     ...typography.styles.h3,
     color: colors.text.primary,
-    flex: 1,
+    marginBottom: spacing.md,
+    paddingHorizontal: spacing.xs,
   },
   closeButton: {
     padding: spacing.xs,
+    marginLeft: spacing.sm,
   },
   separator: {
     height: 1,
@@ -225,58 +223,33 @@ const styles = StyleSheet.create({
     marginBottom: spacing.lg,
     opacity: 0.5,
   },
-  iconContainer: {
-    alignItems: 'center',
-    marginBottom: spacing.lg,
-  },
-  iconCircle: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   messageContainer: {
     marginBottom: spacing.xl,
+    paddingHorizontal: spacing.xs,
   },
   message: {
     ...typography.styles.bodyRegular16,
     color: colors.text.primary,
-    textAlign: 'center',
+    textAlign: 'left',
     lineHeight: 24,
   },
   buttonsContainer: {
-    gap: spacing.md,
+    gap: 0,
+    paddingHorizontal: spacing.xs,
   },
   settingsButton: {
     backgroundColor: colors.primary.normal,
     borderRadius: 8,
     paddingVertical: spacing.md,
     paddingHorizontal: spacing.lg,
-    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: 48,
-    gap: spacing.sm,
+    width: '100%',
   },
   settingsButtonText: {
     ...typography.styles.button,
     color: colors.text.inverse,
-  },
-  closeButtonAction: {
-    backgroundColor: 'transparent',
-    borderRadius: 8,
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.lg,
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: 48,
-    borderWidth: 1,
-    borderColor: colors.border.normal,
-  },
-  closeButtonText: {
-    ...typography.styles.button,
-    color: colors.text.primary,
   },
 });
 

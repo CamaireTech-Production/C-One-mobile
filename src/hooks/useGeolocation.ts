@@ -44,6 +44,7 @@ export interface UseGeolocationReturn {
   requestPermission: () => Promise<boolean>;
   getCurrentLocation: () => Promise<LocationData | null>;
   clearError: () => void;
+  recheckPermissions: () => Promise<boolean>;
 }
 
 export const useGeolocation = (
@@ -254,6 +255,36 @@ export const useGeolocation = (
     }
   }, [status]);
 
+  /**
+   * Re-check permissions (useful when app comes back to foreground)
+   */
+  const recheckPermissions = useCallback(async (): Promise<boolean> => {
+    try {
+      // Check if location services are enabled
+      const servicesEnabled = await Location.hasServicesEnabledAsync();
+      if (!servicesEnabled) {
+        return false;
+      }
+
+      // Check current permission status
+      const { status: currentStatus } = await Location.getForegroundPermissionsAsync();
+
+      if (currentStatus === 'granted') {
+        // Permissions are now granted, clear any error state
+        if (status === 'denied' || status === 'error') {
+          setStatus('granted');
+          setError(null);
+        }
+        return true;
+      }
+
+      return false;
+    } catch (err) {
+      console.warn('Failed to recheck permissions:', err);
+      return false;
+    }
+  }, [status]);
+
   return {
     status,
     location,
@@ -261,6 +292,7 @@ export const useGeolocation = (
     requestPermission,
     getCurrentLocation,
     clearError,
+    recheckPermissions,
   };
 };
 

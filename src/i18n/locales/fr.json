@@ -169,15 +169,17 @@
   },
   "geolocation": {
     "confirmation": {
-      "title": "Confirmer votre localisation",
-      "message": "Nous avons détecté que vous vous trouvez à {{city}}. Confirmez-vous cette localisation ?",
+      "label": "Verification",
+      "title": "Confirmer votre géolocalisation",
+      "message": "Confirmer à C-one si votre position se trouve à {{city}}",
       "confirmButton": "Je confirme",
       "cancelButton": "Non !"
     },
     "alert": {
+      "label": "Alerte",
       "permissionDenied": {
-        "title": "Accès à la localisation refusé",
-        "message": "Pour utiliser cette fonctionnalité, veuillez autoriser l'accès à votre localisation dans les paramètres de l'application."
+        "title": "Il semble que nous ne puissions pas acceder à votre localisation",
+        "message": "Allez dans les Paramètres puis\n• vérifier si votre location est activé\n• vérifier que votre vpn est désactivé"
       },
       "locationDisabled": {
         "title": "Services de localisation désactivés",

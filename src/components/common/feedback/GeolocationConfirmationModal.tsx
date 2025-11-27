@@ -46,10 +46,10 @@ export const GeolocationConfirmationModal: React.FC<GeolocationConfirmationModal
     >
       <View style={styles.overlay}>
         <View style={[styles.modal, style]}>
-          {/* Header avec titre et bouton de fermeture */}
+          {/* Header avec label "Verification" et bouton de fermeture */}
           <View style={styles.header}>
-            <Text style={styles.title}>
-              {t('geolocation.confirmation.title')}
+            <Text style={styles.label}>
+              {t('geolocation.confirmation.label')}
             </Text>
             <TouchableOpacity
               style={styles.closeButton}
@@ -64,6 +64,11 @@ export const GeolocationConfirmationModal: React.FC<GeolocationConfirmationModal
               />
             </TouchableOpacity>
           </View>
+
+          {/* Titre */}
+          <Text style={styles.title}>
+            {t('geolocation.confirmation.title')}
+          </Text>
 
           {/* Séparateur */}
           <View style={styles.separator} />
@@ -124,15 +129,25 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: spacing.md,
+    marginBottom: spacing.sm,
+    paddingHorizontal: spacing.xs,
+  },
+  label: {
+    fontFamily: 'Satoshi-Regular',
+    fontSize: 13,
+    fontWeight: '400' as const,
+    lineHeight: 19.5, // 13 * 1.5
+    color: colors.text.secondary,
   },
   title: {
     ...typography.styles.h3,
     color: colors.text.primary,
-    flex: 1,
+    marginBottom: spacing.md,
+    paddingHorizontal: spacing.xs,
   },
   closeButton: {
     padding: spacing.xs,
+    marginLeft: spacing.sm,
   },
   separator: {
     height: 1,
@@ -142,15 +157,17 @@ const styles = StyleSheet.create({
   },
   messageContainer: {
     marginBottom: spacing.xl,
+    paddingHorizontal: spacing.xs,
   },
   message: {
     ...typography.styles.bodyRegular16,
     color: colors.text.primary,
-    textAlign: 'center',
+    textAlign: 'left',
     lineHeight: 24,
   },
   buttonsContainer: {
-    gap: spacing.md,
+    gap: spacing.base,
+    paddingHorizontal: spacing.xs,
   },
   confirmButton: {
     backgroundColor: colors.primary.normal,
@@ -160,6 +177,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: 48,
+    width: '100%',
   },
   confirmButtonText: {
     ...typography.styles.button,
@@ -173,12 +191,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: 48,
-    borderWidth: 1,
-    borderColor: colors.border.normal,
+    width: '100%',
+    borderWidth: 0,
   },
   cancelButtonText: {
     ...typography.styles.button,
-    color: colors.text.primary,
+    color: colors.primary.normal,
   },
 });
 

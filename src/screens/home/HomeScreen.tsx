@@ -12,6 +12,8 @@ import {
   TouchableOpacity,
   Animated,
   Dimensions,
+  AppState,
+  AppStateStatus,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
@@ -35,7 +37,7 @@ import { images } from '../../config';
 import { SkeletonBlock } from '../../components/skeleton';
 import { HomeCity } from '../../data/data';
 
-type HomeScreenNavigationProp = NativeStackNavigationProp<HomeStackParamList, 'HomeMain'>;
+type HomeScreenNavigationProp = NativeStackNavigationProp<HomeStackParamList, 'Home'>;
 
 export const HomeScreen: React.FC = () => {
   const { t } = useTranslation();
@@ -51,6 +53,7 @@ export const HomeScreen: React.FC = () => {
     error: geolocationError,
     getCurrentLocation,
     clearError: clearGeolocationError,
+    recheckPermissions,
   } = useGeolocation({ useCache: true });
 
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
@@ -58,6 +61,7 @@ export const HomeScreen: React.FC = () => {
   const [alertType, setAlertType] = useState<GeolocationAlertType>('unknown');
   const [filteredCities, setFilteredCities] = useState<HomeCity[]>([]);
   const [hasRequestedLocation, setHasRequestedLocation] = useState(false);
+  const [hasShownConfirmationForCurrentLocation, setHasShownConfirmationForCurrentLocation] = useState(false);
 
   const handleCountryPress = (countryId: string, countryName: string, countryImageUrl?: string) => {
     navigation.navigate('Detail', {
@@ -71,35 +75,53 @@ export const HomeScreen: React.FC = () => {
   const handleTabChange = (tab: string) => {
     setCountryTab(tab);
     
-    // When switching to "position" tab, request location if not already done
-    if (tab === 'position' && !hasRequestedLocation) {
-      handleRequestLocation();
+    // When switching to "position" tab
+    if (tab === 'position') {
+      // If we already have a location (from cache), show confirmation modal
+      if (geolocationLocation?.city && !hasShownConfirmationForCurrentLocation) {
+        filterCitiesByCountry(geolocationLocation.countryCode);
+        setShowConfirmationModal(true);
+        setHasShownConfirmationForCurrentLocation(true);
+      } else if (!hasRequestedLocation) {
+        // Otherwise, request location
+        handleRequestLocation();
+      }
+    } else {
+      // Reset confirmation flag when switching away from position tab
+      setHasShownConfirmationForCurrentLocation(false);
     }
   };
 
   // Request location when "position" tab is selected
-  const handleRequestLocation = async () => {
+  const handleRequestLocation = useCallback(async () => {
     setHasRequestedLocation(true);
     
     try {
       const location = await getCurrentLocation();
       
-      if (location) {
+      if (location && location.countryCode) {
         // Filter cities based on country code
         filterCitiesByCountry(location.countryCode);
         
-        // Show confirmation modal if we have a city name
-        if (location.city) {
+        // Show confirmation modal if we have a city name and haven't shown it yet
+        if (location.city && !hasShownConfirmationForCurrentLocation) {
           setShowConfirmationModal(true);
+          setHasShownConfirmationForCurrentLocation(true);
         }
       } else {
-        // Handle error cases
-        handleGeolocationError();
+        // No location retrieved - check if it's an error or just no data
+        // Only show alert if there's an actual error status and no cached location
+        if ((geolocationStatus === 'denied' || geolocationStatus === 'error') && !geolocationLocation) {
+          handleGeolocationError();
+        }
       }
     } catch (error) {
-      handleGeolocationError();
+      // Only show error if we don't have a cached location
+      if (!geolocationLocation) {
+        handleGeolocationError();
+      }
     }
-  };
+  }, [getCurrentLocation, filterCitiesByCountry, hasShownConfirmationForCurrentLocation, geolocationStatus, geolocationLocation, handleGeolocationError]);
 
   // Filter cities by country code
   const filterCitiesByCountry = useCallback((countryCode?: string) => {
@@ -144,12 +166,14 @@ export const HomeScreen: React.FC = () => {
   const handleConfirmLocation = () => {
     setShowConfirmationModal(false);
     // Location is already saved in cache, cities are already filtered
+    setHasShownConfirmationForCurrentLocation(true);
   };
 
   const handleCancelLocation = () => {
     setShowConfirmationModal(false);
-    // User rejected, show all cities or handle as needed
+    // User rejected, show all cities
     setFilteredCities(data?.cities || []);
+    setHasShownConfirmationForCurrentLocation(true);
   };
 
   // Handle alert modal close
@@ -170,12 +194,61 @@ export const HomeScreen: React.FC = () => {
     }
   }, [data, geolocationLocation, filterCitiesByCountry]);
 
-  // Handle geolocation status changes
+  // Handle geolocation status changes - only show alert if we don't have a valid location
   useEffect(() => {
-    if ((geolocationStatus === 'error' || geolocationStatus === 'denied') && hasRequestedLocation) {
+    // Only show alert modal if:
+    // 1. We have requested location
+    // 2. Status is error or denied
+    // 3. We don't have a valid cached location
+    if (
+      (geolocationStatus === 'error' || geolocationStatus === 'denied') &&
+      hasRequestedLocation &&
+      !geolocationLocation
+    ) {
       handleGeolocationError();
     }
-  }, [geolocationStatus, geolocationError, hasRequestedLocation, handleGeolocationError]);
+  }, [geolocationStatus, geolocationError, hasRequestedLocation, geolocationLocation, handleGeolocationError]);
+
+  // Reset confirmation flag when location changes (new location detected)
+  useEffect(() => {
+    if (geolocationLocation?.city) {
+      // Reset flag when we get a new location (different from cached one)
+      // This allows showing confirmation modal again for new locations
+      const locationKey = `${geolocationLocation.latitude}-${geolocationLocation.longitude}`;
+      // We'll track this via a ref or state if needed, but for now, 
+      // we'll rely on the hasShownConfirmationForCurrentLocation flag
+    }
+  }, [geolocationLocation]);
+
+  // Re-check permissions when app comes back to foreground
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', async (nextAppState: AppStateStatus) => {
+      // When app comes back to foreground (from background)
+      if (nextAppState === 'active') {
+        // Only recheck if we're on the position tab and have an alert modal showing
+        if (countryTab === 'position' && showAlertModal) {
+          const hasPermission = await recheckPermissions();
+          
+          if (hasPermission) {
+            // Permissions are now granted, hide alert modal and retry location
+            setShowAlertModal(false);
+            clearGeolocationError();
+            setHasRequestedLocation(false);
+            setHasShownConfirmationForCurrentLocation(false);
+            
+            // Small delay to ensure state is updated before retrying
+            setTimeout(() => {
+              handleRequestLocation();
+            }, 100);
+          }
+        }
+      }
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, [countryTab, showAlertModal, recheckPermissions, clearGeolocationError, handleRequestLocation]);
   return (
     <ScreenBackground backgroundColor={colors.background.primary}>
       <ScrollView
