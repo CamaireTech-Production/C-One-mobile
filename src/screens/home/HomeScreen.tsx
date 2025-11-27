@@ -457,7 +457,7 @@ const styles = StyleSheet.create({
   worldMapContainer: {
     marginTop: spacing.sm,
     marginHorizontal: -spacing.lg,
-    height: 280,
+    height: 360,
     borderRadius: 0,
     overflow: 'hidden',
     position: 'relative',

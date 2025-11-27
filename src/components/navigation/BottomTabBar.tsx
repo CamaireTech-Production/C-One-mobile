@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   TouchableOpacity,
   Platform,
@@ -9,7 +8,7 @@ import {
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { colors, spacing, typography } from '../../theme';
+import { colors, spacing } from '../../theme';
 
 /**
  * Custom bottom tab bar matching Figma design.
@@ -35,15 +34,6 @@ export const BottomTabBar: React.FC<BottomTabBarProps> = ({
         {state.routes.map((route, index) => {
           const isFocused = state.index === index;
           const { options } = descriptors[route.key];
-          const labelValue =
-            options.tabBarLabel ??
-            options.title ??
-            route.name;
-          
-          // Ensure label is always a string for Text component
-          const label: string = typeof labelValue === 'string' 
-            ? labelValue 
-            : route.name;
 
           const onPress = () => {
             const event = navigation.emit({
@@ -91,14 +81,6 @@ export const BottomTabBar: React.FC<BottomTabBarProps> = ({
               <View style={[styles.iconContainer, isFocused && styles.iconContainerActive]}>
                 {icon}
               </View>
-              <Text
-                style={[
-                  styles.label,
-                  isFocused ? styles.labelActive : styles.labelInactive,
-                ]}
-              >
-                {label}
-              </Text>
             </TouchableOpacity>
           );
         })}
@@ -152,20 +134,10 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: spacing.xs / 2,
   },
   iconContainerActive: {
     backgroundColor: colors.primary.normal,
     borderRadius: 24,
-  },
-  label: {
-    ...typography.styles.bodyRegular12,
-  },
-  labelActive: {
-    color: colors.primary.normal,
-  },
-  labelInactive: {
-    color: colors.text.secondary,
   },
 });
 
