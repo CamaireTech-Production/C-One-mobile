@@ -187,8 +187,8 @@ const getStatusConfig = (status: BookingStatus) => {
 
 const styles = StyleSheet.create({
   countryCard: {
-    width: 180,
-    height: 160,
+    width: 140,
+    height: 220,
     borderRadius: 20,
     overflow: 'hidden',
   },
@@ -203,6 +203,7 @@ const styles = StyleSheet.create({
   countryTitle: {
     ...typography.styles.bodyBold18,
     color: colors.text.inverse,
+    textAlign: 'center',
   },
   countrySubtitle: {
     ...typography.styles.bodyRegular12,

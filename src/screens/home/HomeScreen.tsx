@@ -3,7 +3,7 @@
  * Displays travel content leveraging the local data provider until backend is ready.
  */
 
-import React, { useMemo, useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -21,32 +21,18 @@ import {
   Icon,
   SearchBar,
 } from '../../components/common';
-import {
-  HomeCard,
-  SkeletonHorizontalCards,
-  SkeletonBookingList,
-} from '../../components/home';
+import { HomeCard, SkeletonHorizontalCards } from '../../components/home';
 import { colors, typography, spacing } from '../../theme';
 import { useHomeData } from '../../hooks';
 import { Image } from '../../components/media';
 import { images } from '../../config';
+import { SkeletonBlock } from '../../components/skeleton';
 
 export const HomeScreen: React.FC = () => {
   const { t } = useTranslation();
   const { data, loading } = useHomeData();
 
   const [countryTab, setCountryTab] = useState('others');
-  const [activeFilter, setActiveFilter] = useState('transport');
-
-  const filterOptions = useMemo(
-    () =>
-      data?.filters.map((filter) => ({
-        key: filter.id,
-        label: t(filter.labelKey),
-      })) || [],
-    [data?.filters, t]
-  );
-
   return (
     <ScreenBackground backgroundColor={colors.background.primary}>
       <ScrollView
@@ -56,13 +42,22 @@ export const HomeScreen: React.FC = () => {
       >
         <View style={styles.header}>
           <View style={styles.headerTextContainer}>
-            <Text style={styles.headerGreeting}>
-              {t('home.header.greeting')}
-            </Text>
-            <View style={styles.headerUserContainer}>
-              <Text style={styles.headerUser}>{data?.hero.userName}</Text>
-              <Text style={styles.headerEmoji}>👋</Text>
-            </View>
+            {loading ? (
+              <View style={styles.headerSkeleton}>
+                <SkeletonBlock width={140} height={16} />
+                <SkeletonBlock width={200} height={28} style={styles.headerSkeletonPrimary} />
+              </View>
+            ) : (
+              <>
+                <Text style={styles.headerGreeting}>
+                  {t('home.header.greeting')}
+                </Text>
+                <View style={styles.headerUserContainer}>
+                  <Text style={styles.headerUser}>{data?.hero.userName}</Text>
+                  <Text style={styles.headerEmoji}>👋</Text>
+                </View>
+              </>
+            )}
           </View>
           <View style={styles.headerIcons}>
             <TouchableOpacity style={styles.iconButtonActive} activeOpacity={0.7}>
@@ -107,121 +102,80 @@ export const HomeScreen: React.FC = () => {
         </View>
 
         {/* World Map Section with Location Animation */}
-        <WorldMapSection />
+        <WorldMapSection loading={loading} />
 
         {/* Search Section */}
         <View style={styles.searchSection}>
-          <SearchBar
-            placeholder={t('home.search.placeholder')}
-            styleConfig={{
-              backgroundColor: colors.background.searhbarbg,
-              borderColor: colors.primary.light,
-              borderWidth: 1,
-              borderRadius: 100,
-              iconColor: colors.grey.normal,
-              iconSize: 20,
-              separatorColor: colors.border.light,
-              placeholderColor: colors.text.tertiary,
-              textColor: colors.text.primary,
-              textStyle: typography.styles.bodyRegular16,
-              dotColor: colors.text.tertiary,
-              dotSize: 4,
-              paddingHorizontal: spacing.base,
-              paddingVertical: spacing.md,
-              gap: spacing.sm,
-              minHeight: 56,
-            }}
-            showSeparator={true}
-            showDot={true}
-            leftIconName="search"
-            leftIconFamily="ionicons"
-          />
-        </View>
-
-        <Section
-          title={t('home.sections.countries')}
-          loading={loading}
-          skeleton={<SkeletonHorizontalCards />}
-        >
-          <HorizontalCards>
-            {data?.countries.map((country) => (
-              <HomeCard
-                key={country.id}
-                type="country"
-                title={t(country.labelKey)}
-                subtitle={countryTab === 'position' ? t('home.tabs.myPosition') : undefined}
-                imageUrl={country.imageUrl}
-              />
-            ))}
-          </HorizontalCards>
-        </Section>
-
-        <Section
-          title={t('home.sections.cities')}
-          loading={loading}
-          skeleton={<SkeletonHorizontalCards />}
-        >
-          <HorizontalCards>
-            {data?.cities.map((city) => (
-              <HomeCard
-                key={city.id}
-                type="city"
-                title={t(city.labelKey)}
-                imageUrl={city.imageUrl}
-              />
-            ))}
-          </HorizontalCards>
-        </Section>
-
-        <Section
-          title={t('home.sections.popular')}
-          loading={loading}
-          skeleton={<SkeletonHorizontalCards itemWidth={240} itemHeight={220} />}
-        >
-          <HorizontalCards>
-            {data?.popularPlaces.map((place) => (
-              <HomeCard
-                key={place.id}
-                type="place"
-                title={t(place.titleKey)}
-                subtitle={t(place.cityKey)}
-                rating={place.rating}
-                imageUrl={place.imageUrl}
-              />
-            ))}
-          </HorizontalCards>
-        </Section>
-
-        <View style={styles.filterCard}>
-          {filterOptions.length > 0 && (
-            <Tabs
-              options={filterOptions}
-              value={activeFilter}
-              onChange={setActiveFilter}
-              variant="pill"
-              fullWidth={false}
+          {loading ? (
+            <SkeletonBlock width="100%" height={56} borderRadius={32} />
+          ) : (
+            <SearchBar
+              placeholder={t('home.search.placeholder')}
+              styleConfig={{
+                backgroundColor: colors.background.searhbarbg,
+                borderColor: colors.primary.light,
+                borderWidth: 1,
+                borderRadius: 100,
+                iconColor: colors.grey.normal,
+                iconSize: 20,
+                separatorColor: colors.border.light,
+                placeholderColor: colors.text.tertiary,
+                textColor: colors.text.primary,
+                textStyle: typography.styles.bodyRegular16,
+                dotColor: colors.text.tertiary,
+                dotSize: 4,
+                paddingHorizontal: spacing.base,
+                paddingVertical: spacing.md,
+                gap: spacing.sm,
+                minHeight: 56,
+              }}
+              showSeparator
+              showDot
+              leftIconName="search"
+              leftIconFamily="ionicons"
             />
           )}
         </View>
 
-        <Section
-          title={t('home.sections.bookings')}
-          loading={loading}
-          skeleton={<SkeletonBookingList />}
-        >
-          <View style={styles.bookingsList}>
-            {data?.recentBookings.map((booking) => (
-              <HomeCard
-                key={booking.id}
-                type="booking"
-                title={t(booking.titleKey)}
-                subtitle={t(booking.subtitleKey)}
-                code={booking.code}
-                status={booking.status}
-              />
-            ))}
-          </View>
-        </Section>
+        {countryTab === 'others' && (
+          <Section
+            title={t('home.sections.countries')}
+            loading={loading}
+            skeleton={<SkeletonHorizontalCards />}
+            showChevron
+          >
+            <HorizontalCards>
+              {data?.countries.map((country) => (
+                <HomeCard
+                  key={country.id}
+                  type="country"
+                  title={t(country.labelKey)}
+                  imageUrl={country.imageUrl}
+                />
+              ))}
+            </HorizontalCards>
+          </Section>
+        )}
+
+        {countryTab === 'position' && (
+          <Section
+            title={t('home.sections.cities')}
+            loading={loading}
+            skeleton={<SkeletonHorizontalCards />}
+            showChevron
+          >
+            <HorizontalCards>
+              {data?.cities.map((city) => (
+                <HomeCard
+                  key={city.id}
+                  type="city"
+                  title={t(city.labelKey)}
+                  imageUrl={city.imageUrl}
+                />
+              ))}
+            </HorizontalCards>
+          </Section>
+        )}
       </ScrollView>
     </ScreenBackground>
   );
@@ -233,6 +187,8 @@ interface SectionProps {
   children: React.ReactNode;
   loading: boolean;
   skeleton: React.ReactNode;
+  showChevron?: boolean;
+  onChevronPress?: () => void;
 }
 
 const Section: React.FC<SectionProps> = ({
@@ -240,9 +196,22 @@ const Section: React.FC<SectionProps> = ({
   children,
   loading,
   skeleton,
+  showChevron = false,
+  onChevronPress,
 }) => (
   <View style={styles.section}>
-    <Text style={styles.sectionTitle}>{title}</Text>
+    <View style={styles.sectionHeader}>
+      <Text style={styles.sectionTitle}>{title}</Text>
+      {showChevron && (
+        <TouchableOpacity
+          style={styles.sectionHeaderAction}
+          activeOpacity={0.7}
+          onPress={onChevronPress}
+        >
+          <Icon name="chevron-forward" size={16} color={colors.text.secondary} />
+        </TouchableOpacity>
+      )}
+    </View>
     {loading ? skeleton : children}
   </View>
 );
@@ -258,7 +227,11 @@ const HorizontalCards: React.FC<{ children: React.ReactNode }> = ({ children }) 
 );
 
 // World Map Section with Location Animation
-const WorldMapSection: React.FC = () => {
+interface WorldMapSectionProps {
+  loading: boolean;
+}
+
+const WorldMapSection: React.FC<WorldMapSectionProps> = ({ loading }) => {
   const { t } = useTranslation();
   const scaleAnim1 = useRef(new Animated.Value(1)).current;
   const scaleAnim2 = useRef(new Animated.Value(1)).current;
@@ -268,6 +241,10 @@ const WorldMapSection: React.FC = () => {
   const opacityAnim3 = useRef(new Animated.Value(0.2)).current;
 
   useEffect(() => {
+    if (loading) {
+      return;
+    }
+
     const createPulseAnimation = (scale: Animated.Value, opacity: Animated.Value, delay: number) => {
       return Animated.loop(
         Animated.parallel([
@@ -314,7 +291,15 @@ const WorldMapSection: React.FC = () => {
       anim2.stop();
       anim3.stop();
     };
-  }, []);
+  }, [loading, opacityAnim1, opacityAnim2, opacityAnim3, scaleAnim1, scaleAnim2, scaleAnim3]);
+
+  if (loading) {
+    return (
+      <View style={styles.worldMapSkeletonWrapper}>
+        <SkeletonBlock width="100%" height={300} borderRadius={0} />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.worldMapContainer}>
@@ -405,6 +390,12 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
     alignItems: 'center',
   },
+  headerSkeleton: {
+    gap: spacing.xs,
+  },
+  headerSkeletonPrimary: {
+    marginTop: spacing.xs,
+  },
   iconButton: {
     width: 44,
     height: 44,
@@ -446,22 +437,36 @@ const styles = StyleSheet.create({
   section: {
     marginTop: spacing.xl,
   },
+  sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: spacing.md,
+  },
   sectionTitle: {
     ...typography.styles.bodyBold18,
     color: colors.text.primary,
-    marginBottom: spacing.md,
+  },
+  sectionHeaderAction: {
+    paddingHorizontal: spacing.xs,
+    paddingVertical: spacing.xs,
   },
   horizontalScroll: {
     gap: spacing.base,
+    paddingRight: spacing.lg,
+  },
+  worldMapSkeletonWrapper: {
+    marginTop: spacing.sm,
+    marginHorizontal: -spacing.lg,
+    height: 300,
   },
   worldMapContainer: {
     marginTop: spacing.sm,
     marginHorizontal: -spacing.lg,
-    height: 360,
+    height: 320,
     borderRadius: 0,
     overflow: 'hidden',
     position: 'relative',
-    // backgroundColor: colors.background.tertiary,
   },
   worldMapImage: {
     width: '100%',
