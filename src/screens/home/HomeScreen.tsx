@@ -78,10 +78,10 @@ export const HomeScreen: React.FC = () => {
                 key: 'others', 
                 label: t('home.tabs.otherCountries'),
                 icon: countryTab === 'others' ? (
-                  <View style={styles.activeTabIconContainer}>
-                    <Icon name="checkmark" size={14} color={colors.text.inverse} family="ionicons" />
-                  </View>
-                ) : undefined,
+                  <Icon name="check-circle-outline" size={18} color={colors.primary.normal} family="materialcommunity" />
+                ) : (
+                  <Icon name="circle-outline" size={18} color={colors.text.secondary} family="materialcommunity" />
+                ),
                 iconPosition: 'left',
                 tabStyle: countryTab === 'others' ? styles.activeTab : styles.inactiveTab,
                 tabTextStyle: countryTab === 'others' ? styles.activeTabText : styles.inactiveTabText,
@@ -90,10 +90,10 @@ export const HomeScreen: React.FC = () => {
                 key: 'position', 
                 label: t('home.tabs.myPosition'),
                 icon: countryTab === 'position' ? (
-                  <View style={styles.activeTabIconContainer}>
-                    <Icon name="checkmark" size={14} color={colors.text.inverse} family="ionicons" />
-                  </View>
-                ) : undefined,
+                  <Icon name="check-circle-outline" size={18} color={colors.primary.normal} family="materialcommunity" />
+                ) : (
+                  <Icon name="circle-outline" size={18} color={colors.text.secondary} family="materialcommunity" />
+                ),
                 iconPosition: 'left',
                 tabStyle: countryTab === 'position' ? styles.activeTab : styles.inactiveTab,
                 tabTextStyle: countryTab === 'position' ? styles.activeTabText : styles.inactiveTabText,
@@ -416,15 +416,6 @@ const styles = StyleSheet.create({
   inactiveTabText: {
     color: colors.text.secondary,
     fontWeight: '400',
-  },
-  activeTabIconContainer: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: colors.primary.normal,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: spacing.xs,
   },
   section: {
     marginTop: spacing.xl,
