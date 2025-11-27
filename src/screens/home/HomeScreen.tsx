@@ -83,8 +83,6 @@ export const HomeScreen: React.FC = () => {
                   <Icon name="circle-outline" size={18} color={colors.text.secondary} family="materialcommunity" />
                 ),
                 iconPosition: 'left',
-                tabStyle: countryTab === 'others' ? styles.activeTab : styles.inactiveTab,
-                tabTextStyle: countryTab === 'others' ? styles.activeTabText : styles.inactiveTabText,
               },
               { 
                 key: 'position', 
@@ -95,14 +93,16 @@ export const HomeScreen: React.FC = () => {
                   <Icon name="circle-outline" size={18} color={colors.text.secondary} family="materialcommunity" />
                 ),
                 iconPosition: 'left',
-                tabStyle: countryTab === 'position' ? styles.activeTab : styles.inactiveTab,
-                tabTextStyle: countryTab === 'position' ? styles.activeTabText : styles.inactiveTabText,
               },
             ]}
             value={countryTab}
             onChange={setCountryTab}
             variant="underline"
             gap={spacing.xs}
+            activeTabStyle={styles.activeTab}
+            inactiveTabStyle={styles.inactiveTab}
+            activeTextStyle={styles.activeTabText}
+            inactiveTextStyle={styles.inactiveTabText}
           />
         </View>
 
@@ -403,6 +403,7 @@ const styles = StyleSheet.create({
   },
   activeTab: {
     borderBottomWidth: 3,
+    borderRadius: 0,
     borderBottomColor: colors.primary.normal,
     paddingBottom: spacing.sm,
   },

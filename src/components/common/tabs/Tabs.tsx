@@ -34,6 +34,11 @@ export interface TabsProps {
   tabTextStyle?: TextStyle; // Style de texte par défaut pour tous les tabs
   iconPosition?: 'left' | 'right'; // Position par défaut de l'icône
   gap?: number; // Espacement entre les tabs
+  // Styles personnalisés pour les états actif/inactif (surchargent les styles de variant par défaut)
+  activeTabStyle?: ViewStyle; // Style pour le tab actif
+  inactiveTabStyle?: ViewStyle; // Style pour le tab inactif
+  activeTextStyle?: TextStyle; // Style pour le texte actif
+  inactiveTextStyle?: TextStyle; // Style pour le texte inactif
 }
 
 /**
@@ -52,6 +57,10 @@ export const Tabs: React.FC<TabsProps> = ({
   tabTextStyle,
   iconPosition: defaultIconPosition = 'left',
   gap,
+  activeTabStyle,
+  inactiveTabStyle,
+  activeTextStyle,
+  inactiveTextStyle,
 }) => {
   const containerStyle = [
     styles.container,
@@ -84,7 +93,9 @@ export const Tabs: React.FC<TabsProps> = ({
               !fullWidth && styles.tabAuto,
               option.disabled && styles.tabDisabled,
               tabStyle, // Style par défaut
-              option.tabStyle, // Style spécifique à l'option (écrase le style par défaut)
+              // Styles personnalisés pour actif/inactif (surchargent les styles de variant)
+              isActive ? activeTabStyle : inactiveTabStyle,
+              option.tabStyle, // Style spécifique à l'option (écrase tout)
             ]}
             onPress={() => !option.disabled && onChange(option.key)}
             disabled={option.disabled}
@@ -103,7 +114,9 @@ export const Tabs: React.FC<TabsProps> = ({
                   textBase,
                   isActive && textActive,
                   tabTextStyle, // Style par défaut
-                  option.tabTextStyle, // Style spécifique à l'option
+                  // Styles personnalisés pour actif/inactif (surchargent les styles de variant)
+                  isActive ? activeTextStyle : inactiveTextStyle,
+                  option.tabTextStyle, // Style spécifique à l'option (écrase tout)
                 ]}
               >
                 {option.label}
