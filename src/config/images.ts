@@ -27,7 +27,7 @@ export const images = {
   defaultAvatar: require('../../assets/icon.png'),
 
   // Home
-  worldMap: require('../../assets/icon.png'), // Placeholder - user will provide the actual world map image
+  worldMap: require('../../assets/images/map.png'),
 
   // Add more images here as needed
   // exampleImage: 'https://example.com/image.jpg',

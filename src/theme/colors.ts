@@ -79,6 +79,7 @@ export const colors = {
     tertiary: '#a3a4a5',
     disabled: '#a3a4a5',
     inverse: '#FFFFFF',
+    map: '#373B51', // Text color for map overlays
   },
 
   // Border Colors

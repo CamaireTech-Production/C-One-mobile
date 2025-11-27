@@ -242,6 +242,7 @@ const HorizontalCards: React.FC<{ children: React.ReactNode }> = ({ children }) 
 
 // World Map Section with Location Animation
 const WorldMapSection: React.FC = () => {
+  const { t } = useTranslation();
   const scaleAnim1 = useRef(new Animated.Value(1)).current;
   const scaleAnim2 = useRef(new Animated.Value(1)).current;
   const scaleAnim3 = useRef(new Animated.Value(1)).current;
@@ -305,6 +306,10 @@ const WorldMapSection: React.FC = () => {
         style={styles.worldMapImage}
         resizeMode="cover"
       />
+      {/* Search label text on map */}
+      <View style={styles.searchLabelOnMap}>
+        <Text style={styles.searchLabelText}>{t('home.search.label')}</Text>
+      </View>
       <View style={styles.locationPinContainer}>
         {/* Pulse circles */}
         <Animated.View
@@ -336,7 +341,7 @@ const WorldMapSection: React.FC = () => {
         />
         {/* Location pin */}
         <View style={styles.locationPin}>
-          <Icon name="location" size={24} color={colors.primary.normal} family="ionicons" />
+          <Icon name="location-outline" size={40} color={colors.primary.normal} family="ionicons" />
         </View>
       </View>
     </View>
@@ -433,12 +438,13 @@ const styles = StyleSheet.create({
     gap: spacing.base,
   },
   worldMapContainer: {
-    marginTop: spacing.xl,
-    height: 200,
-    borderRadius: 16,
+    marginTop: spacing.sm,
+    marginHorizontal: -spacing.lg,
+    height: 280,
+    borderRadius: 0,
     overflow: 'hidden',
     position: 'relative',
-    backgroundColor: colors.background.tertiary,
+    // backgroundColor: colors.background.tertiary,
   },
   worldMapImage: {
     width: '100%',
@@ -469,17 +475,24 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: colors.background.primary,
+    backgroundColor: 'transparent',
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: colors.primary.normal,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 5,
+  },
+  searchLabelOnMap: {
+    position: 'absolute',
+    bottom: spacing.lg,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    paddingHorizontal: spacing.lg,
+  },
+  searchLabelText: {
+    ...typography.styles.bodyBold30,
+    color: colors.text.map,
   },
   searchSection: {
-    marginTop: spacing.lg,
+    marginTop: spacing.sm,
   },
   filterCard: {
     marginTop: spacing.xl,
