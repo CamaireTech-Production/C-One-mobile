@@ -65,7 +65,7 @@ export const BottomTabBar: React.FC<BottomTabBarProps> = ({
           };
 
           const color = isFocused
-            ? colors.primary.normal
+            ? colors.text.inverse
             : colors.text.secondary;
 
           const icon =
@@ -73,7 +73,7 @@ export const BottomTabBar: React.FC<BottomTabBarProps> = ({
               ? options.tabBarIcon({
                   focused: isFocused,
                   color,
-                  size: 24,
+                  size: 20,
                 })
               : null;
 
@@ -155,7 +155,8 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xs / 2,
   },
   iconContainerActive: {
-    backgroundColor: colors.primary.light,
+    backgroundColor: colors.primary.normal,
+    borderRadius: 24,
   },
   label: {
     ...typography.styles.bodyRegular12,

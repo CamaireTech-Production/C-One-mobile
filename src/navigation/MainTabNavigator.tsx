@@ -36,7 +36,7 @@ export const MainTabNavigator: React.FC = () => {
         options={{
           tabBarLabel: t('navigation.tabs.home'),
           tabBarIcon: ({ color, size }) => (
-            <Icon name="home" size={size} color={color} family="ionicons" />
+            <Icon name="house" size={size} color={color} family="fontawesome6" fa6Style="regular" />
           ),
         }}
       />
@@ -46,7 +46,7 @@ export const MainTabNavigator: React.FC = () => {
         options={{
           tabBarLabel: t('navigation.tabs.search'),
           tabBarIcon: ({ color, size }) => (
-            <Icon name="search" size={size} color={color} family="ionicons" />
+            <Icon name="arrow-down-wide-short" size={size} color={color} family="fontawesome6" fa6Style="solid" />
           ),
         }}
       />
@@ -56,7 +56,7 @@ export const MainTabNavigator: React.FC = () => {
         options={{
           tabBarLabel: t('navigation.tabs.bookings'),
           tabBarIcon: ({ color, size }) => (
-            <Icon name="calendar" size={size} color={color} family="ionicons" />
+            <Icon name="bell" size={size} color={color} family="fontawesome6" fa6Style="regular" />
           ),
         }}
       />
@@ -66,7 +66,7 @@ export const MainTabNavigator: React.FC = () => {
         options={{
           tabBarLabel: t('navigation.tabs.profile'),
           tabBarIcon: ({ color, size }) => (
-            <Icon name="person" size={size} color={color} family="ionicons" />
+            <Icon name="user" size={size} color={color} family="fontawesome6" fa6Style="regular" />
           ),
         }}
       />
