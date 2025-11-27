@@ -70,6 +70,7 @@ export const colors = {
     primary: '#FFFFFF',
     secondary: '#f9fafb',
     tertiary: '#f5f7f9',
+    searhbarbg: '#F7F7FA',
   },
 
   // Text Colors

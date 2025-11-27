@@ -121,7 +121,7 @@
     },
     "search": {
       "label": "Où voulez-vous vous rendre ?",
-      "placeholder": "Ex: Douala, Yaoundé, Kribi..."
+      "placeholder": "Entrez votre destination"
     },
     "filters": {
       "transport": "Transports",

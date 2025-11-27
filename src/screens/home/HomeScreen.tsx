@@ -9,7 +9,6 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  TextInput,
   TouchableOpacity,
   Animated,
   Dimensions,
@@ -20,6 +19,7 @@ import {
   ScreenBackground,
   Tabs,
   Icon,
+  SearchBar,
 } from '../../components/common';
 import {
   HomeCard,
@@ -111,14 +111,31 @@ export const HomeScreen: React.FC = () => {
 
         {/* Search Section */}
         <View style={styles.searchSection}>
-          <View style={styles.searchInputWrapper}>
-            <Icon name="search" size={20} color={colors.text.secondary} />
-            <TextInput
-              placeholder={t('home.search.placeholder')}
-              placeholderTextColor={colors.text.tertiary}
-              style={styles.searchInput}
-            />
-          </View>
+          <SearchBar
+            placeholder={t('home.search.placeholder')}
+            styleConfig={{
+              backgroundColor: colors.background.searhbarbg,
+              borderColor: colors.primary.light,
+              borderWidth: 1,
+              borderRadius: 100,
+              iconColor: colors.grey.normal,
+              iconSize: 20,
+              separatorColor: colors.border.light,
+              placeholderColor: colors.text.tertiary,
+              textColor: colors.text.primary,
+              textStyle: typography.styles.bodyRegular16,
+              dotColor: colors.text.tertiary,
+              dotSize: 4,
+              paddingHorizontal: spacing.base,
+              paddingVertical: spacing.md,
+              gap: spacing.sm,
+              minHeight: 56,
+            }}
+            showSeparator={true}
+            showDot={true}
+            leftIconName="search"
+            leftIconFamily="ionicons"
+          />
         </View>
 
         <Section
@@ -500,22 +517,6 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: colors.background.secondary,
     gap: spacing.md,
-  },
-  searchInputWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: colors.border.light,
-    paddingHorizontal: spacing.base,
-    paddingVertical: spacing.sm,
-    backgroundColor: colors.background.primary,
-  },
-  searchInput: {
-    flex: 1,
-    ...typography.styles.bodyRegular16,
-    color: colors.text.primary,
   },
   bookingsList: {
     gap: spacing.sm,

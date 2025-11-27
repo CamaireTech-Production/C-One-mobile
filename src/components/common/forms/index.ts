@@ -6,3 +6,6 @@ export { Input } from './Input';
 export { OtpInput } from './OtpInput';
 export type { OtpInputType } from './OtpInput';
 
+export { SearchBar } from './SearchBar';
+export type { SearchBarProps, SearchBarStyleConfig } from './SearchBar';
+
