@@ -494,9 +494,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   locationPin: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 80,
+    height: 80,
+    borderRadius: 40,
     backgroundColor: 'transparent',
     justifyContent: 'center',
     alignItems: 'center',
