@@ -56,13 +56,13 @@ export const HomeScreen: React.FC = () => {
       >
         <View style={styles.header}>
           <View style={styles.headerTextContainer}>
-            <Text style={styles.headerTitle}>
+            <Text style={styles.headerGreeting}>
               {t('home.header.greeting')}
             </Text>
-            <Text style={styles.headerSubtitle}>
-              {t('home.header.subtitle')}
-            </Text>
-            <Text style={styles.headerUser}>{data?.hero.userName}</Text>
+            <View style={styles.headerUserContainer}>
+              <Text style={styles.headerUser}>{data?.hero.userName}</Text>
+              <Text style={styles.headerEmoji}>👋</Text>
+            </View>
           </View>
           <View style={styles.headerIcons}>
             <TouchableOpacity style={styles.iconButtonActive} activeOpacity={0.7}>
@@ -361,19 +361,22 @@ const styles = StyleSheet.create({
     flex: 1,
     marginRight: spacing.base,
   },
-  headerTitle: {
-    ...typography.styles.h3,
-    color: colors.text.primary,
-  },
-  headerSubtitle: {
+  headerGreeting: {
     ...typography.styles.bodyRegular16,
     color: colors.text.secondary,
+  },
+  headerUserContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginTop: spacing.xs,
   },
   headerUser: {
-    ...typography.styles.bodyBold16,
-    color: colors.text.primary,
-    marginTop: spacing.xs,
+    ...typography.styles.h3,
+    color: colors.text.secondary,
+  },
+  headerEmoji: {
+    fontSize: 20,
+    marginLeft: spacing.xs / 2,
   },
   headerIcons: {
     flexDirection: 'row',

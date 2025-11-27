@@ -107,8 +107,7 @@
   },
   "home": {
     "header": {
-      "greeting": "Bienvenue de nouveau !",
-      "subtitle": "Heureux de vous revoir sur C-one"
+      "greeting": "Bienvenue de nouveau,"
     },
     "tabs": {
       "otherCountries": "Autres pays",
