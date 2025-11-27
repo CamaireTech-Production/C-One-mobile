@@ -8,4 +8,11 @@ export { useFadeAnimation } from './useFadeAnimation';
 export { useScaleAnimation } from './useScaleAnimation';
 export { useSlideAnimation } from './useSlideAnimation';
 export { useHomeData } from './useHomeData';
+export { useGeolocation } from './useGeolocation';
+export type { 
+  GeolocationStatus, 
+  LocationData, 
+  UseGeolocationOptions, 
+  UseGeolocationReturn 
+} from './useGeolocation';
 

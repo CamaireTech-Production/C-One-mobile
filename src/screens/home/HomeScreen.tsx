@@ -3,7 +3,7 @@
  * Displays travel content leveraging the local data provider until backend is ready.
  */
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   View,
   Text,
@@ -14,25 +14,168 @@ import {
   Dimensions,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { HomeStackParamList } from '../../types';
 
 import {
   ScreenBackground,
   Tabs,
   Icon,
   SearchBar,
+  GeolocationConfirmationModal,
+  GeolocationAlertModal,
+  type GeolocationAlertType,
 } from '../../components/common';
 import { HomeCard, SkeletonHorizontalCards } from '../../components/home';
 import { colors, typography, spacing } from '../../theme';
-import { useHomeData } from '../../hooks';
+import { useHomeData, useGeolocation } from '../../hooks';
 import { Image } from '../../components/media';
 import { images } from '../../config';
 import { SkeletonBlock } from '../../components/skeleton';
+import { HomeCity } from '../../data/data';
+
+type HomeScreenNavigationProp = NativeStackNavigationProp<HomeStackParamList, 'HomeMain'>;
 
 export const HomeScreen: React.FC = () => {
   const { t } = useTranslation();
+  const navigation = useNavigation<HomeScreenNavigationProp>();
   const { data, loading } = useHomeData();
 
   const [countryTab, setCountryTab] = useState('others');
+  
+  // Geolocation state
+  const {
+    status: geolocationStatus,
+    location: geolocationLocation,
+    error: geolocationError,
+    getCurrentLocation,
+    clearError: clearGeolocationError,
+  } = useGeolocation({ useCache: true });
+
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [showAlertModal, setShowAlertModal] = useState(false);
+  const [alertType, setAlertType] = useState<GeolocationAlertType>('unknown');
+  const [filteredCities, setFilteredCities] = useState<HomeCity[]>([]);
+  const [hasRequestedLocation, setHasRequestedLocation] = useState(false);
+
+  const handleCountryPress = (countryId: string, countryName: string, countryImageUrl?: string) => {
+    navigation.navigate('Detail', {
+      id: countryId,
+      title: countryName,
+      imageUrl: countryImageUrl,
+    });
+  };
+
+  // Handle tab change
+  const handleTabChange = (tab: string) => {
+    setCountryTab(tab);
+    
+    // When switching to "position" tab, request location if not already done
+    if (tab === 'position' && !hasRequestedLocation) {
+      handleRequestLocation();
+    }
+  };
+
+  // Request location when "position" tab is selected
+  const handleRequestLocation = async () => {
+    setHasRequestedLocation(true);
+    
+    try {
+      const location = await getCurrentLocation();
+      
+      if (location) {
+        // Filter cities based on country code
+        filterCitiesByCountry(location.countryCode);
+        
+        // Show confirmation modal if we have a city name
+        if (location.city) {
+          setShowConfirmationModal(true);
+        }
+      } else {
+        // Handle error cases
+        handleGeolocationError();
+      }
+    } catch (error) {
+      handleGeolocationError();
+    }
+  };
+
+  // Filter cities by country code
+  const filterCitiesByCountry = useCallback((countryCode?: string) => {
+    if (!data || !countryCode) {
+      setFilteredCities(data?.cities || []);
+      return;
+    }
+
+    const filtered = data.cities.filter(
+      (city) => city.countryCode?.toUpperCase() === countryCode.toUpperCase()
+    );
+    
+    setFilteredCities(filtered.length > 0 ? filtered : data.cities);
+  }, [data]);
+
+  // Handle geolocation errors
+  const handleGeolocationError = useCallback(() => {
+    let alertType: GeolocationAlertType = 'unknown';
+    
+    // Determine alert type based on status and error message
+    if (geolocationStatus === 'denied') {
+      alertType = 'permissionDenied';
+    } else if (geolocationError) {
+      if (geolocationError.includes('refusé') || geolocationError.includes('refusée')) {
+        alertType = 'permissionDenied';
+      } else if (geolocationError.includes('désactivés') || geolocationError.includes('désactivé')) {
+        alertType = 'locationDisabled';
+      } else if (geolocationError.includes('réseau') || geolocationError.includes('internet')) {
+        alertType = 'networkError';
+      } else if (geolocationError.includes('Timeout') || geolocationError.includes('trop de temps')) {
+        alertType = 'timeout';
+      }
+    } else if (geolocationStatus === 'error') {
+      alertType = 'unknown';
+    }
+    
+    setAlertType(alertType);
+    setShowAlertModal(true);
+  }, [geolocationStatus, geolocationError]);
+
+  // Handle confirmation modal actions
+  const handleConfirmLocation = () => {
+    setShowConfirmationModal(false);
+    // Location is already saved in cache, cities are already filtered
+  };
+
+  const handleCancelLocation = () => {
+    setShowConfirmationModal(false);
+    // User rejected, show all cities or handle as needed
+    setFilteredCities(data?.cities || []);
+  };
+
+  // Handle alert modal close
+  const handleAlertClose = () => {
+    setShowAlertModal(false);
+    clearGeolocationError();
+  };
+
+  // Initialize cities when data is loaded
+  useEffect(() => {
+    if (data) {
+      // If we have a cached location, filter cities immediately
+      if (geolocationLocation?.countryCode) {
+        filterCitiesByCountry(geolocationLocation.countryCode);
+      } else {
+        setFilteredCities(data.cities);
+      }
+    }
+  }, [data, geolocationLocation, filterCitiesByCountry]);
+
+  // Handle geolocation status changes
+  useEffect(() => {
+    if ((geolocationStatus === 'error' || geolocationStatus === 'denied') && hasRequestedLocation) {
+      handleGeolocationError();
+    }
+  }, [geolocationStatus, geolocationError, hasRequestedLocation, handleGeolocationError]);
   return (
     <ScreenBackground backgroundColor={colors.background.primary}>
       <ScrollView
@@ -91,7 +234,7 @@ export const HomeScreen: React.FC = () => {
               },
             ]}
             value={countryTab}
-            onChange={setCountryTab}
+            onChange={handleTabChange}
             variant="underline"
             gap={spacing.xs}
             activeTabStyle={styles.activeTab}
@@ -151,6 +294,7 @@ export const HomeScreen: React.FC = () => {
                   type="country"
                   title={t(country.labelKey)}
                   imageUrl={country.imageUrl}
+                  onPress={() => handleCountryPress(country.id, t(country.labelKey), country.imageUrl)}
                 />
               ))}
             </HorizontalCards>
@@ -160,12 +304,12 @@ export const HomeScreen: React.FC = () => {
         {countryTab === 'position' && (
           <Section
             title={t('home.sections.cities')}
-            loading={loading}
+            loading={loading || (geolocationStatus === 'requesting' && hasRequestedLocation)}
             skeleton={<SkeletonHorizontalCards />}
             showChevron
           >
             <HorizontalCards>
-              {data?.cities.map((city) => (
+              {(filteredCities.length > 0 ? filteredCities : data?.cities || []).map((city) => (
                 <HomeCard
                   key={city.id}
                   type="city"
@@ -176,6 +320,21 @@ export const HomeScreen: React.FC = () => {
             </HorizontalCards>
           </Section>
         )}
+
+        {/* Geolocation Modals */}
+        <GeolocationConfirmationModal
+          visible={showConfirmationModal}
+          cityName={geolocationLocation?.city || t('home.sections.cities')}
+          onConfirm={handleConfirmLocation}
+          onCancel={handleCancelLocation}
+          onClose={handleCancelLocation}
+        />
+
+        <GeolocationAlertModal
+          visible={showAlertModal}
+          alertType={alertType}
+          onClose={handleAlertClose}
+        />
       </ScrollView>
     </ScreenBackground>
   );

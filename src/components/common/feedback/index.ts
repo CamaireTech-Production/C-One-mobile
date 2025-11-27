@@ -11,3 +11,7 @@ export type { VerificationVariant } from './VerificationModal';
 
 export { SuccessModal } from './SuccessModal';
 
+export { GeolocationConfirmationModal } from './GeolocationConfirmationModal';
+export { GeolocationAlertModal } from './GeolocationAlertModal';
+export type { GeolocationAlertType } from './GeolocationAlertModal';
+

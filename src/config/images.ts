@@ -29,6 +29,9 @@ export const images = {
   // Home
   worldMap: require('../../assets/images/map.png'),
 
+  // Detail
+  detailBackground: require('../../assets/images/detail_bg.jpg'),
+
   // Add more images here as needed
   // exampleImage: 'https://example.com/image.jpg',
   // or

@@ -8,6 +8,7 @@ export type HomeCity = {
   id: string;
   labelKey: string;
   imageUrl: string;
+  countryCode?: string; // ISO 3166-1 alpha-2 country code (e.g., 'CM' for Cameroon, 'FR' for France)
 };
 
 export type PopularPlace = {
@@ -72,16 +73,19 @@ export const homeData: HomeData = {
       id: 'yaounde',
       labelKey: 'home.cities.yaounde',
       imageUrl: 'https://images.unsplash.com/photo-1505765050516-f72dcac9c60e?fit=crop&w=600&q=60',
+      countryCode: 'CM', // Cameroon
     },
     {
       id: 'douala',
       labelKey: 'home.cities.douala',
       imageUrl: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?fit=crop&w=600&q=60',
+      countryCode: 'CM', // Cameroon
     },
     {
       id: 'dschang',
       labelKey: 'home.cities.dschang',
       imageUrl: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?fit=crop&w=600&q=60',
+      countryCode: 'CM', // Cameroon
     },
   ],
   popularPlaces: [
