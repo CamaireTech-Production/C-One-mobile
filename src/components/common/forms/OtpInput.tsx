@@ -12,7 +12,7 @@ import {
   TextStyle,
   TextInputProps,
 } from 'react-native';
-import { colors, typography, spacing } from '../../theme';
+import { colors, typography, spacing } from '../../../theme';
 
 export type OtpInputType = 'number' | 'string';
 

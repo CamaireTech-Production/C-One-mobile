@@ -1,47 +1,352 @@
 /**
  * Home Screen
- * Main screen displayed after successful authentication
+ * Displays travel content leveraging the local data provider until backend is ready.
  */
 
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
+  TouchableOpacity,
+  Animated,
+  Dimensions,
 } from 'react-native';
-import { ScreenBackground } from '../../components/common';
+import { useTranslation } from 'react-i18next';
+
+import {
+  ScreenBackground,
+  Tabs,
+  Icon,
+  SearchBar,
+} from '../../components/common';
+import { HomeCard, SkeletonHorizontalCards } from '../../components/home';
 import { colors, typography, spacing } from '../../theme';
+import { useHomeData } from '../../hooks';
+import { Image } from '../../components/media';
+import { images } from '../../config';
+import { SkeletonBlock } from '../../components/skeleton';
 
 export const HomeScreen: React.FC = () => {
+  const { t } = useTranslation();
+  const { data, loading } = useHomeData();
+
+  const [countryTab, setCountryTab] = useState('others');
   return (
     <ScreenBackground backgroundColor={colors.background.primary}>
-      <ScrollView style={styles.container}>
-        <View style={styles.content}>
-          <Text style={styles.title}>Bienvenue !</Text>
-          <Text style={styles.subtitle}>
-            Vous êtes maintenant connecté à C-one
-          </Text>
-
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>Page d'accueil</Text>
-            <Text style={styles.cardDescription}>
-              Cette page sera développée avec les fonctionnalités principales de l'application.
-            </Text>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.header}>
+          <View style={styles.headerTextContainer}>
+            {loading ? (
+              <View style={styles.headerSkeleton}>
+                <SkeletonBlock width={140} height={16} />
+                <SkeletonBlock width={200} height={28} style={styles.headerSkeletonPrimary} />
+              </View>
+            ) : (
+              <>
+                <Text style={styles.headerGreeting}>
+                  {t('home.header.greeting')}
+                </Text>
+                <View style={styles.headerUserContainer}>
+                  <Text style={styles.headerUser}>{data?.hero.userName}</Text>
+                  <Text style={styles.headerEmoji}>👋</Text>
+                </View>
+              </>
+            )}
           </View>
-
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>Fonctionnalités à venir</Text>
-            <Text style={styles.cardDescription}>
-              • Navigation par onglets{'\n'}
-              • Recherche{'\n'}
-              • Réservations{'\n'}
-              • Profil utilisateur
-            </Text>
+          <View style={styles.headerIcons}>
+            <TouchableOpacity style={styles.iconButtonActive} activeOpacity={0.7}>
+              <Icon name="smart-toy" size={20} color={colors.primary.normal} family="material" />
+            </TouchableOpacity>
           </View>
         </View>
+
+        <View style={styles.sectionSpacing}>
+          <Tabs
+            options={[
+              { 
+                key: 'others', 
+                label: t('home.tabs.otherCountries'),
+                icon: countryTab === 'others' ? (
+                  <Icon name="check-circle-outline" size={18} color={colors.primary.normal} family="materialcommunity" />
+                ) : (
+                  <Icon name="circle-outline" size={18} color={colors.text.secondary} family="materialcommunity" />
+                ),
+                iconPosition: 'left',
+              },
+              { 
+                key: 'position', 
+                label: t('home.tabs.myPosition'),
+                icon: countryTab === 'position' ? (
+                  <Icon name="check-circle-outline" size={18} color={colors.primary.normal} family="materialcommunity" />
+                ) : (
+                  <Icon name="circle-outline" size={18} color={colors.text.secondary} family="materialcommunity" />
+                ),
+                iconPosition: 'left',
+              },
+            ]}
+            value={countryTab}
+            onChange={setCountryTab}
+            variant="underline"
+            gap={spacing.xs}
+            activeTabStyle={styles.activeTab}
+            inactiveTabStyle={styles.inactiveTab}
+            activeTextStyle={styles.activeTabText}
+            inactiveTextStyle={styles.inactiveTabText}
+          />
+        </View>
+
+        {/* World Map Section with Location Animation */}
+        <WorldMapSection loading={loading} />
+
+        {/* Search Section */}
+        <View style={styles.searchSection}>
+          {loading ? (
+            <SkeletonBlock width="100%" height={56} borderRadius={32} />
+          ) : (
+            <SearchBar
+              placeholder={t('home.search.placeholder')}
+              styleConfig={{
+                backgroundColor: colors.background.searhbarbg,
+                borderColor: colors.primary.light,
+                borderWidth: 1,
+                borderRadius: 100,
+                iconColor: colors.grey.normal,
+                iconSize: 20,
+                separatorColor: colors.border.light,
+                placeholderColor: colors.text.tertiary,
+                textColor: colors.text.primary,
+                textStyle: typography.styles.bodyRegular16,
+                dotColor: colors.text.tertiary,
+                dotSize: 4,
+                paddingHorizontal: spacing.base,
+                paddingVertical: spacing.md,
+                gap: spacing.sm,
+                minHeight: 56,
+              }}
+              showSeparator
+              showDot
+              leftIconName="search"
+              leftIconFamily="ionicons"
+            />
+          )}
+        </View>
+
+        {countryTab === 'others' && (
+          <Section
+            title={t('home.sections.countries')}
+            loading={loading}
+            skeleton={<SkeletonHorizontalCards />}
+            showChevron
+          >
+            <HorizontalCards>
+              {data?.countries.map((country) => (
+                <HomeCard
+                  key={country.id}
+                  type="country"
+                  title={t(country.labelKey)}
+                  imageUrl={country.imageUrl}
+                />
+              ))}
+            </HorizontalCards>
+          </Section>
+        )}
+
+        {countryTab === 'position' && (
+          <Section
+            title={t('home.sections.cities')}
+            loading={loading}
+            skeleton={<SkeletonHorizontalCards />}
+            showChevron
+          >
+            <HorizontalCards>
+              {data?.cities.map((city) => (
+                <HomeCard
+                  key={city.id}
+                  type="city"
+                  title={t(city.labelKey)}
+                  imageUrl={city.imageUrl}
+                />
+              ))}
+            </HorizontalCards>
+          </Section>
+        )}
       </ScrollView>
     </ScreenBackground>
+  );
+};
+
+
+interface SectionProps {
+  title: string;
+  children: React.ReactNode;
+  loading: boolean;
+  skeleton: React.ReactNode;
+  showChevron?: boolean;
+  onChevronPress?: () => void;
+}
+
+const Section: React.FC<SectionProps> = ({
+  title,
+  children,
+  loading,
+  skeleton,
+  showChevron = false,
+  onChevronPress,
+}) => (
+  <View style={styles.section}>
+    <View style={styles.sectionHeader}>
+      <Text style={styles.sectionTitle}>{title}</Text>
+      {showChevron && (
+        <TouchableOpacity
+          style={styles.sectionHeaderAction}
+          activeOpacity={0.7}
+          onPress={onChevronPress}
+        >
+          <Icon name="chevron-forward" size={16} color={colors.text.secondary} />
+        </TouchableOpacity>
+      )}
+    </View>
+    {loading ? skeleton : children}
+  </View>
+);
+
+const HorizontalCards: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <ScrollView
+    horizontal
+    showsHorizontalScrollIndicator={false}
+    contentContainerStyle={styles.horizontalScroll}
+  >
+    {children}
+  </ScrollView>
+);
+
+// World Map Section with Location Animation
+interface WorldMapSectionProps {
+  loading: boolean;
+}
+
+const WorldMapSection: React.FC<WorldMapSectionProps> = ({ loading }) => {
+  const { t } = useTranslation();
+  const scaleAnim1 = useRef(new Animated.Value(1)).current;
+  const scaleAnim2 = useRef(new Animated.Value(1)).current;
+  const scaleAnim3 = useRef(new Animated.Value(1)).current;
+  const opacityAnim1 = useRef(new Animated.Value(0.6)).current;
+  const opacityAnim2 = useRef(new Animated.Value(0.4)).current;
+  const opacityAnim3 = useRef(new Animated.Value(0.2)).current;
+
+  useEffect(() => {
+    if (loading) {
+      return;
+    }
+
+    const createPulseAnimation = (scale: Animated.Value, opacity: Animated.Value, delay: number) => {
+      return Animated.loop(
+        Animated.parallel([
+          Animated.sequence([
+            Animated.timing(scale, {
+              toValue: 2.5,
+              duration: 2000,
+              delay,
+              useNativeDriver: true,
+            }),
+            Animated.timing(scale, {
+              toValue: 1,
+              duration: 0,
+              useNativeDriver: true,
+            }),
+          ]),
+          Animated.sequence([
+            Animated.timing(opacity, {
+              toValue: 0,
+              duration: 2000,
+              delay,
+              useNativeDriver: true,
+            }),
+            Animated.timing(opacity, {
+              toValue: opacity === opacityAnim1 ? 0.6 : opacity === opacityAnim2 ? 0.4 : 0.2,
+              duration: 0,
+              useNativeDriver: true,
+            }),
+          ]),
+        ])
+      );
+    };
+
+    const anim1 = createPulseAnimation(scaleAnim1, opacityAnim1, 0);
+    const anim2 = createPulseAnimation(scaleAnim2, opacityAnim2, 400);
+    const anim3 = createPulseAnimation(scaleAnim3, opacityAnim3, 800);
+
+    anim1.start();
+    anim2.start();
+    anim3.start();
+
+    return () => {
+      anim1.stop();
+      anim2.stop();
+      anim3.stop();
+    };
+  }, [loading, opacityAnim1, opacityAnim2, opacityAnim3, scaleAnim1, scaleAnim2, scaleAnim3]);
+
+  if (loading) {
+    return (
+      <View style={styles.worldMapSkeletonWrapper}>
+        <SkeletonBlock width="100%" height={300} borderRadius={0} />
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.worldMapContainer}>
+      <Image
+        source={images.worldMap || { uri: 'https://images.unsplash.com/photo-1524661135-423995f22d0b?w=800' }}
+        style={styles.worldMapImage}
+        resizeMode="cover"
+      />
+      {/* Search label text on map */}
+      <View style={styles.searchLabelOnMap}>
+        <Text style={styles.searchLabelText}>{t('home.search.label')}</Text>
+      </View>
+      <View style={styles.locationPinContainer}>
+        {/* Pulse circles */}
+        <Animated.View
+          style={[
+            styles.pulseCircle,
+            {
+              transform: [{ scale: scaleAnim1 }],
+              opacity: opacityAnim1,
+            },
+          ]}
+        />
+        <Animated.View
+          style={[
+            styles.pulseCircle,
+            {
+              transform: [{ scale: scaleAnim2 }],
+              opacity: opacityAnim2,
+            },
+          ]}
+        />
+        <Animated.View
+          style={[
+            styles.pulseCircle,
+            {
+              transform: [{ scale: scaleAnim3 }],
+              opacity: opacityAnim3,
+            },
+          ]}
+        />
+        {/* Location pin */}
+        <View style={styles.locationPin}>
+          <Icon name="location-outline" size={40} color={colors.primary.normal} family="ionicons" />
+        </View>
+      </View>
+    </View>
   );
 };
 
@@ -49,35 +354,178 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  content: {
+  scrollContent: {
     padding: spacing.lg,
-    paddingTop: spacing['4xl'],
+    paddingBottom: spacing['4xl'],
   },
-  title: {
-    ...typography.styles.h1,
-    color: colors.text.primary,
-    marginBottom: spacing.sm,
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: spacing['2xl'],
   },
-  subtitle: {
+  headerTextContainer: {
+    flex: 1,
+    marginRight: spacing.base,
+  },
+  headerGreeting: {
     ...typography.styles.bodyRegular16,
     color: colors.text.secondary,
-    marginBottom: spacing.xl,
   },
-  card: {
-    backgroundColor: colors.background.secondary,
-    borderRadius: 12,
-    padding: spacing.lg,
+  headerUserContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: spacing.xs,
+  },
+  headerUser: {
+    ...typography.styles.h3,
+    color: colors.text.secondary,
+  },
+  headerEmoji: {
+    fontSize: 20,
+    marginLeft: spacing.xs / 2,
+  },
+  headerIcons: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+    alignItems: 'center',
+  },
+  headerSkeleton: {
+    gap: spacing.xs,
+  },
+  headerSkeletonPrimary: {
+    marginTop: spacing.xs,
+  },
+  iconButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    borderWidth: 1,
+    borderColor: colors.border.light,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.background.primary,
+  },
+  iconButtonActive: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.primary.light,
+  },
+  sectionSpacing: {
+    marginTop: spacing.xl,
+  },
+  activeTab: {
+    borderBottomWidth: 3,
+    borderRadius: 0,
+    borderBottomColor: colors.primary.normal,
+    paddingBottom: spacing.sm,
+  },
+  inactiveTab: {
+    borderBottomWidth: 0,
+  },
+  activeTabText: {
+    color: colors.primary.normal,
+    fontWeight: '600',
+  },
+  inactiveTabText: {
+    color: colors.text.secondary,
+    fontWeight: '400',
+  },
+  section: {
+    marginTop: spacing.xl,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: spacing.md,
   },
-  cardTitle: {
-    ...typography.styles.h3,
+  sectionTitle: {
+    ...typography.styles.bodyBold18,
     color: colors.text.primary,
-    marginBottom: spacing.sm,
   },
-  cardDescription: {
-    ...typography.styles.bodyRegular14,
-    color: colors.text.secondary,
-    lineHeight: 22,
+  sectionHeaderAction: {
+    paddingHorizontal: spacing.xs,
+    paddingVertical: spacing.xs,
+  },
+  horizontalScroll: {
+    gap: spacing.base,
+    paddingRight: spacing.lg,
+  },
+  worldMapSkeletonWrapper: {
+    marginTop: spacing.sm,
+    marginHorizontal: -spacing.lg,
+    height: 300,
+  },
+  worldMapContainer: {
+    marginTop: spacing.sm,
+    marginHorizontal: -spacing.lg,
+    height: 320,
+    borderRadius: 0,
+    overflow: 'hidden',
+    position: 'relative',
+  },
+  worldMapImage: {
+    width: '100%',
+    height: '100%',
+    opacity: 0.3,
+  },
+  locationPinContainer: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginTop: -20,
+    marginLeft: -20,
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  pulseCircle: {
+    position: 'absolute',
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    borderWidth: 2,
+    borderColor: colors.primary.normal,
+    backgroundColor: 'transparent',
+  },
+  locationPin: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: 'transparent',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  searchLabelOnMap: {
+    position: 'absolute',
+    bottom: spacing.lg,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    paddingHorizontal: spacing.lg,
+  },
+  searchLabelText: {
+    ...typography.styles.bodyBold30,
+    color: colors.text.map,
+  },
+  searchSection: {
+    marginTop: spacing.sm,
+  },
+  filterCard: {
+    marginTop: spacing.xl,
+    padding: spacing.lg,
+    borderRadius: 16,
+    backgroundColor: colors.background.secondary,
+    gap: spacing.md,
+  },
+  bookingsList: {
+    gap: spacing.sm,
   },
 });
+
 

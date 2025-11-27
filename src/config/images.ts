@@ -26,6 +26,9 @@ export const images = {
   logo: require('../../assets/icon.png'),
   defaultAvatar: require('../../assets/icon.png'),
 
+  // Home
+  worldMap: require('../../assets/images/map.png'),
+
   // Add more images here as needed
   // exampleImage: 'https://example.com/image.jpg',
   // or

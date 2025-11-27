@@ -70,6 +70,7 @@ export const colors = {
     primary: '#FFFFFF',
     secondary: '#f9fafb',
     tertiary: '#f5f7f9',
+    searhbarbg: '#F7F7FA',
   },
 
   // Text Colors
@@ -79,6 +80,7 @@ export const colors = {
     tertiary: '#a3a4a5',
     disabled: '#a3a4a5',
     inverse: '#FFFFFF',
+    map: '#373B51', // Text color for map overlays
   },
 
   // Border Colors

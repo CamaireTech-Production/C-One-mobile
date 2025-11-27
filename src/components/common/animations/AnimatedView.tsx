@@ -5,8 +5,8 @@
 
 import React from 'react';
 import { Animated, ViewStyle } from 'react-native';
-import { useFadeAnimation } from '../../hooks/useFadeAnimation';
-import { ANIMATION_DURATION } from '../../utils/constants';
+import { useFadeAnimation } from '../../../hooks/useFadeAnimation';
+import { ANIMATION_DURATION } from '../../../utils/constants';
 
 interface AnimatedViewProps {
   children: React.ReactNode;

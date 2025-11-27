@@ -4,9 +4,11 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import {
+  NavigationContainer,
+  createNavigationContainerRef,
+} from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
 import { SplashScreen } from '../screens/splash/SplashScreen';
 import { OnboardingNavigator } from '../screens/onboarding/OnboardingNavigator';
@@ -18,29 +20,14 @@ import { ResetPasswordScreen } from '../screens/auth/resetPassword/ResetPassword
 import { MainTabNavigator } from './MainTabNavigator';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
-
-// Internal component to handle navigation after authentication
-const AuthNavigationHandler: React.FC<{ isAuthenticated: boolean }> = ({ isAuthenticated }) => {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      // Navigate to Main when authenticated
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'Main' }],
-      });
-    }
-  }, [isAuthenticated, navigation]);
-
-  return null;
-};
+const navigationRef = createNavigationContainerRef<RootStackParamList>();
 
 export const AppNavigator = () => {
   const [showSplash, setShowSplash] = useState(true);
   const [hasSeenOnboarding, setHasSeenOnboarding] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [requestedAuthScreen, setRequestedAuthScreen] = useState<'Login' | 'SignUp'>('Login');
+  const [isNavigationReady, setIsNavigationReady] = useState(false);
 
   const handleSplashFinish = () => {
     setShowSplash(false);
@@ -83,9 +70,20 @@ export const AppNavigator = () => {
         ? requestedAuthScreen
         : 'Main';
 
+  useEffect(() => {
+    if (isAuthenticated && isNavigationReady) {
+      navigationRef.reset({
+        index: 0,
+        routes: [{ name: 'Main' }],
+      });
+    }
+  }, [isAuthenticated, isNavigationReady]);
+
   return (
-    <NavigationContainer>
-      <AuthNavigationHandler isAuthenticated={isAuthenticated} />
+    <NavigationContainer
+      ref={navigationRef}
+      onReady={() => setIsNavigationReady(true)}
+    >
       <Stack.Navigator
         key={navigatorKey}
         screenOptions={{

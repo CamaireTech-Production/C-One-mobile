@@ -13,7 +13,7 @@ import {
   Animated,
   ViewStyle,
 } from 'react-native';
-import { colors, typography, spacing, shadows } from '../../theme';
+import { colors, typography, spacing, shadows } from '../../../theme';
 
 export type ModalVariant = 'success' | 'error' | 'info';
 

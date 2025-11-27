@@ -117,6 +117,18 @@ export const typography = {
       fontWeight: '400' as const,
       lineHeight: 30, // 20 * 1.5
     },
+    bodyRegular24: {
+      fontFamily: 'Satoshi-Regular',
+      fontSize: 24,
+      fontWeight: '400' as const,
+      lineHeight: 36, // 20 * 1.5
+    },
+    bodyRegular30: {
+      fontFamily: 'Satoshi-Regular',
+      fontSize: 30,
+      fontWeight: '400' as const,
+      lineHeight: 45, // 30 * 1.5
+    },
 
     // Body Medium - Satoshi Variable
     bodyMedium12: {
@@ -148,6 +160,18 @@ export const typography = {
       fontSize: 20,
       fontWeight: '500' as const,
       lineHeight: 30, // 20 * 1.5
+    },
+    bodyMedium24: {
+      fontFamily: 'Satoshi-Medium',
+      fontSize: 24,
+      fontWeight: '500' as const,
+      lineHeight: 36, // 20 * 1.5
+    },
+    bodyMedium30: {
+      fontFamily: 'Satoshi-Medium',
+      fontSize: 30,
+      fontWeight: '500' as const,
+      lineHeight: 45, // 30 * 1.5
     },
 
     // Body Semibold - Satoshi Variable
@@ -181,6 +205,18 @@ export const typography = {
       fontWeight: '600' as const,
       lineHeight: 30, // 20 * 1.5
     },
+    bodySemibold24: {
+      fontFamily: 'Satoshi-SemiBold',
+      fontSize: 24,
+      fontWeight: '600' as const,
+      lineHeight: 36, // 20 * 1.5
+    },
+    bodySemibold30: {
+      fontFamily: 'Satoshi-SemiBold',
+      fontSize: 30,
+      fontWeight: '600' as const,
+      lineHeight: 45, // 30 * 1.5
+    },
 
     // Body Bold - Satoshi Variable
     bodyBold12: {
@@ -212,6 +248,18 @@ export const typography = {
       fontSize: 20,
       fontWeight: '700' as const,
       lineHeight: 30, // 20 * 1.5
+    },
+    bodyBold24: {
+      fontFamily: 'Satoshi-Bold',
+      fontSize: 24,
+      fontWeight: '700' as const,
+      lineHeight: 36, // 20 * 1.5
+    },
+    bodyBold30: {
+      fontFamily: 'Satoshi-Bold',
+      fontSize: 30,
+      fontWeight: '700' as const,
+      lineHeight: 45, // 30 * 1.5
     },
 
     // Form Elements - Satoshi Variable

@@ -13,7 +13,7 @@ import {
   Dimensions,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { colors } from '../../theme';
+import { colors } from '../../../theme';
 
 const { width, height } = Dimensions.get('window');
 

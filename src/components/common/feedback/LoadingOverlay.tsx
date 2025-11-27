@@ -13,7 +13,7 @@ import {
   Animated,
 } from 'react-native';
 import { Spinner } from './Spinner';
-import { colors, typography, spacing } from '../../theme';
+import { colors, typography, spacing } from '../../../theme';
 
 interface LoadingOverlayProps {
   visible: boolean;

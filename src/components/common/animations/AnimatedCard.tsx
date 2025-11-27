@@ -5,10 +5,10 @@
 
 import React, { useEffect } from 'react';
 import { View, StyleSheet, ViewStyle, Animated } from 'react-native';
-import { colors, spacing, shadows } from '../../theme';
-import { useFadeAnimation } from '../../hooks/useFadeAnimation';
-import { useScaleAnimation } from '../../hooks/useScaleAnimation';
-import { ANIMATION_DURATION } from '../../utils/constants';
+import { colors, spacing, shadows } from '../../../theme';
+import { useFadeAnimation } from '../../../hooks/useFadeAnimation';
+import { useScaleAnimation } from '../../../hooks/useScaleAnimation';
+import { ANIMATION_DURATION } from '../../../utils/constants';
 
 interface AnimatedCardProps {
   children: React.ReactNode;

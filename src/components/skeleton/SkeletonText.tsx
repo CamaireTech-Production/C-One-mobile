@@ -5,8 +5,9 @@
 
 import React from 'react';
 import { View, StyleSheet, ViewStyle, DimensionValue } from 'react-native';
-import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
-import { colors, spacing } from '../../theme';
+
+import { SkeletonBlock } from './SkeletonBlock';
+import { spacing } from '../../theme';
 
 interface SkeletonTextProps {
   width?: DimensionValue;
@@ -22,22 +23,17 @@ export const SkeletonText: React.FC<SkeletonTextProps> = ({
   style,
 }) => {
   return (
-    <SkeletonPlaceholder
-      backgroundColor={colors.background.secondary}
-      highlightColor={colors.background.tertiary}
-    >
-      <View style={[styles.container, style]}>
-        {Array.from({ length: lines }).map((_, index) => (
-          <SkeletonPlaceholder.Item
-            key={index}
-            width={index === lines - 1 ? '80%' : width}
-            height={height}
-            borderRadius={4}
-            marginBottom={index < lines - 1 ? spacing.xs : 0}
-          />
-        ))}
-      </View>
-    </SkeletonPlaceholder>
+    <View style={[styles.container, style]}>
+      {Array.from({ length: lines }).map((_, index) => (
+        <SkeletonBlock
+          key={index}
+          width={index === lines - 1 ? '80%' : width}
+          height={height}
+          borderRadius={4}
+          style={{ marginBottom: index < lines - 1 ? spacing.xs : 0 }}
+        />
+      ))}
+    </View>
   );
 };
 

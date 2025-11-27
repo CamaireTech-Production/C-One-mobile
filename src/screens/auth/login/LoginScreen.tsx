@@ -13,6 +13,8 @@ import {
   Platform,
   TouchableOpacity,
 } from 'react-native';
+import { useTranslation } from 'react-i18next';
+
 import { Input, Button, AnimatedView, SocialButton, Icon, ScreenBackground } from '../../../components/common';
 import { colors, typography, spacing } from '../../../theme';
 import { VALIDATION } from '../../../utils/constants';
@@ -28,6 +30,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
   onSignUp,
   onForgotPassword,
 }) => {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
@@ -56,15 +59,15 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
     const newErrors: { email?: string; password?: string } = {};
 
     if (!email) {
-      newErrors.email = 'Email requis';
+      newErrors.email = t('validation.email.required');
     } else if (!VALIDATION.email.test(email)) {
-      newErrors.email = 'Email invalide';
+      newErrors.email = t('validation.email.invalid');
     }
 
     if (!password) {
-      newErrors.password = 'Mot de passe requis';
+      newErrors.password = t('validation.password.required');
     } else if (password.length < VALIDATION.passwordMinLength) {
-      newErrors.password = 'Ceci est un mot de passe incorrect';
+      newErrors.password = t('validation.password.minLength');
     }
 
     setErrors(newErrors);
@@ -91,20 +94,20 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
         <ScrollView keyboardShouldPersistTaps="handled">
           <View style={styles.content}>
           <TouchableOpacity onPress={onSignUp} style={styles.signUpLink}>
-            <Text style={styles.signUpLinkText}>S'inscrire</Text>
+            <Text style={styles.signUpLinkText}>{t('auth.login.signupLink')}</Text>
           </TouchableOpacity>
 
           <AnimatedView delay={100}>
-            <Text style={styles.title}>Bienvenue de nouveau !</Text>
+            <Text style={styles.title}>{t('auth.login.title')}</Text>
             <Text style={styles.subtitle}>
-              Entrez vos informations pour vous connecter
+              {t('auth.login.subtitle')}
             </Text>
           </AnimatedView>
 
           <AnimatedView style={styles.form} delay={200}>
             <Input
-              label="Email"
-              placeholder="olivia@untitledui.com"
+              label={t('common.labels.email')}
+              placeholder={t('common.placeholders.email')}
               value={email}
               onChangeText={handleEmailChange}
               error={errors.email}
@@ -116,8 +119,8 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
             />
 
             <Input
-              label="Mot de passe"
-              placeholder="Danielle 123"
+              label={t('common.labels.password')}
+              placeholder={t('common.placeholders.password')}
               value={password}
               onChangeText={handlePasswordChange}
               error={errors.password}
@@ -131,13 +134,13 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
             <View style={styles.forgotPasswordContainer}>
               <TouchableOpacity onPress={onForgotPassword}>
                 <Text style={styles.forgotPasswordText}>
-                  mot de passe oublié ?
+                  {t('auth.login.forgotPassword')}
                 </Text>
               </TouchableOpacity>
             </View>
 
             <Button
-              title="Se connecter"
+              title={t('auth.login.button')}
               onPress={handleLogin}
               variant="primary"
               size="large"
@@ -150,7 +153,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
           <AnimatedView style={styles.socialSection} delay={300}>
             <View style={styles.separator}>
               <View style={styles.separatorLine} />
-              <Text style={styles.separatorText}>ou connexion avec</Text>
+              <Text style={styles.separatorText}>{t('auth.login.socialDivider')}</Text>
               <View style={styles.separatorLine} />
             </View>
 

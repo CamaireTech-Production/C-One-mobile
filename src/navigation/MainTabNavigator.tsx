@@ -5,10 +5,12 @@
 
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+
 import { MainTabParamList } from '../types';
 import { HomeScreen } from '../screens/home/HomeScreen';
 import { Icon } from '../components/common';
 import { colors, typography } from '../theme';
+import { BottomTabBar } from '../components/navigation';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
@@ -19,26 +21,20 @@ export const MainTabNavigator: React.FC = () => {
         headerShown: false,
         tabBarActiveTintColor: colors.primary.normal,
         tabBarInactiveTintColor: colors.text.secondary,
-        tabBarStyle: {
-          borderTopWidth: 1,
-          borderTopColor: colors.border.light,
-          paddingTop: 8,
-          paddingBottom: 8,
-          height: 60,
-        },
         tabBarLabelStyle: {
           ...typography.styles.bodyRegular12,
           marginTop: 4,
         },
       }}
+      tabBar={(props) => <BottomTabBar {...props} />}
     >
       <Tab.Screen
         name="Home"
         component={HomeScreen}
         options={{
-          tabBarLabel: 'Accueil',
+          tabBarLabel: '',
           tabBarIcon: ({ color, size }) => (
-            <Icon name="home" size={size} color={color} family="ionicons" />
+            <Icon name="house" size={size} color={color} family="fontawesome6" fa6Style="regular" />
           ),
         }}
       />
@@ -46,9 +42,19 @@ export const MainTabNavigator: React.FC = () => {
         name="Search"
         component={HomeScreen} // Placeholder - will be replaced later
         options={{
-          tabBarLabel: 'Recherche',
+          tabBarLabel: '',
           tabBarIcon: ({ color, size }) => (
-            <Icon name="search" size={size} color={color} family="ionicons" />
+            <Icon name="arrow-down-wide-short" size={size} color={color} family="fontawesome6" fa6Style="solid" />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Awards"
+        component={HomeScreen} // Placeholder - will be replaced later
+        options={{
+          tabBarLabel: '',
+          tabBarIcon: ({ color, size }) => (
+            <Icon name="ribbon-outline" size={size} color={color} family="ionicons" />
           ),
         }}
       />
@@ -56,9 +62,9 @@ export const MainTabNavigator: React.FC = () => {
         name="Bookings"
         component={HomeScreen} // Placeholder - will be replaced later
         options={{
-          tabBarLabel: 'Réservations',
+          tabBarLabel: '',
           tabBarIcon: ({ color, size }) => (
-            <Icon name="calendar" size={size} color={color} family="ionicons" />
+            <Icon name="bell" size={size} color={color} family="fontawesome6" fa6Style="regular" />
           ),
         }}
       />
@@ -66,13 +72,14 @@ export const MainTabNavigator: React.FC = () => {
         name="Profile"
         component={HomeScreen} // Placeholder - will be replaced later
         options={{
-          tabBarLabel: 'Profil',
+          tabBarLabel: '',
           tabBarIcon: ({ color, size }) => (
-            <Icon name="person" size={size} color={color} family="ionicons" />
+            <Icon name="user" size={size} color={color} family="fontawesome6" fa6Style="regular" />
           ),
         }}
       />
     </Tab.Navigator>
   );
 };
+
 

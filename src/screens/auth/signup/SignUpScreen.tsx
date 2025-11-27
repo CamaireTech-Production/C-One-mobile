@@ -13,6 +13,8 @@ import {
   Platform,
   TouchableOpacity,
 } from 'react-native';
+import { useTranslation } from 'react-i18next';
+
 import { Input, Button, AnimatedView, SocialButton, Icon, ScreenBackground } from '../../../components/common';
 import { colors, typography, spacing } from '../../../theme';
 import { VALIDATION } from '../../../utils/constants';
@@ -26,6 +28,7 @@ export const SignUpScreen: React.FC<SignUpScreenProps> = ({
   onSignUp,
   onLogin,
 }) => {
+  const { t } = useTranslation();
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -64,19 +67,19 @@ export const SignUpScreen: React.FC<SignUpScreenProps> = ({
     const newErrors: typeof errors = {};
 
     if (!fullName || fullName.length < 2) {
-      newErrors.fullName = 'Nom complet requis (min. 2 caractères)';
+      newErrors.fullName = t('auth.signup.fullNameError');
     }
 
     if (!email) {
-      newErrors.email = 'Email requis';
+      newErrors.email = t('validation.email.required');
     } else if (!VALIDATION.email.test(email)) {
-      newErrors.email = 'Email invalide';
+      newErrors.email = t('validation.email.invalid');
     }
 
     if (!password) {
-      newErrors.password = 'Mot de passe requis';
+      newErrors.password = t('validation.password.required');
     } else if (password.length < VALIDATION.passwordMinLength) {
-      newErrors.password = `Minimum ${VALIDATION.passwordMinLength} caractères`;
+      newErrors.password = t('validation.newPassword.minLength');
     }
 
     setErrors(newErrors);
@@ -103,20 +106,20 @@ export const SignUpScreen: React.FC<SignUpScreenProps> = ({
         <ScrollView keyboardShouldPersistTaps="handled">
           <View style={styles.content}>
             <TouchableOpacity onPress={onLogin} style={styles.loginLink}>
-              <Text style={styles.loginLinkText}>Connexion</Text>
+              <Text style={styles.loginLinkText}>{t('auth.signup.loginLink')}</Text>
             </TouchableOpacity>
 
             <AnimatedView delay={100}>
-              <Text style={styles.title}>Bienvenue sur C-one !</Text>
+              <Text style={styles.title}>{t('auth.signup.title')}</Text>
               <Text style={styles.subtitle}>
-                Entrez vos informations pour l'inscription
+                {t('auth.signup.subtitle')}
               </Text>
             </AnimatedView>
 
             <AnimatedView style={styles.form} delay={200}>
               <Input
-                label="Nom complet"
-                placeholder="Danielle mckeny"
+                label={t('common.labels.fullName')}
+                placeholder={t('common.placeholders.fullName')}
                 value={fullName}
                 onChangeText={handleFullNameChange}
                 error={errors.fullName}
@@ -126,8 +129,8 @@ export const SignUpScreen: React.FC<SignUpScreenProps> = ({
               />
 
               <Input
-                label="Email"
-                placeholder="olivia@untitledui.com"
+                label={t('common.labels.email')}
+                placeholder={t('common.placeholders.email')}
                 value={email}
                 onChangeText={handleEmailChange}
                 error={errors.email}
@@ -139,8 +142,8 @@ export const SignUpScreen: React.FC<SignUpScreenProps> = ({
               />
 
               <Input
-                label="Mot de passe"
-                placeholder="Danielle 123"
+                label={t('common.labels.password')}
+                placeholder={t('common.placeholders.password')}
                 value={password}
                 onChangeText={handlePasswordChange}
                 error={errors.password}
@@ -152,7 +155,7 @@ export const SignUpScreen: React.FC<SignUpScreenProps> = ({
               />
 
               <Button
-                title="S'inscrire"
+                title={t('auth.signup.button')}
                 onPress={handleSignUp}
                 variant="primary"
                 size="large"
@@ -165,7 +168,7 @@ export const SignUpScreen: React.FC<SignUpScreenProps> = ({
             <AnimatedView style={styles.socialSection} delay={300}>
               <View style={styles.separator}>
                 <View style={styles.separatorLine} />
-                <Text style={styles.separatorText}>ou inscrivez-vous avec</Text>
+                <Text style={styles.separatorText}>{t('auth.signup.socialDivider')}</Text>
                 <View style={styles.separatorLine} />
               </View>
 

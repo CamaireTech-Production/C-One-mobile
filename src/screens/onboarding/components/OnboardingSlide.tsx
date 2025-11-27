@@ -10,6 +10,8 @@ import {
   Animated,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useTranslation } from 'react-i18next';
+
 import { Button } from '../../../components/common';
 import { colors, spacing, typography } from '../../../theme';
 import { useFadeAnimation } from '../../../hooks/useFadeAnimation';
@@ -36,11 +38,13 @@ export const OnboardingSlide: React.FC<OnboardingSlideProps> = ({
   totalSteps,
   onContinue,
   onSignUp,
-  primaryLabel = 'Commencer',
+  primaryLabel,
 }) => {
+  const { t } = useTranslation();
   const bottomOverlayHeight = height * 0.65;
   const clampedIndex = Math.min(Math.max(Math.floor(step) - 1, 0), totalSteps - 1);
   const segments = Array.from({ length: totalSteps });
+  const ctaLabel = primaryLabel ?? t('onboarding.cta.primary');
 
   return (
     <View style={styles.container}>
@@ -95,20 +99,20 @@ export const OnboardingSlide: React.FC<OnboardingSlideProps> = ({
             <SlideFadeIn delay={450}>
               <View style={styles.ctaSection}>
                 <Button
-                  title={primaryLabel}
+                  title={ctaLabel}
                   onPress={onContinue}
                   variant="primary"
                   size="large"
                   fullWidth
                 />
                 <View style={styles.signupContainer}>
-                  <Text style={styles.signupText}>Vous n&apos;avez pas de compte ? </Text>
+                  <Text style={styles.signupText}>{t('onboarding.cta.prompt')} </Text>
                   <TouchableOpacity
                     onPress={() => onSignUp?.()}
                     activeOpacity={0.7}
                     disabled={!onSignUp}
                   >
-                    <Text style={styles.signupLink}>Inscrivez-vous</Text>
+                    <Text style={styles.signupLink}>{t('onboarding.cta.link')}</Text>
                   </TouchableOpacity>
                 </View>
               </View>

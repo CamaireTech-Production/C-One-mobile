@@ -164,6 +164,7 @@ Le projet utilise TypeScript en mode strict. Les types sont définis dans `src/t
 - **Images** : Le système d'images est centralisé dans `src/assets/images/index.ts`
 - **Validation** : Les schémas de validation sont définis dans `src/utils/validation.ts` avec Yup
 - **Animations** : Les animations utilisent `react-native-reanimated` et l'API Animated de React Native
+- **i18n** : Tous les textes passent par `i18next` (`src/i18n`). Utilisez `useTranslation` dans les composants, ajoutez vos traductions dans `src/i18n/locales`, et prévoyez un test/lint rapide pour empêcher le retour de chaînes codées en dur avant d'activer d'autres langues.
 
 ## 🚧 Fonctionnalités à venir
 
