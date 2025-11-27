@@ -55,7 +55,7 @@ export const TransportCard: React.FC<TransportCardProps> = ({
       <View style={styles.iconContainer}>
         <Icon
           name={getTransportIcon(type)}
-          size={24}
+          size={30}
           color={colors.text.inverse}
           family="ionicons"
         />
@@ -70,12 +70,12 @@ export const TransportCard: React.FC<TransportCardProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: colors.background.tertiary, // #F5F7F9
     borderRadius: 20,
     padding: spacing.base,
-    margin: spacing.xs,
-    minHeight: 120,
+    justifyContent: 'center',
+    aspectRatio: 0.7, // Height will be longer than width (height = width / 0.7)
+    minHeight: 180,
   },
   iconContainer: {
     width: 48,
@@ -90,11 +90,12 @@ const styles = StyleSheet.create({
     gap: spacing.xs,
   },
   title: {
-    ...typography.styles.bodyBold16,
+    ...typography.styles.bodyMedium18,
+    paddingVertical: spacing.sm,
     color: colors.text.primary,
   },
   description: {
-    ...typography.styles.bodyRegular14,
+    ...typography.styles.bodyRegular16,
     color: colors.text.secondary,
   },
 });

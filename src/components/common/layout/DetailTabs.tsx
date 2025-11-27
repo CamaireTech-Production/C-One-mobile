@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.sm,
   },
   activeTab: {
-    backgroundColor: colors.background.primary,
+    backgroundColor: 'transparent',
   },
   inactiveTab: {
     backgroundColor: 'transparent',

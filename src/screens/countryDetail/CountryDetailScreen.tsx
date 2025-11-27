@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     paddingBottom: spacing['4xl'],
   },
   tabs: {
-    marginTop: spacing.sm,
+    // marginTop: spacing.sm,
   },
   content: {
     padding: spacing.lg,
@@ -185,10 +185,13 @@ const styles = StyleSheet.create({
   cardsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    marginHorizontal: -spacing.xs,
+    justifyContent: 'space-between',
   },
   card: {
-    width: '48%',
+    flexBasis: '48%',
+    maxWidth: '48%',
+    marginBottom: spacing.base,
+    // height: 100,
   },
   placeholderContainer: {
     padding: spacing.xl,
