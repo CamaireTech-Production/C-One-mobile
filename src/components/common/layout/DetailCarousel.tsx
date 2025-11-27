@@ -17,7 +17,7 @@ import {
 } from 'react-native';
 
 import { colors, spacing, typography } from '../../../theme';
-import { Button } from '../forms/Button';
+import { Icon } from '../icons/Icon';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -122,12 +122,15 @@ export const DetailCarousel: React.FC<DetailCarouselProps> = ({
                   <Text style={styles.description}>{slide.description}</Text>
                   {slide.buttonLabel && slide.onButtonPress && (
                     <View style={styles.buttonContainer}>
-                      <Button
-                        title={slide.buttonLabel}
+                      <TouchableOpacity
+                        style={styles.explorerButton}
                         onPress={slide.onButtonPress}
-                        variant="primary"
-                        size="medium"
-                      />
+                        activeOpacity={0.8}
+                      >
+                        <Text style={styles.explorerButtonText}>
+                          {slide.buttonLabel}
+                        </Text>
+                      </TouchableOpacity>
                     </View>
                   )}
                 </View>
@@ -142,16 +145,20 @@ export const DetailCarousel: React.FC<DetailCarouselProps> = ({
               return (
                 <TouchableOpacity
                   key={index}
-                  style={[
-                    styles.dot,
-                    isActive ? styles.dotActive : styles.dotInactive,
-                  ]}
                   onPress={() => {
                     scrollToIndex(index);
                     setCurrentIndex(index);
                   }}
                   activeOpacity={0.7}
-                />
+                  style={styles.dotButton}
+                >
+                  <Icon
+                    name={isActive ? 'radio-button-checked' : 'circle-outline'}
+                    size={isActive ? 12 : 10}
+                    color={colors.secondary.white}
+                    family={isActive ? 'material' : 'materialcommunity'}
+                  />
+                </TouchableOpacity>
               );
             })}
           </View>
@@ -164,7 +171,7 @@ export const DetailCarousel: React.FC<DetailCarouselProps> = ({
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    height: 300,
+    height: 240,
   },
   backgroundImage: {
     flex: 1,
@@ -175,7 +182,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.3)',
     justifyContent: 'flex-end',
-    paddingBottom: spacing.xl,
+    paddingBottom: spacing.md,
   },
   carouselScrollView: {
     flex: 1,
@@ -186,7 +193,7 @@ const styles = StyleSheet.create({
   slide: {
     width: SCREEN_WIDTH,
     justifyContent: 'flex-end',
-    paddingBottom: spacing.lg,
+    // paddingBottom: spacing.xs,
     paddingHorizontal: spacing.lg,
   },
   content: {
@@ -204,31 +211,35 @@ const styles = StyleSheet.create({
     width: '100%',
     maxWidth: 200,
   },
+  explorerButton: {
+    backgroundColor: 'transparent',
+    borderColor: colors.secondary.white,
+    borderWidth: 1,
+    borderRadius: 999, // Pill-shaped
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.xl,
+    minHeight: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowOpacity: 0,
+    elevation: 0,
+  },
+  explorerButtonText: {
+    ...typography.styles.button,
+    color: colors.text.inverse,
+  },
   dotsContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     gap: spacing.sm,
-    paddingVertical: spacing.md,
-    paddingBottom: spacing.lg,
+    // paddingTop: spacing.sm,
+    paddingBottom: spacing.sm,
   },
-  dot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-  },
-  dotInactive: {
-    backgroundColor: colors.secondary.white,
-    borderWidth: 1,
-    borderColor: colors.secondary.white,
-  },
-  dotActive: {
-    backgroundColor: colors.secondary.white,
-    borderWidth: 2,
-    borderColor: colors.secondary.white,
-    width: 10,
-    height: 10,
-    borderRadius: 5,
+  dotButton: {
+    padding: spacing.xs,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
