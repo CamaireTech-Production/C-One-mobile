@@ -20,5 +20,6 @@ export type MainTabParamList = {
   Home: undefined;
   Search: undefined;
   Bookings: undefined;
+  Wallet: undefined;
   Profile: undefined;
 };

@@ -3,7 +3,7 @@
  * Displays travel content leveraging the local data provider until backend is ready.
  */
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -11,6 +11,8 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
+  Animated,
+  Dimensions,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
@@ -26,6 +28,8 @@ import {
 } from '../../components/home';
 import { colors, typography, spacing } from '../../theme';
 import { useHomeData } from '../../hooks';
+import { Image } from '../../components/media';
+import { images } from '../../config';
 
 export const HomeScreen: React.FC = () => {
   const { t } = useTranslation();
@@ -61,11 +65,8 @@ export const HomeScreen: React.FC = () => {
             <Text style={styles.headerUser}>{data?.hero.userName}</Text>
           </View>
           <View style={styles.headerIcons}>
-            <TouchableOpacity style={styles.iconButton} activeOpacity={0.7}>
-              <Icon name="search" size={20} color={colors.text.primary} />
-            </TouchableOpacity>
             <TouchableOpacity style={styles.iconButtonActive} activeOpacity={0.7}>
-              <Icon name="home" size={20} color={colors.primary.normal} />
+              <Icon name="smart-toy" size={20} color={colors.primary.normal} family="material" />
             </TouchableOpacity>
           </View>
         </View>
@@ -73,13 +74,51 @@ export const HomeScreen: React.FC = () => {
         <View style={styles.sectionSpacing}>
           <Tabs
             options={[
-              { key: 'others', label: t('home.tabs.otherCountries') },
-              { key: 'position', label: t('home.tabs.myPosition') },
+              { 
+                key: 'others', 
+                label: t('home.tabs.otherCountries'),
+                icon: countryTab === 'others' ? (
+                  <View style={styles.activeTabIconContainer}>
+                    <Icon name="checkmark" size={14} color={colors.text.inverse} family="ionicons" />
+                  </View>
+                ) : undefined,
+                iconPosition: 'left',
+                tabStyle: countryTab === 'others' ? styles.activeTab : styles.inactiveTab,
+                tabTextStyle: countryTab === 'others' ? styles.activeTabText : styles.inactiveTabText,
+              },
+              { 
+                key: 'position', 
+                label: t('home.tabs.myPosition'),
+                icon: countryTab === 'position' ? (
+                  <View style={styles.activeTabIconContainer}>
+                    <Icon name="checkmark" size={14} color={colors.text.inverse} family="ionicons" />
+                  </View>
+                ) : undefined,
+                iconPosition: 'left',
+                tabStyle: countryTab === 'position' ? styles.activeTab : styles.inactiveTab,
+                tabTextStyle: countryTab === 'position' ? styles.activeTabText : styles.inactiveTabText,
+              },
             ]}
             value={countryTab}
             onChange={setCountryTab}
-            variant="segmented"
+            variant="underline"
+            gap={spacing.xs}
           />
+        </View>
+
+        {/* World Map Section with Location Animation */}
+        <WorldMapSection />
+
+        {/* Search Section */}
+        <View style={styles.searchSection}>
+          <View style={styles.searchInputWrapper}>
+            <Icon name="search" size={20} color={colors.text.secondary} />
+            <TextInput
+              placeholder={t('home.search.placeholder')}
+              placeholderTextColor={colors.text.tertiary}
+              style={styles.searchInput}
+            />
+          </View>
         </View>
 
         <Section
@@ -146,14 +185,6 @@ export const HomeScreen: React.FC = () => {
               fullWidth={false}
             />
           )}
-          <View style={styles.searchInputWrapper}>
-            <Icon name="search" size={20} color={colors.text.secondary} />
-            <TextInput
-              placeholder={t('home.search.placeholder')}
-              placeholderTextColor={colors.text.tertiary}
-              style={styles.searchInput}
-            />
-          </View>
         </View>
 
         <Section
@@ -208,6 +239,109 @@ const HorizontalCards: React.FC<{ children: React.ReactNode }> = ({ children }) 
     {children}
   </ScrollView>
 );
+
+// World Map Section with Location Animation
+const WorldMapSection: React.FC = () => {
+  const scaleAnim1 = useRef(new Animated.Value(1)).current;
+  const scaleAnim2 = useRef(new Animated.Value(1)).current;
+  const scaleAnim3 = useRef(new Animated.Value(1)).current;
+  const opacityAnim1 = useRef(new Animated.Value(0.6)).current;
+  const opacityAnim2 = useRef(new Animated.Value(0.4)).current;
+  const opacityAnim3 = useRef(new Animated.Value(0.2)).current;
+
+  useEffect(() => {
+    const createPulseAnimation = (scale: Animated.Value, opacity: Animated.Value, delay: number) => {
+      return Animated.loop(
+        Animated.parallel([
+          Animated.sequence([
+            Animated.timing(scale, {
+              toValue: 2.5,
+              duration: 2000,
+              delay,
+              useNativeDriver: true,
+            }),
+            Animated.timing(scale, {
+              toValue: 1,
+              duration: 0,
+              useNativeDriver: true,
+            }),
+          ]),
+          Animated.sequence([
+            Animated.timing(opacity, {
+              toValue: 0,
+              duration: 2000,
+              delay,
+              useNativeDriver: true,
+            }),
+            Animated.timing(opacity, {
+              toValue: opacity === opacityAnim1 ? 0.6 : opacity === opacityAnim2 ? 0.4 : 0.2,
+              duration: 0,
+              useNativeDriver: true,
+            }),
+          ]),
+        ])
+      );
+    };
+
+    const anim1 = createPulseAnimation(scaleAnim1, opacityAnim1, 0);
+    const anim2 = createPulseAnimation(scaleAnim2, opacityAnim2, 400);
+    const anim3 = createPulseAnimation(scaleAnim3, opacityAnim3, 800);
+
+    anim1.start();
+    anim2.start();
+    anim3.start();
+
+    return () => {
+      anim1.stop();
+      anim2.stop();
+      anim3.stop();
+    };
+  }, []);
+
+  return (
+    <View style={styles.worldMapContainer}>
+      <Image
+        source={images.worldMap || { uri: 'https://images.unsplash.com/photo-1524661135-423995f22d0b?w=800' }}
+        style={styles.worldMapImage}
+        resizeMode="cover"
+      />
+      <View style={styles.locationPinContainer}>
+        {/* Pulse circles */}
+        <Animated.View
+          style={[
+            styles.pulseCircle,
+            {
+              transform: [{ scale: scaleAnim1 }],
+              opacity: opacityAnim1,
+            },
+          ]}
+        />
+        <Animated.View
+          style={[
+            styles.pulseCircle,
+            {
+              transform: [{ scale: scaleAnim2 }],
+              opacity: opacityAnim2,
+            },
+          ]}
+        />
+        <Animated.View
+          style={[
+            styles.pulseCircle,
+            {
+              transform: [{ scale: scaleAnim3 }],
+              opacity: opacityAnim3,
+            },
+          ]}
+        />
+        {/* Location pin */}
+        <View style={styles.locationPin}>
+          <Icon name="location" size={24} color={colors.primary.normal} family="ionicons" />
+        </View>
+      </View>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -267,6 +401,31 @@ const styles = StyleSheet.create({
   sectionSpacing: {
     marginTop: spacing.xl,
   },
+  activeTab: {
+    borderBottomWidth: 3,
+    borderBottomColor: colors.primary.normal,
+    paddingBottom: spacing.sm,
+  },
+  inactiveTab: {
+    borderBottomWidth: 0,
+  },
+  activeTabText: {
+    color: colors.primary.normal,
+    fontWeight: '600',
+  },
+  inactiveTabText: {
+    color: colors.text.secondary,
+    fontWeight: '400',
+  },
+  activeTabIconContainer: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: colors.primary.normal,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: spacing.xs,
+  },
   section: {
     marginTop: spacing.xl,
   },
@@ -277,6 +436,55 @@ const styles = StyleSheet.create({
   },
   horizontalScroll: {
     gap: spacing.base,
+  },
+  worldMapContainer: {
+    marginTop: spacing.xl,
+    height: 200,
+    borderRadius: 16,
+    overflow: 'hidden',
+    position: 'relative',
+    backgroundColor: colors.background.tertiary,
+  },
+  worldMapImage: {
+    width: '100%',
+    height: '100%',
+    opacity: 0.3,
+  },
+  locationPinContainer: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginTop: -20,
+    marginLeft: -20,
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  pulseCircle: {
+    position: 'absolute',
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    borderWidth: 2,
+    borderColor: colors.primary.normal,
+    backgroundColor: 'transparent',
+  },
+  locationPin: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: colors.background.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: colors.primary.normal,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  searchSection: {
+    marginTop: spacing.lg,
   },
   filterCard: {
     marginTop: spacing.xl,

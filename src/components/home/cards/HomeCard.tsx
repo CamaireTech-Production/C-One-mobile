@@ -187,9 +187,9 @@ const getStatusConfig = (status: BookingStatus) => {
 
 const styles = StyleSheet.create({
   countryCard: {
-    width: 160,
-    height: 140,
-    borderRadius: 16,
+    width: 180,
+    height: 160,
+    borderRadius: 20,
     overflow: 'hidden',
   },
   countryImage: {
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     padding: spacing.base,
   },
   countryImageInner: {
-    borderRadius: 16,
+    borderRadius: 20,
   },
   countryTitle: {
     ...typography.styles.bodyBold18,

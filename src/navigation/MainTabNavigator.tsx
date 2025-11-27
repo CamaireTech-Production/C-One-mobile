@@ -61,6 +61,16 @@ export const MainTabNavigator: React.FC = () => {
         }}
       />
       <Tab.Screen
+        name="Wallet"
+        component={HomeScreen} // Placeholder - will be replaced later
+        options={{
+          tabBarLabel: t('navigation.tabs.wallet'),
+          tabBarIcon: ({ color, size }) => (
+            <Icon name="wallet" size={size} color={color} family="fontawesome6" fa6Style="solid" />
+          ),
+        }}
+      />
+      <Tab.Screen
         name="Profile"
         component={HomeScreen} // Placeholder - will be replaced later
         options={{

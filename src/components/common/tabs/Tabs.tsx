@@ -14,8 +14,11 @@ export type TabOption = {
   key: string;
   label: string;
   icon?: React.ReactNode;
+  iconPosition?: 'left' | 'right'; // Position de l'icône par rapport au texte
   badge?: string | number;
   disabled?: boolean;
+  tabStyle?: ViewStyle; // Style personnalisé pour cette option spécifique
+  tabTextStyle?: TextStyle; // Style de texte personnalisé pour cette option
 };
 
 export type TabsVariant = 'segmented' | 'pill' | 'underline';
@@ -27,8 +30,10 @@ export interface TabsProps {
   variant?: TabsVariant;
   fullWidth?: boolean;
   style?: ViewStyle;
-  tabStyle?: ViewStyle;
-  tabTextStyle?: TextStyle;
+  tabStyle?: ViewStyle; // Style par défaut pour tous les tabs
+  tabTextStyle?: TextStyle; // Style de texte par défaut pour tous les tabs
+  iconPosition?: 'left' | 'right'; // Position par défaut de l'icône
+  gap?: number; // Espacement entre les tabs
 }
 
 /**
@@ -45,10 +50,13 @@ export const Tabs: React.FC<TabsProps> = ({
   style,
   tabStyle,
   tabTextStyle,
+  iconPosition: defaultIconPosition = 'left',
+  gap,
 }) => {
   const containerStyle = [
     styles.container,
     variant === 'segmented' && styles.segmentedContainer,
+    gap !== undefined && { gap },
     style,
   ];
 
@@ -63,6 +71,9 @@ export const Tabs: React.FC<TabsProps> = ({
           textActive,
         } = getVariantStyles(variant);
 
+        const finalIconPosition = option.iconPosition ?? defaultIconPosition;
+        const showIcon = !!option.icon;
+
         return (
           <Pressable
             key={option.key}
@@ -72,7 +83,8 @@ export const Tabs: React.FC<TabsProps> = ({
               isActive && tabActive,
               !fullWidth && styles.tabAuto,
               option.disabled && styles.tabDisabled,
-              tabStyle,
+              tabStyle, // Style par défaut
+              option.tabStyle, // Style spécifique à l'option (écrase le style par défaut)
             ]}
             onPress={() => !option.disabled && onChange(option.key)}
             disabled={option.disabled}
@@ -80,7 +92,7 @@ export const Tabs: React.FC<TabsProps> = ({
             accessibilityState={{ selected: isActive, disabled: option.disabled }}
           >
             <View style={styles.tabContent}>
-              {option.icon && (
+              {showIcon && finalIconPosition === 'left' && (
                 <View style={styles.icon}>
                   {option.icon}
                 </View>
@@ -90,11 +102,17 @@ export const Tabs: React.FC<TabsProps> = ({
                   styles.tabText,
                   textBase,
                   isActive && textActive,
-                  tabTextStyle,
+                  tabTextStyle, // Style par défaut
+                  option.tabTextStyle, // Style spécifique à l'option
                 ]}
               >
                 {option.label}
               </Text>
+              {showIcon && finalIconPosition === 'right' && (
+                <View style={styles.icon}>
+                  {option.icon}
+                </View>
+              )}
               {option.badge && (
                 <View style={styles.badge}>
                   <Text style={styles.badgeText}>{option.badge}</Text>

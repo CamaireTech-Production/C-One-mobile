@@ -54,17 +54,17 @@ export const homeData: HomeData = {
     {
       id: 'usa',
       labelKey: 'home.countries.unitedStates',
-      imageUrl: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e',
+      imageUrl: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=800&h=600&fit=crop&q=80',
     },
     {
       id: 'canada',
       labelKey: 'home.countries.canada',
-      imageUrl: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?fit=crop&w=600&q=60',
+      imageUrl: 'https://images.unsplash.com/photo-1519834785169-98be25ec3f84?w=800&h=600&fit=crop&q=80',
     },
     {
       id: 'france',
       labelKey: 'home.countries.france',
-      imageUrl: 'https://images.unsplash.com/photo-1491553895911-0055eca6402d?fit=crop&w=600&q=60',
+      imageUrl: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&h=600&fit=crop&q=80',
     },
   ],
   cities: [

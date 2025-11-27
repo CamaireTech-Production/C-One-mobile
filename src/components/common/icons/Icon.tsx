@@ -28,7 +28,7 @@ const fa6RegularIconMap: Record<string, any> = {
   'user': faUser,
   'bell': faBell,
   // Add more mappings as needed
-  // Note: Some icons like 'arrow-down-wide-short' may only exist in solid variant
+  // Note: Some icons like 'arrow-down-wide-short' and 'wallet' may only exist in solid variant
 };
 
 interface IconProps {
