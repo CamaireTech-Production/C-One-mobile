@@ -1,10 +1,11 @@
 /**
  * Onboarding Navigator
  * Handles navigation between the 3 onboarding screens
+ * Navigation via swipe gestures (left/right)
  */
 
-import React, { useState, useRef } from 'react';
-import { View, StyleSheet, Animated, Pressable, Dimensions, Easing } from 'react-native';
+import React, { useState, useRef, useMemo } from 'react';
+import { View, StyleSheet, Animated, Dimensions, Easing, PanResponder } from 'react-native';
 import { OnboardingScreen1, OnboardingScreen2, OnboardingScreen3 } from './index';
 import { colors } from '../../theme';
 
@@ -14,6 +15,7 @@ interface OnboardingNavigatorProps {
 }
 
 const { height, width } = Dimensions.get('window');
+const SWIPE_THRESHOLD = 50; // Minimum distance to trigger swipe
 
 export const OnboardingNavigator: React.FC<OnboardingNavigatorProps> = ({
   onComplete,
@@ -56,7 +58,7 @@ export const OnboardingNavigator: React.FC<OnboardingNavigatorProps> = ({
   };
 
   const handleNext = () => {
-    // Navigation par tap droit vers l'écran suivant
+    // Navigation vers l'écran suivant
     if (currentScreen < 3) {
       runSlideTransition(currentScreen + 1, 'forward');
     } else {
@@ -75,20 +77,43 @@ export const OnboardingNavigator: React.FC<OnboardingNavigatorProps> = ({
     runSlideTransition(currentScreen - 1, 'backward');
   };
 
+  // PanResponder pour détecter les swipes
+  const panResponder = useMemo(
+    () =>
+      PanResponder.create({
+        onStartShouldSetPanResponder: () => !isAnimatingRef.current,
+        onMoveShouldSetPanResponder: (_, gestureState) => {
+          // Détecter uniquement les mouvements horizontaux significatifs
+          return Math.abs(gestureState.dx) > Math.abs(gestureState.dy) && Math.abs(gestureState.dx) > 10;
+        },
+        onPanResponderRelease: (_, gestureState) => {
+          if (isAnimatingRef.current) return;
+
+          const { dx, vx } = gestureState;
+
+          // Swipe de droite vers gauche (dx négatif) → écran suivant
+          if (dx < -SWIPE_THRESHOLD || vx < -0.5) {
+            if (currentScreen < 3) {
+              runSlideTransition(currentScreen + 1, 'forward');
+            } else {
+              if (!isAnimatingRef.current) {
+                onComplete();
+              }
+            }
+          }
+          // Swipe de gauche vers droite (dx positif) → écran précédent
+          else if (dx > SWIPE_THRESHOLD || vx > 0.5) {
+            if (currentScreen > 1) {
+              runSlideTransition(currentScreen - 1, 'backward');
+            }
+          }
+        },
+      }),
+    [currentScreen, onComplete]
+  );
+
   return (
-    <View style={styles.container}>
-      <View style={styles.tapOverlay}>
-        <Pressable
-          style={styles.tapZone}
-          onPress={handlePrevious}
-          android_disableSound
-        />
-        <Pressable
-          style={styles.tapZone}
-          onPress={handleNext}
-          android_disableSound
-        />
-      </View>
+    <View style={styles.container} {...panResponder.panHandlers}>
       <Animated.View
         style={[
           styles.screenWrapper,
@@ -116,22 +141,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background.primary,
   },
-  tapOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: height * 0.65,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    zIndex: 3,
-  },
-  tapZone: {
-    flex: 1,
-  },
   screenWrapper: {
     flex: 1,
-    zIndex: 1,
   },
 });
 

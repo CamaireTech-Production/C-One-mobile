@@ -167,6 +167,39 @@
       "title": "Vérification"
     }
   },
+  "geolocation": {
+    "confirmation": {
+      "label": "Verification",
+      "title": "Confirmer votre géolocalisation",
+      "message": "Confirmer à C-one si votre position se trouve à {{city}}",
+      "confirmButton": "Je confirme",
+      "cancelButton": "Non !"
+    },
+    "alert": {
+      "label": "Alerte",
+      "permissionDenied": {
+        "title": "Il semble que nous ne puissions pas acceder à votre localisation",
+        "message": "Allez dans les Paramètres puis\n• vérifier si votre location est activé\n• vérifier que votre vpn est désactivé"
+      },
+      "locationDisabled": {
+        "title": "Services de localisation désactivés",
+        "message": "Veuillez activer les services de localisation dans les paramètres de votre appareil pour utiliser cette fonctionnalité."
+      },
+      "networkError": {
+        "title": "Erreur réseau",
+        "message": "Une erreur réseau s'est produite lors de la récupération de votre localisation. Veuillez vérifier votre connexion internet et réessayer."
+      },
+      "timeout": {
+        "title": "Délai d'attente dépassé",
+        "message": "La récupération de votre localisation a pris trop de temps. Veuillez réessayer."
+      },
+      "unknown": {
+        "title": "Erreur de localisation",
+        "message": "Une erreur s'est produite lors de la récupération de votre localisation. Veuillez réessayer."
+      },
+      "openSettings": "Accéder aux paramètres"
+    }
+  },
   "validation": {
     "email": {
       "required": "Email requis",

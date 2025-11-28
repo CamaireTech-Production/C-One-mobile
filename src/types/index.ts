@@ -16,8 +16,17 @@ export type RootStackParamList = {
   Main: NavigatorScreenParams<MainTabParamList> | undefined;
 };
 
+export type HomeStackParamList = {
+  HomeMain: undefined;
+  Detail: {
+    id: string;
+    title: string;
+    imageUrl?: string;
+  };
+};
+
 export type MainTabParamList = {
-  Home: undefined;
+  Home: NavigatorScreenParams<HomeStackParamList> | undefined;
   Search: undefined;
   Awards: undefined;
   Bookings: undefined;
