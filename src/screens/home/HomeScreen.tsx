@@ -71,6 +71,14 @@ export const HomeScreen: React.FC = () => {
     });
   };
 
+  const handleCityPress = (cityId: string, cityName: string, cityImageUrl?: string) => {
+    navigation.navigate('Detail', {
+      id: cityId,
+      title: cityName,
+      imageUrl: cityImageUrl,
+    });
+  };
+
   // Handle tab change
   const handleTabChange = (tab: string) => {
     setCountryTab(tab);
@@ -388,6 +396,7 @@ export const HomeScreen: React.FC = () => {
                   type="city"
                   title={t(city.labelKey)}
                   imageUrl={city.imageUrl}
+                  onPress={() => handleCityPress(city.id, t(city.labelKey), city.imageUrl)}
                 />
               ))}
             </HorizontalCards>

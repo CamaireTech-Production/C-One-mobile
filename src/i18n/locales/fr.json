@@ -137,7 +137,19 @@
     "cities": {
       "yaounde": "Yaoundé",
       "douala": "Douala",
-      "dschang": "Dschang"
+      "dschang": "Dschang",
+      "amsterdam": "Amsterdam",
+      "rotterdam": "Rotterdam",
+      "laHaye": "La Haye",
+      "bucarest": "Bucarest",
+      "clujNapoca": "Cluj-Napoca",
+      "timisoara": "Timișoara",
+      "mexico": "Mexico",
+      "guadalajara": "Guadalajara",
+      "cancun": "Cancún",
+      "tokyo": "Tokyo",
+      "osaka": "Osaka",
+      "kyoto": "Kyoto"
     },
     "places": {
       "timesSquare": "Times Square - New York",
