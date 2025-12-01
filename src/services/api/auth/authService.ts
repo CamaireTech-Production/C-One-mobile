@@ -59,14 +59,17 @@ export const authService = {
       payload,
       { headers: jsonHeaders() },
     );
-    const data = response.data as LoginResponse;
+    // Backend returns: { message, data: { authUser } }
+    const responseData = response.data as { message: string; data: { authUser: AuthUser } };
+    const authUser = responseData.data.authUser;
 
     // Save tokens automatically
-    if (data.authUser?.tokens) {
-      await saveTokens(data.authUser.tokens);
+    if (authUser?.tokens) {
+      await saveTokens(authUser.tokens);
     }
 
-    return data;
+    // Return in the format expected by AuthContext
+    return { message: responseData.message, authUser };
   },
 
   /**
@@ -130,10 +133,30 @@ export const authService = {
 
   /**
    * Get current authenticated user profile
+   * Backend returns: { data: { email, name, avatar } }
    */
   me: async () => {
     const response = await apiClient.get(ENDPOINTS.auth.me);
-    return response.data?.user as AuthUser;
+    // Backend returns: { data: { email, name, avatar } }
+    const userData = response.data?.data;
+    
+    if (!userData || !userData.email) {
+      throw new Error('No user data received from /me endpoint');
+    }
+
+    // Map backend response to AuthUser type
+    // Note: Backend doesn't return id, role, status, so we use defaults
+    // These should be added to the backend response in the future
+    const authUser: AuthUser = {
+      id: userData.id || '', // Backend doesn't return this - should be added
+      email: userData.email,
+      name: userData.name,
+      role: userData.role || 'CUSTOMER', // Default - backend should return this
+      status: userData.status || 'ACTIVE', // Default - backend should return this
+      // tokens are not returned by /me endpoint
+    };
+
+    return authUser;
   },
 
   /**

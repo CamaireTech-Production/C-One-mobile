@@ -57,3 +57,15 @@ export const clearTokens = async () => {
   ]);
 };
 
+// Onboarding persistence
+const ONBOARDING_SEEN_KEY = '@c_one:onboarding_seen';
+
+export const setOnboardingSeen = async (seen: boolean = true) => {
+  await AsyncStorage.setItem(ONBOARDING_SEEN_KEY, JSON.stringify(seen));
+};
+
+export const getOnboardingSeen = async (): Promise<boolean> => {
+  const value = await AsyncStorage.getItem(ONBOARDING_SEEN_KEY);
+  return value ? JSON.parse(value) : false;
+};
+

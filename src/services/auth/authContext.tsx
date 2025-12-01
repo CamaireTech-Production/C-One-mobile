@@ -39,14 +39,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const checkAuth = useCallback(async () => {
     try {
       const token = await getAccessToken();
-      if (token) {
-        // Token exists, try to fetch user profile
-        const userData = await authService.me();
+      if (!token) {
+        console.log('[AuthContext] No token found, user not authenticated');
+        setUser(null);
+        setIsInitializing(false);
+        return;
+      }
+
+      console.log('[AuthContext] Token found, fetching user profile...');
+      // Token exists, try to fetch user profile
+      const userData = await authService.me();
+      
+      if (userData && userData.email) {
+        console.log('[AuthContext] User authenticated:', userData.email);
         setUser(userData);
       } else {
+        console.log('[AuthContext] Invalid user data received');
         setUser(null);
+        await clearTokens();
       }
-    } catch (error) {
+    } catch (error: any) {
+      console.error('[AuthContext] checkAuth error:', error?.message || error);
       // Token invalid or expired, clear state
       setUser(null);
       await clearTokens();

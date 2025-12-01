@@ -52,6 +52,8 @@ export {
   getAccessTokenExpiry,
   isAccessTokenExpired,
   clearTokens,
+  setOnboardingSeen,
+  getOnboardingSeen,
 } from './auth/tokenStorage';
 export { AuthProvider, useAuth } from './auth/authContext';
 export type { PersistedTokens } from './auth/tokenStorage';
