@@ -36,6 +36,7 @@ import { Image } from '../../components/media';
 import { images } from '../../config';
 import { SkeletonBlock } from '../../components/skeleton';
 import { HomeCity } from '../../data/data';
+import { useAuth } from '../../services/auth/authContext';
 
 type HomeScreenNavigationProp = NativeStackNavigationProp<HomeStackParamList, 'Home'>;
 
@@ -43,6 +44,7 @@ export const HomeScreen: React.FC = () => {
   const { t } = useTranslation();
   const navigation = useNavigation<HomeScreenNavigationProp>();
   const { data, loading } = useHomeData();
+  const { user } = useAuth();
 
   const [countryTab, setCountryTab] = useState('others');
   
@@ -277,7 +279,9 @@ export const HomeScreen: React.FC = () => {
                   {t('home.header.greeting')}
                 </Text>
                 <View style={styles.headerUserContainer}>
-                  <Text style={styles.headerUser}>{data?.hero.userName}</Text>
+                  <Text style={styles.headerUser}>
+                    @{user?.name || data?.hero.userName || 'Utilisateur'}
+                  </Text>
                   <Text style={styles.headerEmoji}>👋</Text>
                 </View>
               </>
