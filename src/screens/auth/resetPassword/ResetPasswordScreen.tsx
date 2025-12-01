@@ -99,7 +99,12 @@ export const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
     setLoading(true);
     setErrors({});
     try {
-      await authService.resetPassword(email, otp, newPassword, confirmPassword);
+      await authService.resetPassword({
+        email,
+        otp,
+        password: newPassword,
+        password_confirmation: confirmPassword,
+      });
       setShowSuccessModal(true);
     } catch (error: any) {
       const apiError = extractApiError(error);

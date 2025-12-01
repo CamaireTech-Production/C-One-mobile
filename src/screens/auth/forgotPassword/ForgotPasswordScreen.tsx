@@ -73,7 +73,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
     setLoading(true);
     setErrors({});
     try {
-      await authService.forgotPassword(email);
+      await authService.forgotPassword({ email });
       // Navigate to OTP verification screen with email and type
       navigation.navigate('OtpVerification', { 
         email, 

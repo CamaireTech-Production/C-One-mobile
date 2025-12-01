@@ -73,7 +73,7 @@ export const OtpVerificationScreen: React.FC<OtpVerificationScreenProps> = ({
         setShowVerificationModal(true);
       } else {
         // Password reset OTP verification
-        await authService.verifyOtp(email, code);
+        await authService.verifyOtp({ email, otp: code });
         // Navigate to reset password screen
         navigation.navigate('ResetPassword', { email, otp: code });
       }
@@ -101,7 +101,7 @@ export const OtpVerificationScreen: React.FC<OtpVerificationScreenProps> = ({
         // For now, just clear the code
       } else {
         // Resend password reset OTP
-        await authService.forgotPassword(email);
+        await authService.forgotPassword({ email });
       }
     } catch (err: any) {
       const apiError = extractApiError(err);
