@@ -11,8 +11,8 @@ export type RootStackParamList = {
   Login: undefined;
   SignUp: undefined;
   ForgotPassword: undefined;
-  OtpVerification: undefined;
-  ResetPassword: undefined;
+  OtpVerification: { email: string; type: 'email-verification' | 'password-reset' };
+  ResetPassword: { email: string; otp: string };
   Main: NavigatorScreenParams<MainTabParamList> | undefined;
 };
 

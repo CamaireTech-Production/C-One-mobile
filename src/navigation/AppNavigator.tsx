@@ -18,14 +18,15 @@ import { ForgotPasswordScreen } from '../screens/auth/forgotPassword/ForgotPassw
 import { OtpVerificationScreen } from '../screens/auth/otpVerification/OtpVerificationScreen';
 import { ResetPasswordScreen } from '../screens/auth/resetPassword/ResetPasswordScreen';
 import { MainTabNavigator } from './MainTabNavigator';
+import { useAuth } from '../services/auth/authContext';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const navigationRef = createNavigationContainerRef<RootStackParamList>();
 
 export const AppNavigator = () => {
+  const { isAuthenticated, isInitializing } = useAuth();
   const [showSplash, setShowSplash] = useState(true);
   const [hasSeenOnboarding, setHasSeenOnboarding] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [requestedAuthScreen, setRequestedAuthScreen] = useState<'Login' | 'SignUp'>('Login');
   const [isNavigationReady, setIsNavigationReady] = useState(false);
 
@@ -36,22 +37,6 @@ export const AppNavigator = () => {
   const handleOnboardingComplete = (nextScreen: 'Login' | 'SignUp' = 'Login') => {
     setRequestedAuthScreen(nextScreen);
     setHasSeenOnboarding(true);
-  };
-
-  const handleLogin = (email: string, password: string) => {
-    // TODO: Implement actual login logic
-    console.log('Login:', email, password);
-    setIsAuthenticated(true);
-  };
-
-  const handleSignUp = (data: {
-    username: string;
-    email: string;
-    password: string;
-  }) => {
-    // TODO: Implement actual signup logic
-    console.log('SignUp:', data);
-    setIsAuthenticated(true);
   };
 
   const navigatorKey = showSplash
@@ -71,13 +56,13 @@ export const AppNavigator = () => {
         : 'Main';
 
   useEffect(() => {
-    if (isAuthenticated && isNavigationReady) {
+    if (isAuthenticated && isNavigationReady && !isInitializing) {
       navigationRef.reset({
         index: 0,
         routes: [{ name: 'Main' }],
       });
     }
-  }, [isAuthenticated, isNavigationReady]);
+  }, [isAuthenticated, isNavigationReady, isInitializing]);
 
   return (
     <NavigationContainer
@@ -113,7 +98,6 @@ export const AppNavigator = () => {
                 <Stack.Screen name="Login">
                   {({ navigation }) => (
                     <LoginScreen
-                      onLogin={handleLogin}
                       onSignUp={() => navigation.navigate('SignUp')}
                       onForgotPassword={() => navigation.navigate('ForgotPassword')}
                     />
@@ -122,7 +106,6 @@ export const AppNavigator = () => {
                 <Stack.Screen name="SignUp">
                   {({ navigation }) => (
                     <SignUpScreen
-                      onSignUp={handleSignUp}
                       onLogin={() => navigation.navigate('Login')}
                     />
                   )}
@@ -130,10 +113,6 @@ export const AppNavigator = () => {
                 <Stack.Screen name="ForgotPassword">
                   {({ navigation }) => (
                     <ForgotPasswordScreen
-                      onComplete={() => {
-                        // Navigate to OTP verification screen after email is sent
-                        navigation.navigate('OtpVerification');
-                      }}
                       onBack={() => navigation.navigate('Login')}
                     />
                   )}
@@ -141,10 +120,6 @@ export const AppNavigator = () => {
                 <Stack.Screen name="OtpVerification">
                   {({ navigation }) => (
                     <OtpVerificationScreen
-                      onComplete={(code) => {
-                        // Navigate to reset password screen after OTP verification
-                        navigation.navigate('ResetPassword');
-                      }}
                       onBack={() => navigation.navigate('Login')}
                     />
                   )}
@@ -152,10 +127,6 @@ export const AppNavigator = () => {
                 <Stack.Screen name="ResetPassword">
                   {({ navigation }) => (
                     <ResetPasswordScreen
-                      onComplete={() => {
-                        // TODO: Show success modal and navigate to login
-                        navigation.navigate('Login');
-                      }}
                       onBack={() => navigation.navigate('Login')}
                     />
                   )}

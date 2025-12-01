@@ -14,21 +14,28 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { Input, Button, AnimatedView, SocialButton, Icon, ScreenBackground } from '../../../components/common';
 import { colors, typography, spacing } from '../../../theme';
 import { VALIDATION } from '../../../utils/constants';
+import { RootStackParamList } from '../../../types';
+import { useAuth } from '../../../services/auth/authContext';
+import { extractApiError } from '../../../services/api/apiClient';
+
+type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'SignUp'>;
 
 interface SignUpScreenProps {
-  onSignUp: (data: { username: string; email: string; password: string }) => void;
   onLogin: () => void;
 }
 
 export const SignUpScreen: React.FC<SignUpScreenProps> = ({
-  onSignUp,
   onLogin,
 }) => {
   const { t } = useTranslation();
+  const navigation = useNavigation<NavigationProp>();
+  const { register } = useAuth();
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -36,6 +43,7 @@ export const SignUpScreen: React.FC<SignUpScreenProps> = ({
     fullName?: string;
     email?: string;
     password?: string;
+    general?: string;
   }>({});
   const [loading, setLoading] = useState(false);
 
@@ -90,8 +98,40 @@ export const SignUpScreen: React.FC<SignUpScreenProps> = ({
     if (!validate()) return;
 
     setLoading(true);
+    setErrors({});
     try {
-      await onSignUp({ username: fullName, email, password });
+      await register(fullName, email, password);
+      // After successful registration, navigate to OTP verification
+      navigation.navigate('OtpVerification', {
+        email,
+        type: 'email-verification',
+      });
+    } catch (error: any) {
+      const apiError = extractApiError(error);
+      
+      // Handle field-specific errors
+      if (apiError.errors) {
+        const fieldErrors: { fullName?: string; email?: string; password?: string } = {};
+        if (apiError.errors.name) {
+          fieldErrors.fullName = Array.isArray(apiError.errors.name)
+            ? apiError.errors.name[0]
+            : apiError.errors.name;
+        }
+        if (apiError.errors.email) {
+          fieldErrors.email = Array.isArray(apiError.errors.email)
+            ? apiError.errors.email[0]
+            : apiError.errors.email;
+        }
+        if (apiError.errors.password) {
+          fieldErrors.password = Array.isArray(apiError.errors.password)
+            ? apiError.errors.password[0]
+            : apiError.errors.password;
+        }
+        setErrors(fieldErrors);
+      } else {
+        // General error message
+        setErrors({ general: apiError.message || t('auth.signup.error') });
+      }
     } finally {
       setLoading(false);
     }
@@ -153,6 +193,10 @@ export const SignUpScreen: React.FC<SignUpScreenProps> = ({
                 showPasswordToggle
                 leftIcon={<Icon name="eye-outline" size={20} color={colors.text.secondary} />}
               />
+
+              {errors.general && (
+                <Text style={styles.errorMessage}>{errors.general}</Text>
+              )}
 
               <Button
                 title={t('auth.signup.button')}
@@ -225,6 +269,12 @@ const styles = StyleSheet.create({
   },
   form: {
     marginBottom: spacing.xl,
+  },
+  errorMessage: {
+    ...typography.styles.caption,
+    color: colors.error,
+    marginTop: spacing.xs,
+    marginBottom: spacing.sm,
   },
   socialSection: {
     marginTop: spacing.md,

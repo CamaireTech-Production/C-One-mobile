@@ -14,22 +14,38 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { useRoute, useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { Button, AnimatedView, OtpInput, ScreenBackground, VerificationModal, LoadingOverlay } from '../../../components/common';
 import { colors, typography, spacing } from '../../../theme';
+import { RootStackParamList } from '../../../types';
+import { useAuth } from '../../../services/auth/authContext';
+import { authService } from '../../../services';
+import { extractApiError } from '../../../services/api/apiClient';
+
+type RouteProp = {
+  params: {
+    email: string;
+    type: 'email-verification' | 'password-reset';
+  };
+};
+
+type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'OtpVerification'>;
 
 interface OtpVerificationScreenProps {
-  onComplete: (code: string) => void;
   onBack: () => void;
-  email?: string;
 }
 
 export const OtpVerificationScreen: React.FC<OtpVerificationScreenProps> = ({
-  onComplete,
   onBack,
-  email,
 }) => {
   const { t } = useTranslation();
+  const route = useRoute<RouteProp>();
+  const navigation = useNavigation<NavigationProp>();
+  const { verifyEmail } = useAuth();
+  const { email, type } = route.params || { email: '', type: 'email-verification' as const };
+  
   const [code, setCode] = useState('');
   const [error, setError] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState(false);
@@ -42,7 +58,7 @@ export const OtpVerificationScreen: React.FC<OtpVerificationScreenProps> = ({
   };
 
   const handleContinue = useCallback(async () => {
-    if (code.length !== 4) {
+    if (code.length !== 6) {
       setError(t('validation.otp.length'));
       return;
     }
@@ -50,29 +66,26 @@ export const OtpVerificationScreen: React.FC<OtpVerificationScreenProps> = ({
     setLoading(true);
     setError(undefined);
     try {
-      // TODO: Call API to verify code
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      
-      // Cas de test : si le code est "2002", afficher le modal d'échec
-      // En production, cela dépendra de la réponse de l'API
-      const isValid = code !== '2002';
-      
-      if (isValid) {
+      if (type === 'email-verification') {
+        // Email verification after signup
+        await verifyEmail(email, code);
         setVerificationResult('success');
         setShowVerificationModal(true);
       } else {
-        setVerificationResult('error');
-        setError(t('validation.otp.invalid'));
-        setShowVerificationModal(true);
+        // Password reset OTP verification
+        await authService.verifyOtp(email, code);
+        // Navigate to reset password screen
+        navigation.navigate('ResetPassword', { email, otp: code });
       }
     } catch (err: any) {
+      const apiError = extractApiError(err);
       setVerificationResult('error');
-      setError(err.message || t('validation.otp.invalid'));
+      setError(apiError.message || t('validation.otp.invalid'));
       setShowVerificationModal(true);
     } finally {
       setLoading(false);
     }
-  }, [code, t]);
+  }, [code, email, type, t, verifyEmail, navigation]);
 
   const handleCodeComplete = useCallback(async (value: string) => {
     // Auto-verify when code is complete
@@ -82,13 +95,24 @@ export const OtpVerificationScreen: React.FC<OtpVerificationScreenProps> = ({
   const handleResendCode = async () => {
     setCode('');
     setError(undefined);
-    // TODO: Call API to resend code
+    try {
+      if (type === 'email-verification') {
+        // Resend email verification OTP - would need a resend endpoint
+        // For now, just clear the code
+      } else {
+        // Resend password reset OTP
+        await authService.forgotPassword(email);
+      }
+    } catch (err: any) {
+      const apiError = extractApiError(err);
+      setError(apiError.message || t('auth.otp.resendError'));
+    }
   };
 
   const handleVerificationModalClose = () => {
     setShowVerificationModal(false);
-    if (verificationResult === 'success') {
-      onComplete(code);
+    if (verificationResult === 'success' && type === 'email-verification') {
+      // Navigation will be handled by AppNavigator when isAuthenticated changes
     }
   };
 
@@ -113,7 +137,7 @@ export const OtpVerificationScreen: React.FC<OtpVerificationScreenProps> = ({
 
             <AnimatedView style={styles.form} delay={200}>
               <OtpInput
-                length={4}
+                length={6}
                 type="number"
                 value={code}
                 onChangeText={handleCodeChange}
@@ -137,7 +161,7 @@ export const OtpVerificationScreen: React.FC<OtpVerificationScreenProps> = ({
                 size="large"
                 fullWidth
                 loading={loading}
-                disabled={code.length !== 4}
+                disabled={code.length !== 6}
               />
             </AnimatedView>
           </View>
