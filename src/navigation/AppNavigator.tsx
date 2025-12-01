@@ -3,7 +3,7 @@
  * Handles navigation between auth and main app flows
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   NavigationContainer,
   createNavigationContainerRef,
@@ -78,6 +78,32 @@ export const AppNavigator = () => {
         : !hasSeenOnboarding
           ? 'Onboarding'
           : requestedAuthScreen;
+
+  // Track previous auth state to detect logout
+  const prevAuthenticatedRef = useRef(isAuthenticated);
+
+  // Handle logout - redirect to Login
+  useEffect(() => {
+    const wasAuthenticated = prevAuthenticatedRef.current;
+    const isNowUnauthenticated = !isAuthenticated;
+    
+    prevAuthenticatedRef.current = isAuthenticated;
+    
+    // Detect logout: was authenticated, now not
+    if (wasAuthenticated && isNowUnauthenticated && isReady && !showSplash) {
+      // Wait for Stack to be recreated, then navigate
+      const timer = setTimeout(() => {
+        if (navigationRef.isReady()) {
+          navigationRef.reset({
+            index: 0,
+            routes: [{ name: 'Login' }],
+          });
+        }
+      }, 300);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [isAuthenticated, isReady, showSplash]);
 
   return (
     <NavigationContainer ref={navigationRef}>

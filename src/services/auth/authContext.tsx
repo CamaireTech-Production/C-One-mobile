@@ -6,7 +6,7 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import type { AuthUser, LoginRequest, RegisterRequest, VerifyEmailRequest } from '../api/types';
 import { authService } from '../api/auth/authService';
-import { getAccessToken, clearTokens } from './tokenStorage';
+import { getAccessToken, clearTokens, setOnboardingSeen } from './tokenStorage';
 
 type AuthState = {
   user: AuthUser | null;
@@ -113,6 +113,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   /**
    * Logout user and clear tokens
+   * Note: Onboarding status is reset on next app start, not immediately on logout
+   * This allows immediate redirect to Login screen
    */
   const logout = useCallback(async () => {
     setIsLoading(true);
@@ -120,6 +122,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       await authService.logout();
       // Tokens are automatically cleared by authService
       setUser(null);
+      // Don't reset onboarding here - it will be reset on next app start
+      // This allows immediate redirect to Login without showing onboarding
     } finally {
       setIsLoading(false);
     }

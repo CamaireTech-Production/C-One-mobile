@@ -9,6 +9,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MainTabParamList } from '../types';
 import { HomeStackNavigator } from './HomeStackNavigator';
 import { HomeScreen } from '../screens/home/HomeScreen';
+import { ProfileScreen } from '../screens/profile/ProfileScreen';
 import { Icon } from '../components/common';
 import { colors, typography } from '../theme';
 import { BottomTabBar } from '../components/navigation';
@@ -71,7 +72,7 @@ export const MainTabNavigator: React.FC = () => {
       />
       <Tab.Screen
         name="Profile"
-        component={HomeStackNavigator} // Placeholder - will be replaced later
+        component={ProfileScreen}
         options={{
           tabBarLabel: '',
           tabBarIcon: ({ color, size }) => (
