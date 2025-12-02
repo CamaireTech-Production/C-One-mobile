@@ -104,21 +104,39 @@ export const HomeScreen: React.FC = () => {
 
   // Request location when "position" tab is selected
   const handleRequestLocation = useCallback(async () => {
+    console.log('🏠 [HomeScreen] Requesting location...');
     setHasRequestedLocation(true);
     
     try {
       const location = await getCurrentLocation();
       
+      console.log('🏠 [HomeScreen] Location received:', {
+        hasLocation: !!location,
+        countryCode: location?.countryCode,
+        countryName: location?.countryName,
+        city: location?.city,
+        coordinates: location ? {
+          latitude: location.latitude,
+          longitude: location.longitude,
+        } : null,
+      });
+      
       if (location && location.countryCode) {
+        console.log('🏠 [HomeScreen] Filtering cities for country code:', location.countryCode);
         // Filter cities based on country code
         filterCitiesByCountry(location.countryCode);
         
         // Show confirmation modal if we have a city name and haven't shown it yet
         if (location.city && !hasShownConfirmationForCurrentLocation) {
+          console.log('🏠 [HomeScreen] Showing confirmation modal for city:', location.city);
           setShowConfirmationModal(true);
           setHasShownConfirmationForCurrentLocation(true);
         }
       } else {
+        console.warn('🏠 [HomeScreen] No location or country code found:', {
+          hasLocation: !!location,
+          hasCountryCode: !!location?.countryCode,
+        });
         // No location retrieved - check if it's an error or just no data
         // Only show alert if there's an actual error status and no cached location
         if ((geolocationStatus === 'denied' || geolocationStatus === 'error') && !geolocationLocation) {
@@ -126,6 +144,7 @@ export const HomeScreen: React.FC = () => {
         }
       }
     } catch (error) {
+      console.error('🏠 [HomeScreen] Error requesting location:', error);
       // Only show error if we don't have a cached location
       if (!geolocationLocation) {
         handleGeolocationError();
@@ -136,15 +155,36 @@ export const HomeScreen: React.FC = () => {
   // Filter cities by country code
   const filterCitiesByCountry = useCallback((countryCode?: string) => {
     if (!data || !countryCode) {
+      console.log('🏠 [HomeScreen] No data or country code, showing all cities');
       setFilteredCities(data?.cities || []);
       return;
     }
 
+    console.log('🏠 [HomeScreen] Filtering cities. Total cities:', data.cities.length);
+    console.log('🏠 [HomeScreen] Looking for country code:', countryCode);
+    
     const filtered = data.cities.filter(
       (city) => city.countryCode?.toUpperCase() === countryCode.toUpperCase()
     );
     
+    console.log('🏠 [HomeScreen] Filtered cities result:', {
+      filteredCount: filtered.length,
+      filteredCities: filtered.map(c => ({
+        id: c.id,
+        labelKey: c.labelKey,
+        countryCode: c.countryCode,
+      })),
+      allCitiesWithCodes: data.cities.map(c => ({
+        id: c.id,
+        countryCode: c.countryCode,
+      })),
+    });
+    
     setFilteredCities(filtered.length > 0 ? filtered : data.cities);
+    
+    if (filtered.length === 0) {
+      console.warn('🏠 [HomeScreen] No cities found for country code, showing all cities');
+    }
   }, [data]);
 
   // Handle geolocation errors

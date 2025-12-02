@@ -32,18 +32,24 @@ export const reverseGeocode = async (
   try {
     const { latitude, longitude } = coordinates;
 
+    console.log('📍 [GeolocationService] Reverse geocoding coordinates:', {
+      latitude,
+      longitude,
+    });
+
     const reverseGeocodeResult = await Location.reverseGeocodeAsync({
       latitude,
       longitude,
     });
 
     if (!reverseGeocodeResult || reverseGeocodeResult.length === 0) {
+      console.warn('📍 [GeolocationService] No reverse geocoding result found');
       return null;
     }
 
     const address = reverseGeocodeResult[0];
 
-    return {
+    const result = {
       countryCode: address.isoCountryCode || undefined,
       countryName: address.country || undefined,
       city: address.city || address.subAdministrativeArea || undefined,
@@ -53,8 +59,19 @@ export const reverseGeocode = async (
       streetNumber: address.streetNumber || undefined,
       formattedAddress: address.formattedAddress || undefined,
     };
+
+    console.log('📍 [GeolocationService] Reverse geocoding result:', {
+      countryCode: result.countryCode,
+      countryName: result.countryName,
+      city: result.city,
+      region: result.region,
+      formattedAddress: result.formattedAddress,
+      rawAddress: address,
+    });
+
+    return result;
   } catch (error: any) {
-    console.warn('Reverse geocoding failed:', error);
+    console.error('📍 [GeolocationService] Reverse geocoding failed:', error);
     return null;
   }
 };

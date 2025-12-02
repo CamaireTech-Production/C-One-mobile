@@ -156,9 +156,20 @@ export const useGeolocation = (
       if (useCache) {
         const cachedLocation = await getLocationCache();
         if (cachedLocation) {
+          console.log('🌍 [useGeolocation] Using cached location:', {
+            countryCode: cachedLocation.countryCode,
+            countryName: cachedLocation.countryName,
+            city: cachedLocation.city,
+            coordinates: {
+              latitude: cachedLocation.latitude,
+              longitude: cachedLocation.longitude,
+            },
+          });
           setLocation(cachedLocation);
           setStatus('success');
           return cachedLocation;
+        } else {
+          console.log('🌍 [useGeolocation] No valid cache found, fetching new location');
         }
       }
 
@@ -188,6 +199,13 @@ export const useGeolocation = (
 
       const { latitude, longitude } = position.coords;
 
+      console.log('🌍 [useGeolocation] GPS coordinates detected:', {
+        latitude,
+        longitude,
+        accuracy: position.coords.accuracy,
+        altitude: position.coords.altitude,
+      });
+
       // Perform reverse geocoding using the service
       let locationData: LocationData = {
         latitude,
@@ -205,10 +223,20 @@ export const useGeolocation = (
             city: geocodeResult.city,
             region: geocodeResult.region,
           };
+
+          console.log('🌍 [useGeolocation] Location data after reverse geocoding:', {
+            countryCode: locationData.countryCode,
+            countryName: locationData.countryName,
+            city: locationData.city,
+            region: locationData.region,
+            coordinates: { latitude, longitude },
+          });
+        } else {
+          console.warn('🌍 [useGeolocation] Reverse geocoding returned no result');
         }
       } catch (geocodeError: any) {
         // If reverse geocoding fails, we still return the coordinates
-        console.warn('Reverse geocoding failed:', geocodeError);
+        console.error('🌍 [useGeolocation] Reverse geocoding failed:', geocodeError);
         // Don't set error here, as we still have valid coordinates
       }
 
@@ -219,12 +247,14 @@ export const useGeolocation = (
       if (useCache) {
         try {
           await saveLocationCache(locationData, cacheTTL);
+          console.log('🌍 [useGeolocation] Location saved to cache');
         } catch (cacheError) {
           // Don't fail the whole operation if cache save fails
-          console.warn('Failed to save location to cache:', cacheError);
+          console.warn('🌍 [useGeolocation] Failed to save location to cache:', cacheError);
         }
       }
 
+      console.log('🌍 [useGeolocation] Final location data returned:', locationData);
       return locationData;
     } catch (err: any) {
       clearTimeout();
