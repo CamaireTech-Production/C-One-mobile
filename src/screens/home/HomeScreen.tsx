@@ -71,6 +71,12 @@ export const HomeScreen: React.FC = () => {
       'usa': 'US',
       'canada': 'CA',
       'france': 'FR',
+      'uk': 'GB',
+      'germany': 'DE',
+      'italy': 'IT',
+      'spain': 'ES',
+      'japan': 'JP',
+      'australia': 'AU',
     };
     return countryCodeMap[countryId] || countryId.toUpperCase();
   };

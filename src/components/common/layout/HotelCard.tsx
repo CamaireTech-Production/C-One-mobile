@@ -162,7 +162,7 @@ export const HotelCard: React.FC<HotelCardProps> = ({
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    backgroundColor: colors.background.primary,
+    backgroundColor: colors.background.searhbarbg,
     borderRadius: 16,
     overflow: 'hidden',
     marginBottom: spacing.base,
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xs,
   },
   title: {
-    ...typography.styles.bodySemibold18,
+    ...typography.styles.bodyBold18,
     color: colors.text.primary,
     flex: 1,
     marginRight: spacing.sm,

@@ -132,7 +132,13 @@
     "countries": {
       "unitedStates": "États-Unis",
       "canada": "Canada",
-      "france": "France"
+      "france": "France",
+      "unitedKingdom": "Royaume-Uni",
+      "germany": "Allemagne",
+      "italy": "Italie",
+      "spain": "Espagne",
+      "japan": "Japon",
+      "australia": "Australie"
     },
     "cities": {
       "yaounde": "Yaoundé",
