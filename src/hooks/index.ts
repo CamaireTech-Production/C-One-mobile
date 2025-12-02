@@ -15,4 +15,8 @@ export type {
   UseGeolocationOptions, 
   UseGeolocationReturn 
 } from './useGeolocation';
+export { useHotelData } from './useHotelData';
+export { useTourismData } from './useTourismData';
+export { useRestaurantData } from './useRestaurantData';
+export { useTransportData } from './useTransportData';
 

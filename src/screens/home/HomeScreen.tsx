@@ -65,19 +65,34 @@ export const HomeScreen: React.FC = () => {
   const [hasRequestedLocation, setHasRequestedLocation] = useState(false);
   const [hasShownConfirmationForCurrentLocation, setHasShownConfirmationForCurrentLocation] = useState(false);
 
+  // Mapping country IDs to ISO country codes (temporary - should be in data.ts)
+  const getCountryCode = (countryId: string): string => {
+    const countryCodeMap: Record<string, string> = {
+      'usa': 'US',
+      'canada': 'CA',
+      'france': 'FR',
+    };
+    return countryCodeMap[countryId] || countryId.toUpperCase();
+  };
+
   const handleCountryPress = (countryId: string, countryName: string, countryImageUrl?: string) => {
     navigation.navigate('Detail', {
       id: countryId,
       title: countryName,
       imageUrl: countryImageUrl,
+      type: 'country',
+      countryCode: getCountryCode(countryId),
     });
   };
 
-  const handleCityPress = (cityId: string, cityName: string, cityImageUrl?: string) => {
+  const handleCityPress = (cityId: string, cityName: string, cityImageUrl?: string, cityCountryCode?: string) => {
     navigation.navigate('Detail', {
       id: cityId,
       title: cityName,
       imageUrl: cityImageUrl,
+      type: 'city',
+      countryCode: cityCountryCode || '',
+      cityId: cityId,
     });
   };
 
@@ -440,7 +455,7 @@ export const HomeScreen: React.FC = () => {
                   type="city"
                   title={t(city.labelKey)}
                   imageUrl={city.imageUrl}
-                  onPress={() => handleCityPress(city.id, t(city.labelKey), city.imageUrl)}
+                  onPress={() => handleCityPress(city.id, t(city.labelKey), city.imageUrl, city.countryCode)}
                 />
               ))}
             </HorizontalCards>
