@@ -10,6 +10,7 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  Dimensions,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useRoute, useNavigation } from '@react-navigation/native';
@@ -190,14 +191,14 @@ export const DetailScreen: React.FC = () => {
               <Text style={styles.loadingText}>Chargement...</Text>
             ) : transports.length > 0 ? (
               transports.map((transport) => (
-                <TransportCard
+              <TransportCard
                   key={transport.id}
-                  type={transport.type}
-                  title={transport.title}
-                  description={transport.description}
+                type={transport.type}
+                title={transport.title}
+                description={transport.description}
                   onPress={() => handleTransportPress(transport.id, transport.type, transport.title)}
-                  style={styles.card}
-                />
+                style={styles.card}
+              />
               ))
             ) : (
               <Text style={styles.emptyText}>Aucun transport disponible</Text>
@@ -215,8 +216,12 @@ export const DetailScreen: React.FC = () => {
             {popularHotels.length > 0 && (
               <View style={styles.section}>
                 {renderSectionHeader('Hotels populaires', handleSeeAllHotels)}
-                <View style={styles.cardsList}>
-                  {popularHotels.slice(0, 2).map((hotel) => (
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.horizontalCardsList}
+                >
+                  {popularHotels.map((hotel) => (
                     <HotelCard
                       key={hotel.id}
                       id={hotel.id}
@@ -230,10 +235,10 @@ export const DetailScreen: React.FC = () => {
                       duration={hotel.duration}
                       address={hotel.address}
                       onPress={() => handleHotelPress(hotel.id, hotel.title)}
-                      style={styles.hotelCard}
+                      style={styles.hotelCardHorizontal}
                     />
                   ))}
-                </View>
+                </ScrollView>
               </View>
             )}
 
@@ -241,8 +246,12 @@ export const DetailScreen: React.FC = () => {
             {otherHotels.length > 0 && (
               <View style={styles.section}>
                 {renderSectionHeader('Autres', handleSeeAllHotels)}
-                <View style={styles.cardsList}>
-                  {otherHotels.slice(0, 2).map((hotel) => (
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.horizontalCardsList}
+                >
+                  {otherHotels.map((hotel) => (
                     <HotelCard
                       key={hotel.id}
                       id={hotel.id}
@@ -256,10 +265,10 @@ export const DetailScreen: React.FC = () => {
                       duration={hotel.duration}
                       address={hotel.address}
                       onPress={() => handleHotelPress(hotel.id, hotel.title)}
-                      style={styles.hotelCard}
+                      style={styles.hotelCardHorizontal}
                     />
                   ))}
-                </View>
+                </ScrollView>
               </View>
             )}
 
@@ -291,7 +300,11 @@ export const DetailScreen: React.FC = () => {
                     family="ionicons"
                   />
                 </View>
-                <View style={styles.cardsList}>
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.horizontalCardsList}
+                >
                   {tourismCategories.map((category) => (
                     <TourismCategoryCard
                       key={category.id}
@@ -299,10 +312,10 @@ export const DetailScreen: React.FC = () => {
                       title={category.title}
                       description={category.description}
                       imageUrl={category.imageUrl}
-                      style={styles.categoryCard}
+                      style={styles.categoryCardHorizontal}
                     />
                   ))}
-                </View>
+                </ScrollView>
               </View>
             )}
 
@@ -310,8 +323,12 @@ export const DetailScreen: React.FC = () => {
             {popularPlaces.length > 0 && (
               <View style={styles.section}>
                 {renderSectionHeader('Places populaires', handleSeeAllTourism)}
-                <View style={styles.cardsList}>
-                  {popularPlaces.slice(0, 2).map((place) => (
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.horizontalCardsList}
+                >
+                  {popularPlaces.map((place) => (
                     <TourismPlaceCard
                       key={place.id}
                       id={place.id}
@@ -324,10 +341,10 @@ export const DetailScreen: React.FC = () => {
                       duration={place.duration}
                       address={place.address}
                       onPress={() => handleTourismPlacePress(place.id, place.title)}
-                      style={styles.placeCard}
+                      style={styles.placeCardHorizontal}
                     />
                   ))}
-                </View>
+                </ScrollView>
               </View>
             )}
 
@@ -359,17 +376,21 @@ export const DetailScreen: React.FC = () => {
                     family="ionicons"
                   />
                 </View>
-                <View style={styles.cardsList}>
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.horizontalCardsList}
+                >
                   {restaurantCategories.map((category) => (
                     <RestaurantCategoryCard
                       key={category.id}
                       id={category.id}
                       title={category.title}
                       imageUrl={category.imageUrl}
-                      style={styles.categoryCard}
+                      style={styles.categoryCardHorizontal}
                     />
                   ))}
-                </View>
+                </ScrollView>
               </View>
             )}
 
@@ -377,8 +398,12 @@ export const DetailScreen: React.FC = () => {
             {popularRestaurants.length > 0 && (
               <View style={styles.section}>
                 {renderSectionHeader('Plats Populaires', handleSeeAllRestaurants)}
-                <View style={styles.cardsList}>
-                  {popularRestaurants.slice(0, 2).map((restaurant) => (
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.horizontalCardsList}
+                >
+                  {popularRestaurants.map((restaurant) => (
                     <RestaurantCard
                       key={restaurant.id}
                       id={restaurant.id}
@@ -393,10 +418,10 @@ export const DetailScreen: React.FC = () => {
                       duration={restaurant.duration}
                       address={restaurant.address}
                       onPress={() => handleRestaurantPress(restaurant.id, restaurant.title)}
-                      style={styles.restaurantCard}
+                      style={styles.restaurantCardHorizontal}
                     />
                   ))}
-                </View>
+                </ScrollView>
               </View>
             )}
 
@@ -488,6 +513,10 @@ const styles = StyleSheet.create({
   cardsList: {
     gap: spacing.base,
   },
+  horizontalCardsList: {
+    paddingRight: spacing.lg,
+    gap: spacing.base,
+  },
   cardsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -501,14 +530,30 @@ const styles = StyleSheet.create({
   hotelCard: {
     marginBottom: spacing.base,
   },
+  hotelCardHorizontal: {
+    width: Dimensions.get('window').width * 0.67,
+    marginRight: spacing.base,
+  },
   categoryCard: {
     marginBottom: spacing.base,
+  },
+  categoryCardHorizontal: {
+    width: Dimensions.get('window').width * 0.67,
+    marginRight: spacing.base,
   },
   placeCard: {
     marginBottom: spacing.base,
   },
+  placeCardHorizontal: {
+    width: Dimensions.get('window').width * 0.67,
+    marginRight: spacing.base,
+  },
   restaurantCard: {
     marginBottom: spacing.base,
+  },
+  restaurantCardHorizontal: {
+    width: Dimensions.get('window').width * 0.67,
+    marginRight: spacing.base,
   },
   loadingText: {
     ...typography.styles.bodyRegular16,
