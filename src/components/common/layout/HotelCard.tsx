@@ -39,39 +39,45 @@ const renderStars = (rating: number) => {
   const fullStars = Math.floor(rating);
   const hasHalfStar = rating % 1 >= 0.5;
 
+  // Full stars (active) - filled/solid
   for (let i = 0; i < fullStars; i++) {
     stars.push(
       <Icon
         key={`star-${i}`}
         name="star"
         size={16}
-        color={colors.yellow.normal}
-        family="ionicons"
+        color={colors.star.active}
+        family="fontawesome6"
+        fa6Style="solid"
       />
     );
   }
 
+  // Half star (if needed) - filled/solid
   if (hasHalfStar && fullStars < 5) {
     stars.push(
       <Icon
         key="star-half"
-        name="star-half"
+        name="star-half-stroke"
         size={16}
-        color={colors.yellow.normal}
-        family="ionicons"
+        color={colors.star.active}
+        family="fontawesome6"
+        fa6Style="solid"
       />
     );
   }
 
+  // Empty stars (inactive) - filled/solid with inactive color
   const emptyStars = 5 - Math.ceil(rating);
   for (let i = 0; i < emptyStars; i++) {
     stars.push(
       <Icon
         key={`star-empty-${i}`}
-        name="star-outline"
+        name="star"
         size={16}
-        color={colors.text.tertiary}
-        family="ionicons"
+        color={colors.star.inactive}
+        family="fontawesome6"
+        fa6Style="solid"
       />
     );
   }
@@ -124,7 +130,7 @@ export const HotelCard: React.FC<HotelCardProps> = ({
           )}
         </View>
 
-        {/* Price */}
+        {/* Price - Right aligned */}
         <View style={styles.priceContainer}>
           <Text style={styles.price}>
             {currency} {pricePerNight}
@@ -132,19 +138,34 @@ export const HotelCard: React.FC<HotelCardProps> = ({
           <Text style={styles.priceUnit}> /une nuit</Text>
         </View>
 
-        {/* Distance and Time */}
-        <View style={styles.infoRow}>
-          <Text style={styles.infoText}>
-            {distance} {distanceUnit}
+        {/* Distance, Time and Address - Same row */}
+        <View style={styles.infoAddressRow}>
+          <View style={styles.infoRow}>
+            <Icon
+              name="route"
+              size={14}
+              color={colors.text.secondary}
+              family="fontawesome6"
+              fa6Style="solid"
+            />
+            <Text style={styles.infoText}>
+              {distance} {distanceUnit}
+            </Text>
+            <View style={styles.timeContainer}>
+              <Icon
+                name="time-outline"
+                size={14}
+                color={colors.text.secondary}
+                family="ionicons"
+              />
+              <Text style={styles.infoSeparator}> à </Text>
+              <Text style={styles.infoText}>{duration} min</Text>
+            </View>
+          </View>
+          <Text style={styles.address} numberOfLines={1}>
+            {address}
           </Text>
-          <Text style={styles.infoSeparator}> à </Text>
-          <Text style={styles.infoText}>{duration} min</Text>
         </View>
-
-        {/* Address */}
-        <Text style={styles.address} numberOfLines={1}>
-          {address}
-        </Text>
 
         {/* Reserve Button */}
         <Button
@@ -153,6 +174,7 @@ export const HotelCard: React.FC<HotelCardProps> = ({
           variant="primary"
           size="small"
           style={styles.reserveButton}
+          textStyle={styles.reserveButtonText}
         />
       </View>
     </TouchableOpacity>
@@ -196,37 +218,57 @@ const styles = StyleSheet.create({
   priceContainer: {
     flexDirection: 'row',
     alignItems: 'baseline',
+    justifyContent: 'flex-end',
     marginBottom: spacing.xs,
   },
   price: {
-    ...typography.styles.bodySemibold18,
-    color: colors.text.primary,
+    ...typography.styles.bodyBold18,
+    color: colors.text.primary, // #333538
   },
   priceUnit: {
     ...typography.styles.bodyRegular14,
     color: colors.text.primary,
   },
+  infoAddressRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: spacing.sm,
+    gap: spacing.sm,
+  },
   infoRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: spacing.xs,
+    flexShrink: 1,
+    gap: 4,
+  },
+  timeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    // gap: 4,
   },
   infoText: {
     ...typography.styles.bodyRegular14,
     color: colors.text.secondary,
+    marginLeft: 4,
   },
   infoSeparator: {
     ...typography.styles.bodyRegular14,
     color: colors.text.secondary,
-    marginHorizontal: spacing.xs,
+    marginHorizontal: 0,
   },
   address: {
     ...typography.styles.bodyRegular14,
     color: colors.text.secondary,
-    marginBottom: spacing.sm,
+    textAlign: 'right',
+    flex: 1,
+    flexShrink: 0,
   },
   reserveButton: {
     width: '100%',
+  },
+  reserveButtonText: {
+    ...typography.styles.bodyMedium18,
   },
 });
 

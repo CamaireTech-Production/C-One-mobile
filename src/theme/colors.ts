@@ -55,6 +55,12 @@ export const colors = {
     darkHover: '#7a6c4a',
     darkActive: '#5c5137',
     darker: '#473f2b',
+    starActive: '#FFCC00', // Active star color
+  },
+  // Star Colors
+  star: {
+    active: '#FFCC00', // Active star color
+    inactive: '#DFEEF5', // Inactive star color
   },
 
   // Semantic Colors

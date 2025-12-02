@@ -15,6 +15,8 @@ import {
   faHouse, 
   faUser,
   faBell,
+  faStar,
+  faStarHalfStroke,
   // Add more regular icons as needed
 } from '@fortawesome/free-regular-svg-icons';
 import { colors } from '../../../theme';
@@ -27,6 +29,8 @@ const fa6RegularIconMap: Record<string, any> = {
   'house': faHouse,
   'user': faUser,
   'bell': faBell,
+  'star': faStar,
+  'star-half-stroke': faStarHalfStroke,
   // Add more mappings as needed
   // Note: Some icons like 'arrow-down-wide-short' and 'wallet' may only exist in solid variant
 };

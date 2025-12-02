@@ -208,14 +208,14 @@ export const DetailScreen: React.FC = () => {
               </>
             ) : transports.length > 0 ? (
               transports.map((transport) => (
-                <TransportCard
+              <TransportCard
                   key={transport.id}
-                  type={transport.type}
-                  title={transport.title}
-                  description={transport.description}
+                type={transport.type}
+                title={transport.title}
+                description={transport.description}
                   onPress={() => handleTransportPress(transport.id, transport.type, transport.title)}
-                  style={styles.card}
-                />
+                style={styles.card}
+              />
               ))
             ) : (
               <Text style={styles.emptyText}>Aucun transport disponible</Text>
