@@ -95,6 +95,16 @@ export const colors = {
     normal: '#d1d5db',
     dark: '#9ca3af',
   },
+
+  // Shadow Colors
+  shadow: {
+    card: '#00000026', // Hotel card shadow color with opacity
+  },
+
+  // Overlay Colors
+  overlay: {
+    white33: '#FFFFFF33', // White with 33% opacity for carousel button
+  },
 } as const;
 
 export type Colors = typeof colors;

@@ -632,16 +632,16 @@ const styles = StyleSheet.create({
     paddingRight: 0,
   },
   tabContent: {
-    gap: spacing.xl,
+    gap: spacing.sm,
   },
   section: {
-    marginBottom: spacing.xl,
+    marginBottom: spacing.xs,
   },
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: spacing.base,
+    marginBottom: spacing.sm,
   },
   sectionTitle: {
     ...typography.styles.bodyMedium18,
@@ -662,7 +662,7 @@ const styles = StyleSheet.create({
   },
   horizontalCardsList: {
     paddingRight: 0,
-    gap: spacing.base,
+    gap: spacing.md,
   },
   cardsContainer: {
     flexDirection: 'row',
@@ -679,28 +679,28 @@ const styles = StyleSheet.create({
   },
   hotelCardHorizontal: {
     width: Dimensions.get('window').width * 0.67,
-    marginRight: spacing.base,
+    marginRight: spacing.xs,
   },
   categoryCard: {
     marginBottom: spacing.base,
   },
   categoryCardHorizontal: {
     width: Dimensions.get('window').width * 0.67,
-    marginRight: spacing.base,
+    marginRight: spacing.xs,
   },
   placeCard: {
     marginBottom: spacing.base,
   },
   placeCardHorizontal: {
     width: Dimensions.get('window').width * 0.67,
-    marginRight: spacing.base,
+    marginRight: spacing.xs,
   },
   restaurantCard: {
     marginBottom: spacing.base,
   },
   restaurantCardHorizontal: {
     width: Dimensions.get('window').width * 0.67,
-    marginRight: spacing.base,
+    marginRight: spacing.xs,
   },
   loadingText: {
     ...typography.styles.bodyRegular16,

@@ -154,7 +154,7 @@ export const DetailCarousel: React.FC<DetailCarouselProps> = ({
                 >
                   <Icon
                     name={isActive ? 'radio-button-checked' : 'circle-outline'}
-                    size={isActive ? 12 : 10}
+                    size={isActive ? 8 : 6}
                     color={colors.secondary.white}
                     family={isActive ? 'material' : 'materialcommunity'}
                   />
@@ -171,7 +171,7 @@ export const DetailCarousel: React.FC<DetailCarouselProps> = ({
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    height: 240,
+    height: 180,
   },
   backgroundImage: {
     flex: 1,
@@ -210,15 +210,18 @@ const styles = StyleSheet.create({
   buttonContainer: {
     width: '100%',
     maxWidth: 200,
+    alignItems: 'center',
   },
   explorerButton: {
-    backgroundColor: 'transparent',
-    borderColor: colors.secondary.white,
-    borderWidth: 1,
-    borderRadius: 999, // Pill-shaped
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.xl,
-    minHeight: 48,
+    backgroundColor: colors.overlay.white33,
+    borderWidth: 0,
+    borderRadius: 100,
+    width: 124,
+    height: 34,
+    paddingTop: 4,
+    paddingRight: 8,
+    paddingBottom: 4,
+    paddingLeft: 8,
     alignItems: 'center',
     justifyContent: 'center',
     shadowOpacity: 0,
@@ -234,7 +237,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: spacing.sm,
     // paddingTop: spacing.sm,
-    paddingBottom: spacing.sm,
+    // paddingBottom: spacing.sm,
   },
   dotButton: {
     padding: spacing.xs,

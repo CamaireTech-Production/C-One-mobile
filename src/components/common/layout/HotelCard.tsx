@@ -109,12 +109,14 @@ export const HotelCard: React.FC<HotelCardProps> = ({
       onPress={onPress}
       activeOpacity={0.85}
     >
-      {/* Image on top */}
-      <Image
-        source={{ uri: imageUrl }}
-        style={styles.image}
-        resizeMode="cover"
-      />
+      {/* Image on top with padding */}
+      <View style={styles.imageContainer}>
+        <Image
+          source={{ uri: imageUrl }}
+          style={styles.image}
+          resizeMode="cover"
+        />
+      </View>
 
       {/* Content below image */}
       <View style={styles.content}>
@@ -188,11 +190,26 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     overflow: 'hidden',
     marginBottom: spacing.base,
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
+    elevation: 4,
+  },
+  imageContainer: {
+    padding: spacing.xs,
+    paddingBottom: 0,
   },
   image: {
     width: '100%',
     height: 160,
-    borderRadius: 16,
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
   },
   content: {
     padding: spacing.base,
