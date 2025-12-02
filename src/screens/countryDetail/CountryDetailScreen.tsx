@@ -26,7 +26,6 @@ import {
   BookableCard,
   TourismCategoryCard,
   RestaurantCategoryCard,
-  RestaurantCard,
   Icon,
   type DetailTabKey,
   type TransportType,
@@ -563,20 +562,21 @@ export const DetailScreen: React.FC = () => {
                       contentContainerStyle={styles.horizontalCardsList}
                     >
                       {popularRestaurants.map((restaurant) => (
-                        <RestaurantCard
+                        <BookableCard
                           key={restaurant.id}
                           id={restaurant.id}
                           title={restaurant.title}
-                          subtitle={restaurant.subtitle}
                           imageUrl={restaurant.imageUrl}
                           rating={restaurant.rating}
-                          pricePerTable={restaurant.pricePerTable}
+                          price={restaurant.pricePerTable}
                           currency={restaurant.currency}
+                          priceUnit="/table"
                           distance={restaurant.distance}
                           distanceUnit={restaurant.distanceUnit}
                           duration={restaurant.duration}
                           address={restaurant.address}
                           onPress={() => handleRestaurantPress(restaurant.id, restaurant.title)}
+                          variant="restaurant"
                           style={styles.restaurantCardHorizontal}
                         />
                       ))}

@@ -1487,7 +1487,7 @@ export const homeData: HomeData = {
       {
         id: 'restaurant-cat-1',
         title: 'Plats Nationaux',
-        imageUrl: 'https://images.unsplash.com/photo-1555939594-58d7cb561b1e?w=800&h=600&fit=crop',
+        imageUrl: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&h=600&fit=crop',
       },
       {
         id: 'restaurant-cat-2',
