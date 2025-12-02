@@ -41,6 +41,12 @@ import {
   useRestaurantData,
   useTransportData,
 } from '../../hooks';
+import {
+  SkeletonHorizontalCard,
+  SkeletonCategoryCard,
+  SkeletonText,
+  SkeletonCard,
+} from '../../components/skeleton';
 
 interface DetailScreenParams {
   id: string;
@@ -188,17 +194,28 @@ export const DetailScreen: React.FC = () => {
         return (
           <View style={styles.cardsContainer}>
             {transportsLoading ? (
-              <Text style={styles.loadingText}>Chargement...</Text>
+              <>
+                {[1, 2, 3].map((index) => (
+                  <SkeletonCard
+                    key={`transport-skeleton-${index}`}
+                    width="48%"
+                    height={180}
+                    showImage={false}
+                    lines={2}
+                    style={styles.card}
+                  />
+                ))}
+              </>
             ) : transports.length > 0 ? (
               transports.map((transport) => (
-              <TransportCard
+                <TransportCard
                   key={transport.id}
-                type={transport.type}
-                title={transport.title}
-                description={transport.description}
+                  type={transport.type}
+                  title={transport.title}
+                  description={transport.description}
                   onPress={() => handleTransportPress(transport.id, transport.type, transport.title)}
-                style={styles.card}
-              />
+                  style={styles.card}
+                />
               ))
             ) : (
               <Text style={styles.emptyText}>Aucun transport disponible</Text>
@@ -212,72 +229,114 @@ export const DetailScreen: React.FC = () => {
 
         return (
           <View style={styles.tabContent}>
-            {/* Hotels populaires */}
-            {popularHotels.length > 0 && (
-              <View style={styles.section}>
-                {renderSectionHeader('Hotels populaires', handleSeeAllHotels)}
-                <ScrollView
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={styles.horizontalCardsList}
-                >
-                  {popularHotels.map((hotel) => (
-                    <HotelCard
-                      key={hotel.id}
-                      id={hotel.id}
-                      title={hotel.title}
-                      imageUrl={hotel.imageUrl}
-                      rating={hotel.rating}
-                      pricePerNight={hotel.pricePerNight}
-                      currency={hotel.currency}
-                      distance={hotel.distance}
-                      distanceUnit={hotel.distanceUnit}
-                      duration={hotel.duration}
-                      address={hotel.address}
-                      onPress={() => handleHotelPress(hotel.id, hotel.title)}
-                      style={styles.hotelCardHorizontal}
-                    />
-                  ))}
-                </ScrollView>
-              </View>
-            )}
+            {hotelsLoading ? (
+              <>
+                {/* Skeleton for Hotels populaires */}
+                <View style={styles.section}>
+                  <View style={styles.sectionHeader}>
+                    <SkeletonText width={150} height={20} />
+                    <SkeletonText width={60} height={16} />
+                  </View>
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={styles.horizontalCardsList}
+                  >
+                    {[1, 2, 3].map((index) => (
+                      <SkeletonHorizontalCard
+                        key={`hotel-skeleton-${index}`}
+                        style={styles.hotelCardHorizontal}
+                      />
+                    ))}
+                  </ScrollView>
+                </View>
 
-            {/* Autres hotels */}
-            {otherHotels.length > 0 && (
-              <View style={styles.section}>
-                {renderSectionHeader('Autres', handleSeeAllHotels)}
-                <ScrollView
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={styles.horizontalCardsList}
-                >
-                  {otherHotels.map((hotel) => (
-                    <HotelCard
-                      key={hotel.id}
-                      id={hotel.id}
-                      title={hotel.title}
-                      imageUrl={hotel.imageUrl}
-                      rating={hotel.rating}
-                      pricePerNight={hotel.pricePerNight}
-                      currency={hotel.currency}
-                      distance={hotel.distance}
-                      distanceUnit={hotel.distanceUnit}
-                      duration={hotel.duration}
-                      address={hotel.address}
-                      onPress={() => handleHotelPress(hotel.id, hotel.title)}
-                      style={styles.hotelCardHorizontal}
-                    />
-                  ))}
-                </ScrollView>
-              </View>
-            )}
+                {/* Skeleton for Autres */}
+                <View style={styles.section}>
+                  <View style={styles.sectionHeader}>
+                    <SkeletonText width={80} height={20} />
+                    <SkeletonText width={60} height={16} />
+                  </View>
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={styles.horizontalCardsList}
+                  >
+                    {[1, 2].map((index) => (
+                      <SkeletonHorizontalCard
+                        key={`other-hotel-skeleton-${index}`}
+                        style={styles.hotelCardHorizontal}
+                      />
+                    ))}
+                  </ScrollView>
+                </View>
+              </>
+            ) : (
+              <>
+                {/* Hotels populaires */}
+                {popularHotels.length > 0 && (
+                  <View style={styles.section}>
+                    {renderSectionHeader('Hotels populaires', handleSeeAllHotels)}
+                    <ScrollView
+                      horizontal
+                      showsHorizontalScrollIndicator={false}
+                      contentContainerStyle={styles.horizontalCardsList}
+                    >
+                      {popularHotels.map((hotel) => (
+                        <HotelCard
+                          key={hotel.id}
+                          id={hotel.id}
+                          title={hotel.title}
+                          imageUrl={hotel.imageUrl}
+                          rating={hotel.rating}
+                          pricePerNight={hotel.pricePerNight}
+                          currency={hotel.currency}
+                          distance={hotel.distance}
+                          distanceUnit={hotel.distanceUnit}
+                          duration={hotel.duration}
+                          address={hotel.address}
+                          onPress={() => handleHotelPress(hotel.id, hotel.title)}
+                          style={styles.hotelCardHorizontal}
+                        />
+                      ))}
+                    </ScrollView>
+                  </View>
+                )}
 
-            {hotelsLoading && (
-              <Text style={styles.loadingText}>Chargement des hôtels...</Text>
-            )}
+                {/* Autres hotels */}
+                {otherHotels.length > 0 && (
+                  <View style={styles.section}>
+                    {renderSectionHeader('Autres', handleSeeAllHotels)}
+                    <ScrollView
+                      horizontal
+                      showsHorizontalScrollIndicator={false}
+                      contentContainerStyle={styles.horizontalCardsList}
+                    >
+                      {otherHotels.map((hotel) => (
+                        <HotelCard
+                          key={hotel.id}
+                          id={hotel.id}
+                          title={hotel.title}
+                          imageUrl={hotel.imageUrl}
+                          rating={hotel.rating}
+                          pricePerNight={hotel.pricePerNight}
+                          currency={hotel.currency}
+                          distance={hotel.distance}
+                          distanceUnit={hotel.distanceUnit}
+                          duration={hotel.duration}
+                          address={hotel.address}
+                          onPress={() => handleHotelPress(hotel.id, hotel.title)}
+                          style={styles.hotelCardHorizontal}
+                        />
+                      ))}
+                    </ScrollView>
+                  </View>
+                )}
 
-            {!hotelsLoading && hotels.length === 0 && (
-              <Text style={styles.emptyText}>Aucun hôtel disponible</Text>
+                {!hotelsLoading && hotels.length === 0 && (
+                  <Text style={styles.emptyText}>Aucun hôtel disponible</Text>
+                )}
+              </>
             )}
           </View>
         );
@@ -288,72 +347,115 @@ export const DetailScreen: React.FC = () => {
 
         return (
           <View style={styles.tabContent}>
-            {/* Catégories */}
-            {tourismCategories.length > 0 && (
-              <View style={styles.section}>
-                <View style={styles.sectionHeader}>
-                  <Text style={styles.sectionTitle}>Catégories</Text>
-                  <Icon
-                    name="chevron-forward"
-                    size={16}
-                    color={colors.text.secondary}
-                    family="ionicons"
-                  />
+            {tourismLoading ? (
+              <>
+                {/* Skeleton for Catégories */}
+                <View style={styles.section}>
+                  <View style={styles.sectionHeader}>
+                    <SkeletonText width={120} height={20} />
+                    <SkeletonText width={20} height={16} />
+                  </View>
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={styles.horizontalCardsList}
+                  >
+                    {[1, 2].map((index) => (
+                      <SkeletonCategoryCard
+                        key={`tourism-category-skeleton-${index}`}
+                        showDescription
+                        style={styles.categoryCardHorizontal}
+                      />
+                    ))}
+                  </ScrollView>
                 </View>
-                <ScrollView
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={styles.horizontalCardsList}
-                >
-                  {tourismCategories.map((category) => (
-                    <TourismCategoryCard
-                      key={category.id}
-                      id={category.id}
-                      title={category.title}
-                      description={category.description}
-                      imageUrl={category.imageUrl}
-                      style={styles.categoryCardHorizontal}
-                    />
-                  ))}
-                </ScrollView>
-              </View>
-            )}
 
-            {/* Places populaires */}
-            {popularPlaces.length > 0 && (
-              <View style={styles.section}>
-                {renderSectionHeader('Places populaires', handleSeeAllTourism)}
-                <ScrollView
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={styles.horizontalCardsList}
-                >
-                  {popularPlaces.map((place) => (
-                    <TourismPlaceCard
-                      key={place.id}
-                      id={place.id}
-                      title={place.title}
-                      imageUrl={place.imageUrl}
-                      startingPrice={place.startingPrice}
-                      currency={place.currency}
-                      distance={place.distance}
-                      distanceUnit={place.distanceUnit}
-                      duration={place.duration}
-                      address={place.address}
-                      onPress={() => handleTourismPlacePress(place.id, place.title)}
-                      style={styles.placeCardHorizontal}
-                    />
-                  ))}
-                </ScrollView>
-              </View>
-            )}
+                {/* Skeleton for Places populaires */}
+                <View style={styles.section}>
+                  <View style={styles.sectionHeader}>
+                    <SkeletonText width={150} height={20} />
+                    <SkeletonText width={60} height={16} />
+                  </View>
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={styles.horizontalCardsList}
+                  >
+                    {[1, 2, 3].map((index) => (
+                      <SkeletonHorizontalCard
+                        key={`tourism-place-skeleton-${index}`}
+                        style={styles.placeCardHorizontal}
+                      />
+                    ))}
+                  </ScrollView>
+                </View>
+              </>
+            ) : (
+              <>
+                {/* Catégories */}
+                {tourismCategories.length > 0 && (
+                  <View style={styles.section}>
+                    <View style={styles.sectionHeader}>
+                      <Text style={styles.sectionTitle}>Catégories</Text>
+                      <Icon
+                        name="chevron-forward"
+                        size={16}
+                        color={colors.text.secondary}
+                        family="ionicons"
+                      />
+                    </View>
+                    <ScrollView
+                      horizontal
+                      showsHorizontalScrollIndicator={false}
+                      contentContainerStyle={styles.horizontalCardsList}
+                    >
+                      {tourismCategories.map((category) => (
+                        <TourismCategoryCard
+                          key={category.id}
+                          id={category.id}
+                          title={category.title}
+                          description={category.description}
+                          imageUrl={category.imageUrl}
+                          style={styles.categoryCardHorizontal}
+                        />
+                      ))}
+                    </ScrollView>
+                  </View>
+                )}
 
-            {tourismLoading && (
-              <Text style={styles.loadingText}>Chargement du tourisme...</Text>
-            )}
+                {/* Places populaires */}
+                {popularPlaces.length > 0 && (
+                  <View style={styles.section}>
+                    {renderSectionHeader('Places populaires', handleSeeAllTourism)}
+                    <ScrollView
+                      horizontal
+                      showsHorizontalScrollIndicator={false}
+                      contentContainerStyle={styles.horizontalCardsList}
+                    >
+                      {popularPlaces.map((place) => (
+                        <TourismPlaceCard
+                          key={place.id}
+                          id={place.id}
+                          title={place.title}
+                          imageUrl={place.imageUrl}
+                          startingPrice={place.startingPrice}
+                          currency={place.currency}
+                          distance={place.distance}
+                          distanceUnit={place.distanceUnit}
+                          duration={place.duration}
+                          address={place.address}
+                          onPress={() => handleTourismPlacePress(place.id, place.title)}
+                          style={styles.placeCardHorizontal}
+                        />
+                      ))}
+                    </ScrollView>
+                  </View>
+                )}
 
-            {!tourismLoading && tourismPlaces.length === 0 && (
-              <Text style={styles.emptyText}>Aucun lieu touristique disponible</Text>
+                {!tourismLoading && tourismPlaces.length === 0 && (
+                  <Text style={styles.emptyText}>Aucun lieu touristique disponible</Text>
+                )}
+              </>
             )}
           </View>
         );
@@ -364,73 +466,115 @@ export const DetailScreen: React.FC = () => {
 
         return (
           <View style={styles.tabContent}>
-            {/* Catégories */}
-            {restaurantCategories.length > 0 && (
-              <View style={styles.section}>
-                <View style={styles.sectionHeader}>
-                  <Text style={styles.sectionTitle}>Catégories</Text>
-                  <Icon
-                    name="chevron-forward"
-                    size={16}
-                    color={colors.text.secondary}
-                    family="ionicons"
-                  />
+            {restaurantsLoading ? (
+              <>
+                {/* Skeleton for Catégories */}
+                <View style={styles.section}>
+                  <View style={styles.sectionHeader}>
+                    <SkeletonText width={120} height={20} />
+                    <SkeletonText width={20} height={16} />
+                  </View>
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={styles.horizontalCardsList}
+                  >
+                    {[1, 2].map((index) => (
+                      <SkeletonCategoryCard
+                        key={`restaurant-category-skeleton-${index}`}
+                        style={styles.categoryCardHorizontal}
+                      />
+                    ))}
+                  </ScrollView>
                 </View>
-                <ScrollView
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={styles.horizontalCardsList}
-                >
-                  {restaurantCategories.map((category) => (
-                    <RestaurantCategoryCard
-                      key={category.id}
-                      id={category.id}
-                      title={category.title}
-                      imageUrl={category.imageUrl}
-                      style={styles.categoryCardHorizontal}
-                    />
-                  ))}
-                </ScrollView>
-              </View>
-            )}
 
-            {/* Plats Populaires */}
-            {popularRestaurants.length > 0 && (
-              <View style={styles.section}>
-                {renderSectionHeader('Plats Populaires', handleSeeAllRestaurants)}
-                <ScrollView
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={styles.horizontalCardsList}
-                >
-                  {popularRestaurants.map((restaurant) => (
-                    <RestaurantCard
-                      key={restaurant.id}
-                      id={restaurant.id}
-                      title={restaurant.title}
-                      subtitle={restaurant.subtitle}
-                      imageUrl={restaurant.imageUrl}
-                      rating={restaurant.rating}
-                      pricePerTable={restaurant.pricePerTable}
-                      currency={restaurant.currency}
-                      distance={restaurant.distance}
-                      distanceUnit={restaurant.distanceUnit}
-                      duration={restaurant.duration}
-                      address={restaurant.address}
-                      onPress={() => handleRestaurantPress(restaurant.id, restaurant.title)}
-                      style={styles.restaurantCardHorizontal}
-                    />
-                  ))}
-                </ScrollView>
-              </View>
-            )}
+                {/* Skeleton for Plats Populaires */}
+                <View style={styles.section}>
+                  <View style={styles.sectionHeader}>
+                    <SkeletonText width={150} height={20} />
+                    <SkeletonText width={60} height={16} />
+                  </View>
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={styles.horizontalCardsList}
+                  >
+                    {[1, 2, 3].map((index) => (
+                      <SkeletonHorizontalCard
+                        key={`restaurant-skeleton-${index}`}
+                        style={styles.restaurantCardHorizontal}
+                      />
+                    ))}
+                  </ScrollView>
+                </View>
+              </>
+            ) : (
+              <>
+                {/* Catégories */}
+                {restaurantCategories.length > 0 && (
+                  <View style={styles.section}>
+                    <View style={styles.sectionHeader}>
+                      <Text style={styles.sectionTitle}>Catégories</Text>
+                      <Icon
+                        name="chevron-forward"
+                        size={16}
+                        color={colors.text.secondary}
+                        family="ionicons"
+                      />
+                    </View>
+                    <ScrollView
+                      horizontal
+                      showsHorizontalScrollIndicator={false}
+                      contentContainerStyle={styles.horizontalCardsList}
+                    >
+                      {restaurantCategories.map((category) => (
+                        <RestaurantCategoryCard
+                          key={category.id}
+                          id={category.id}
+                          title={category.title}
+                          imageUrl={category.imageUrl}
+                          style={styles.categoryCardHorizontal}
+                        />
+                      ))}
+                    </ScrollView>
+                  </View>
+                )}
 
-            {restaurantsLoading && (
-              <Text style={styles.loadingText}>Chargement des restaurants...</Text>
-            )}
+                {/* Plats Populaires */}
+                {popularRestaurants.length > 0 && (
+                  <View style={styles.section}>
+                    {renderSectionHeader('Plats Populaires', handleSeeAllRestaurants)}
+                    <ScrollView
+                      horizontal
+                      showsHorizontalScrollIndicator={false}
+                      contentContainerStyle={styles.horizontalCardsList}
+                    >
+                      {popularRestaurants.map((restaurant) => (
+                        <RestaurantCard
+                          key={restaurant.id}
+                          id={restaurant.id}
+                          title={restaurant.title}
+                          subtitle={restaurant.subtitle}
+                          imageUrl={restaurant.imageUrl}
+                          rating={restaurant.rating}
+                          pricePerTable={restaurant.pricePerTable}
+                          currency={restaurant.currency}
+                          distance={restaurant.distance}
+                          distanceUnit={restaurant.distanceUnit}
+                          duration={restaurant.duration}
+                          address={restaurant.address}
+                          onPress={() => handleRestaurantPress(restaurant.id, restaurant.title)}
+                          style={styles.restaurantCardHorizontal}
+                        />
+                      ))}
+                    </ScrollView>
+                  </View>
+                )}
 
-            {!restaurantsLoading && restaurants.length === 0 && (
-              <Text style={styles.emptyText}>Aucun restaurant disponible</Text>
+                {!restaurantsLoading && restaurants.length === 0 && (
+                  <Text style={styles.emptyText}>Aucun restaurant disponible</Text>
+                )}
+              </>
             )}
           </View>
         );
