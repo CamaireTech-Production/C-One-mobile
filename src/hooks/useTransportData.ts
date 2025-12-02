@@ -21,21 +21,11 @@ export const useTransportData = (
 
     const timeout = setTimeout(() => {
       if (isMounted) {
-        // Filter transports by countryId and optionally by cityId
+        // Filter transports by countryId only
+        // Transport tab always shows all transports for the country, regardless of city
         const filtered = homeData.transports.filter((transport) => {
-          // Must match country
-          if (transport.countryId !== countryId) {
-            return false;
-          }
-
-          // If cityId is provided, filter by city
-          // If cityId is not provided, show transports available for the entire country
-          if (cityId) {
-            return transport.cityId === cityId;
-          } else {
-            // Show transports that are available for the entire country (no specific city)
-            return !transport.cityId;
-          }
+          // Must match country - always show all transports for the country
+          return transport.countryId === countryId;
         });
 
         setData(filtered);
@@ -53,15 +43,9 @@ export const useTransportData = (
     setLoading(true);
     setData([]);
     setTimeout(() => {
+      // Transport tab always shows all transports for the country, regardless of city
       const filtered = homeData.transports.filter((transport) => {
-        if (transport.countryId !== countryId) {
-          return false;
-        }
-        if (cityId) {
-          return transport.cityId === cityId;
-        } else {
-          return !transport.cityId;
-        }
+        return transport.countryId === countryId;
       });
       setData(filtered);
       setLoading(false);
