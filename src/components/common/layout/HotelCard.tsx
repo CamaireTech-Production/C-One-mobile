@@ -144,7 +144,7 @@ export const HotelCard: React.FC<HotelCardProps> = ({
             <Icon
               name="route"
               size={14}
-              color={colors.text.secondary}
+              color={colors.text.tertiary}
               family="fontawesome6"
               fa6Style="solid"
             />
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
   },
   price: {
     ...typography.styles.bodyBold18,
-    color: colors.text.primary, // #333538
+    color: colors.text.primary,
   },
   priceUnit: {
     ...typography.styles.bodyRegular14,
