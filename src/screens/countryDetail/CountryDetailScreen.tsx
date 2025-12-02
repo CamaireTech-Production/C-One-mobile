@@ -104,6 +104,14 @@ export const DetailScreen: React.FC = () => {
         // Handle button press
       },
     },
+    {
+      image: images.detailBackground,
+      description: 'Lorem ipsum dolor sit amet consectetur. Eget euismod volutpat augue consequat.',
+      buttonLabel: "Explorer l'offre",
+      onButtonPress: () => {
+        // Handle button press
+      },
+    },
   ];
 
   // Helper function to render section header with "Voir tout" link

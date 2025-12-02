@@ -46,7 +46,8 @@ export const TourismCategoryCard: React.FC<TourismCategoryCardProps> = ({
         resizeMode="cover"
       >
         <LinearGradient
-          colors={['rgba(0,0,0,0.3)', 'rgba(0,0,0,0.6)']}
+          colors={['rgba(0,0,0,0.2)', 'rgba(0,0,0,0.7)']}
+          locations={[0, 1]}
           style={styles.gradient}
         >
           <View style={styles.content}>
@@ -81,23 +82,20 @@ const styles = StyleSheet.create({
   },
   gradient: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     padding: spacing.base,
   },
   content: {
     gap: spacing.xs,
+    alignItems: 'flex-start',
   },
   title: {
-    ...typography.styles.bodyMedium18,
+    ...typography.styles.bodyBold18,
     color: colors.text.inverse,
-    fontWeight: '600',
-    marginBottom: spacing.xs,
   },
   description: {
-    ...typography.styles.bodyRegular14,
-    color: colors.text.inverse,
-    opacity: 0.9,
-    lineHeight: 20,
+    ...typography.styles.bodyMedium16,
+    color: colors.yellow.normal, // #CCB47B
   },
 });
 
