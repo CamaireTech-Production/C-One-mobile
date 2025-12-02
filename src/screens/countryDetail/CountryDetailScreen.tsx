@@ -50,7 +50,7 @@ interface DetailScreenParams {
   cityId?: string;
 }
 
-type DetailScreenNavigationProp = NativeStackNavigationProp<HomeStackParamList, 'Detail'>;
+type DetailScreenNavigationProp = NativeStackNavigationProp<HomeStackParamList>;
 
 export const DetailScreen: React.FC = () => {
   const { t } = useTranslation();
@@ -126,18 +126,59 @@ export const DetailScreen: React.FC = () => {
   };
 
   const handleSeeAllHotels = () => {
-    // TODO: Navigate to HotelListScreen (Phase 6)
-    console.log('Navigate to HotelListScreen');
+    navigation.navigate('HotelList', {
+      countryId: countryCode,
+      countryName: params?.title || '',
+      cityId: cityId,
+      cityName: isCity ? params?.title : undefined,
+    });
   };
 
   const handleSeeAllTourism = () => {
-    // TODO: Navigate to TourismListScreen (Phase 6)
-    console.log('Navigate to TourismListScreen');
+    navigation.navigate('TourismList', {
+      countryId: countryCode,
+      countryName: params?.title || '',
+      cityId: cityId,
+      cityName: isCity ? params?.title : undefined,
+    });
   };
 
   const handleSeeAllRestaurants = () => {
-    // TODO: Navigate to RestaurantListScreen (Phase 6)
-    console.log('Navigate to RestaurantListScreen');
+    navigation.navigate('RestaurantList', {
+      countryId: countryCode,
+      countryName: params?.title || '',
+      cityId: cityId,
+      cityName: isCity ? params?.title : undefined,
+    });
+  };
+
+  const handleTransportPress = (transportId: string, transportType: 'plane' | 'train' | 'car', transportTitle: string) => {
+    navigation.navigate('TransportDetail', {
+      transportId,
+      type: transportType,
+      title: transportTitle,
+    });
+  };
+
+  const handleHotelPress = (hotelId: string, hotelTitle: string) => {
+    navigation.navigate('HotelDetail', {
+      hotelId,
+      title: hotelTitle,
+    });
+  };
+
+  const handleTourismPlacePress = (placeId: string, placeTitle: string) => {
+    navigation.navigate('TourismDetail', {
+      placeId,
+      title: placeTitle,
+    });
+  };
+
+  const handleRestaurantPress = (restaurantId: string, restaurantTitle: string) => {
+    navigation.navigate('RestaurantDetail', {
+      restaurantId,
+      title: restaurantTitle,
+    });
   };
 
   const renderContent = () => {
@@ -154,6 +195,7 @@ export const DetailScreen: React.FC = () => {
                   type={transport.type}
                   title={transport.title}
                   description={transport.description}
+                  onPress={() => handleTransportPress(transport.id, transport.type, transport.title)}
                   style={styles.card}
                 />
               ))
@@ -187,6 +229,7 @@ export const DetailScreen: React.FC = () => {
                       distanceUnit={hotel.distanceUnit}
                       duration={hotel.duration}
                       address={hotel.address}
+                      onPress={() => handleHotelPress(hotel.id, hotel.title)}
                       style={styles.hotelCard}
                     />
                   ))}
@@ -212,6 +255,7 @@ export const DetailScreen: React.FC = () => {
                       distanceUnit={hotel.distanceUnit}
                       duration={hotel.duration}
                       address={hotel.address}
+                      onPress={() => handleHotelPress(hotel.id, hotel.title)}
                       style={styles.hotelCard}
                     />
                   ))}
@@ -279,6 +323,7 @@ export const DetailScreen: React.FC = () => {
                       distanceUnit={place.distanceUnit}
                       duration={place.duration}
                       address={place.address}
+                      onPress={() => handleTourismPlacePress(place.id, place.title)}
                       style={styles.placeCard}
                     />
                   ))}
@@ -347,6 +392,7 @@ export const DetailScreen: React.FC = () => {
                       distanceUnit={restaurant.distanceUnit}
                       duration={restaurant.duration}
                       address={restaurant.address}
+                      onPress={() => handleRestaurantPress(restaurant.id, restaurant.title)}
                       style={styles.restaurantCard}
                     />
                   ))}
