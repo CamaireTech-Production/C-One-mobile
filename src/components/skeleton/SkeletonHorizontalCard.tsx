@@ -1,6 +1,7 @@
 /**
  * SkeletonHorizontalCard Component
  * Loading placeholder for horizontal cards (Hotel, Tourism, Restaurant)
+ * Matches the structure: image on top, content below
  */
 
 import React from 'react';
@@ -13,39 +14,43 @@ const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 interface SkeletonHorizontalCardProps {
   width?: number;
-  height?: number;
   style?: ViewStyle;
 }
 
 export const SkeletonHorizontalCard: React.FC<SkeletonHorizontalCardProps> = ({
   width = SCREEN_WIDTH * 0.67,
-  height = 200,
   style,
 }) => {
   return (
-    <View style={[styles.container, { width, height }, style]}>
-      {/* Image skeleton */}
+    <View style={[styles.container, { width }, style]}>
+      {/* Image skeleton on top */}
       <SkeletonBlock
         width="100%"
-        height="100%"
+        height={160}
         borderRadius={16}
         style={styles.imageSkeleton}
       />
       
-      {/* Content overlay skeleton */}
-      <View style={styles.contentOverlay}>
-        {/* Title skeleton */}
-        <SkeletonBlock
-          width="70%"
-          height={20}
-          borderRadius={4}
-          style={styles.titleSkeleton}
-        />
+      {/* Content below image */}
+      <View style={styles.content}>
+        {/* Title and Rating row skeleton */}
+        <View style={styles.titleRow}>
+          <SkeletonBlock
+            width="60%"
+            height={20}
+            borderRadius={4}
+          />
+          <SkeletonBlock
+            width={80}
+            height={16}
+            borderRadius={4}
+          />
+        </View>
         
-        {/* Rating/Price skeleton */}
+        {/* Price skeleton */}
         <SkeletonBlock
           width="50%"
-          height={16}
+          height={18}
           borderRadius={4}
           style={styles.priceSkeleton}
         />
@@ -53,12 +58,12 @@ export const SkeletonHorizontalCard: React.FC<SkeletonHorizontalCardProps> = ({
         {/* Info row skeleton */}
         <View style={styles.infoRow}>
           <SkeletonBlock
-            width={60}
+            width={50}
             height={14}
             borderRadius={4}
           />
           <SkeletonBlock
-            width={50}
+            width={40}
             height={14}
             borderRadius={4}
           />
@@ -74,8 +79,8 @@ export const SkeletonHorizontalCard: React.FC<SkeletonHorizontalCardProps> = ({
         
         {/* Button skeleton */}
         <SkeletonBlock
-          width={100}
-          height={36}
+          width="100%"
+          height={40}
           borderRadius={8}
           style={styles.buttonSkeleton}
         />
@@ -86,27 +91,22 @@ export const SkeletonHorizontalCard: React.FC<SkeletonHorizontalCardProps> = ({
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: colors.background.primary,
     borderRadius: 16,
     overflow: 'hidden',
     marginRight: spacing.base,
-    position: 'relative',
   },
   imageSkeleton: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+    marginBottom: 0,
   },
-  contentOverlay: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
+  content: {
     padding: spacing.base,
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    gap: spacing.sm,
   },
-  titleSkeleton: {
+  titleRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: spacing.xs,
   },
   priceSkeleton: {
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
   },
   infoRow: {
     flexDirection: 'row',
-    gap: spacing.md,
+    gap: spacing.xs,
     marginBottom: spacing.xs,
   },
   addressSkeleton: {

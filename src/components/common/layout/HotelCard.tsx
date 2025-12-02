@@ -1,7 +1,7 @@
 /**
  * HotelCard Component
- * Card displaying hotel with image, rating, price, distance, time, address, and booking button
- * Used in horizontal layout
+ * Card displaying hotel with image on top, text content below
+ * Used in horizontal scrollable layout
  */
 
 import React from 'react';
@@ -11,9 +11,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   ViewStyle,
-  ImageBackground,
+  Image,
 } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 
 import { colors, spacing, typography } from '../../../theme';
 import { Icon } from '../icons/Icon';
@@ -45,7 +44,7 @@ const renderStars = (rating: number) => {
       <Icon
         key={`star-${i}`}
         name="star"
-        size={14}
+        size={16}
         color={colors.yellow.normal}
         family="ionicons"
       />
@@ -57,7 +56,7 @@ const renderStars = (rating: number) => {
       <Icon
         key="star-half"
         name="star-half"
-        size={14}
+        size={16}
         color={colors.yellow.normal}
         family="ionicons"
       />
@@ -70,7 +69,7 @@ const renderStars = (rating: number) => {
       <Icon
         key={`star-empty-${i}`}
         name="star-outline"
-        size={14}
+        size={16}
         color={colors.text.tertiary}
         family="ionicons"
       />
@@ -94,8 +93,7 @@ export const HotelCard: React.FC<HotelCardProps> = ({
   onReserve,
   style,
 }) => {
-  const handleReserve = (e: any) => {
-    e.stopPropagation();
+  const handleReserve = () => {
     onReserve?.();
   };
 
@@ -103,76 +101,60 @@ export const HotelCard: React.FC<HotelCardProps> = ({
     <TouchableOpacity
       style={[styles.container, style]}
       onPress={onPress}
-      activeOpacity={0.9}
+      activeOpacity={0.85}
     >
-      <ImageBackground
+      {/* Image on top */}
+      <Image
         source={{ uri: imageUrl }}
-        style={styles.imageBackground}
-        imageStyle={styles.imageStyle}
+        style={styles.image}
         resizeMode="cover"
-      >
-        <LinearGradient
-          colors={['rgba(0,0,0,0.3)', 'rgba(0,0,0,0.7)']}
-          style={styles.gradient}
-        >
-          <View style={styles.content}>
-            <View style={styles.header}>
-              <Text style={styles.title} numberOfLines={2}>
-                {title}
-              </Text>
-              {rating > 0 && (
-                <View style={styles.ratingContainer}>
-                  {renderStars(rating)}
-                </View>
-              )}
-            </View>
+      />
 
-            <View style={styles.priceContainer}>
-              <Text style={styles.price}>
-                {currency} {pricePerNight}
-              </Text>
-              <Text style={styles.priceUnit}> / nuit</Text>
+      {/* Content below image */}
+      <View style={styles.content}>
+        {/* Title and Rating row */}
+        <View style={styles.titleRow}>
+          <Text style={styles.title} numberOfLines={1}>
+            {title}
+          </Text>
+          {rating > 0 && (
+            <View style={styles.ratingContainer}>
+              {renderStars(rating)}
             </View>
+          )}
+        </View>
 
-            <View style={styles.infoRow}>
-              <View style={styles.infoItem}>
-                <Icon
-                  name="location-outline"
-                  size={14}
-                  color={colors.text.inverse}
-                  family="ionicons"
-                />
-                <Text style={styles.infoText}>
-                  {distance} {distanceUnit}
-                </Text>
-              </View>
-              <View style={styles.infoItem}>
-                <Icon
-                  name="time-outline"
-                  size={14}
-                  color={colors.text.inverse}
-                  family="ionicons"
-                />
-                <Text style={styles.infoText}>{duration} min</Text>
-              </View>
-            </View>
+        {/* Price */}
+        <View style={styles.priceContainer}>
+          <Text style={styles.price}>
+            {currency} {pricePerNight}
+          </Text>
+          <Text style={styles.priceUnit}> /une nuit</Text>
+        </View>
 
-            <Text style={styles.address} numberOfLines={1}>
-              {address}
-            </Text>
+        {/* Distance and Time */}
+        <View style={styles.infoRow}>
+          <Text style={styles.infoText}>
+            {distance} {distanceUnit}
+          </Text>
+          <Text style={styles.infoSeparator}> à </Text>
+          <Text style={styles.infoText}>{duration} min</Text>
+        </View>
 
-            <View style={styles.buttonContainer}>
-              <Button
-                title="Reserver"
-                onPress={handleReserve}
-                variant="primary"
-                size="small"
-                style={styles.reserveButton}
-              />
-            </View>
-          </View>
-        </LinearGradient>
-      </ImageBackground>
+        {/* Address */}
+        <Text style={styles.address} numberOfLines={1}>
+          {address}
+        </Text>
+
+        {/* Reserve Button */}
+        <Button
+          title="Reserver"
+          onPress={handleReserve}
+          variant="primary"
+          size="small"
+          style={styles.reserveButton}
+        />
+      </View>
     </TouchableOpacity>
   );
 };
@@ -180,34 +162,31 @@ export const HotelCard: React.FC<HotelCardProps> = ({
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    height: 200,
+    backgroundColor: colors.background.primary,
     borderRadius: 16,
     overflow: 'hidden',
     marginBottom: spacing.base,
   },
-  imageBackground: {
-    flex: 1,
+  image: {
     width: '100%',
-    height: '100%',
-  },
-  imageStyle: {
+    height: 160,
     borderRadius: 16,
   },
-  gradient: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    padding: spacing.base,
-  },
   content: {
-    gap: spacing.xs,
+    padding: spacing.base,
+    gap: spacing.sm,
   },
-  header: {
-    gap: spacing.xs,
+  titleRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: spacing.xs,
   },
   title: {
-    ...typography.styles.bodyMedium18,
-    color: colors.text.inverse,
-    fontWeight: '600',
+    ...typography.styles.bodySemibold18,
+    color: colors.text.primary,
+    flex: 1,
+    marginRight: spacing.sm,
   },
   ratingContainer: {
     flexDirection: 'row',
@@ -217,44 +196,37 @@ const styles = StyleSheet.create({
   priceContainer: {
     flexDirection: 'row',
     alignItems: 'baseline',
-    marginTop: spacing.xs,
+    marginBottom: spacing.xs,
   },
   price: {
-    ...typography.styles.bodyMedium18,
-    color: colors.text.inverse,
-    fontWeight: '600',
+    ...typography.styles.bodySemibold18,
+    color: colors.text.primary,
   },
   priceUnit: {
     ...typography.styles.bodyRegular14,
-    color: colors.text.inverse,
-    opacity: 0.9,
+    color: colors.text.primary,
   },
   infoRow: {
     flexDirection: 'row',
-    gap: spacing.md,
-    marginTop: spacing.xs,
-  },
-  infoItem: {
-    flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.xs,
+    marginBottom: spacing.xs,
   },
   infoText: {
     ...typography.styles.bodyRegular14,
-    color: colors.text.inverse,
-    opacity: 0.9,
+    color: colors.text.secondary,
+  },
+  infoSeparator: {
+    ...typography.styles.bodyRegular14,
+    color: colors.text.secondary,
+    marginHorizontal: spacing.xs,
   },
   address: {
     ...typography.styles.bodyRegular14,
-    color: colors.text.inverse,
-    opacity: 0.8,
-    marginTop: spacing.xs,
-  },
-  buttonContainer: {
-    marginTop: spacing.sm,
+    color: colors.text.secondary,
+    marginBottom: spacing.sm,
   },
   reserveButton: {
-    minWidth: 120,
+    width: '100%',
   },
 });
 
