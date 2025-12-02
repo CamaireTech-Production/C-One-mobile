@@ -13,8 +13,8 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { colors, spacing, typography } from '../../../theme';
-import { Icon } from '../icons/Icon';
+import { colors, spacing, typography } from '@theme';
+import { Icon } from '@components/common/icons';
 
 interface DetailHeaderProps {
   title: string;

@@ -18,7 +18,7 @@ import type { HomeStackParamList } from '../../types';
 import {
   ScreenBackground,
   DetailHeader,
-  HotelCard,
+  BookableCard,
 } from '../../components/common';
 import { colors, spacing, typography } from '../../theme';
 import { useHotelData } from '../../hooks';
@@ -71,19 +71,21 @@ export const HotelListScreen: React.FC = () => {
           ) : hotels.length > 0 ? (
             <View style={styles.cardsList}>
               {hotels.map((hotel) => (
-                <HotelCard
+                <BookableCard
                   key={hotel.id}
                   id={hotel.id}
                   title={hotel.title}
                   imageUrl={hotel.imageUrl}
                   rating={hotel.rating}
-                  pricePerNight={hotel.pricePerNight}
+                  price={hotel.pricePerNight}
                   currency={hotel.currency}
+                  priceUnit="/une nuit"
                   distance={hotel.distance}
                   distanceUnit={hotel.distanceUnit}
                   duration={hotel.duration}
                   address={hotel.address}
                   onPress={() => handleHotelPress(hotel.id, hotel.title)}
+                  variant="hotel"
                   style={styles.hotelCard}
                 />
               ))}

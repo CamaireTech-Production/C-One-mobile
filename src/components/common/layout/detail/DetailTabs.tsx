@@ -7,9 +7,9 @@
 import React from 'react';
 import { View, StyleSheet, ViewStyle } from 'react-native';
 
-import { colors, spacing } from '../../../theme';
-import { Tabs, TabOption } from '../tabs/Tabs';
-import { Icon } from '../icons/Icon';
+import { colors, spacing } from '@theme';
+import { Tabs, TabOption } from '@components/common/tabs';
+import { Icon } from '@components/common/icons';
 
 export type DetailTabKey = 'transport' | 'hotel' | 'tourism' | 'restaurant';
 

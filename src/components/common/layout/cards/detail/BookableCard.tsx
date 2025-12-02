@@ -1,6 +1,7 @@
 /**
- * HotelCard Component
- * Card displaying hotel with image on top, text content below
+ * BookableCard Component
+ * Generic card for bookable items (hotels, tourism places, restaurants)
+ * Displays image on top, text content below with rating, price, location info, and reserve button
  * Used in horizontal scrollable layout
  */
 
@@ -14,24 +15,35 @@ import {
   Image,
 } from 'react-native';
 
-import { colors, spacing, typography } from '../../../theme';
-import { Icon } from '../icons/Icon';
-import { Button } from '../forms/Button';
+import { colors, spacing, typography } from '@theme';
+import { Icon } from '@components/common/icons';
+import { Button } from '@components/common/forms';
 
-export interface HotelCardProps {
+export type BookableCardVariant = 'hotel' | 'tourism' | 'restaurant';
+
+export interface BookableCardProps {
   id: string;
   title: string;
   imageUrl: string;
-  rating: number; // 1-5
-  pricePerNight: number;
+  // Rating optionnel (pour hôtels principalement)
+  rating?: number; // 1-5
+  // Prix flexible
+  price: number;
   currency: string;
+  priceUnit?: string; // "/une nuit" | "/table" | "À partir" | etc.
+  // Informations de localisation
   distance: number;
   distanceUnit: string;
   duration: number; // in minutes
   address: string;
+  // Actions
   onPress?: () => void;
   onReserve?: () => void;
+  reserveButtonLabel?: string; // "Reserver" par défaut
+  // Style
   style?: ViewStyle;
+  // Variantes (pour futures personnalisations)
+  variant?: BookableCardVariant;
 }
 
 const renderStars = (rating: number) => {
@@ -85,23 +97,44 @@ const renderStars = (rating: number) => {
   return stars;
 };
 
-export const HotelCard: React.FC<HotelCardProps> = ({
+export const BookableCard: React.FC<BookableCardProps> = ({
   title,
   imageUrl,
   rating,
-  pricePerNight,
+  price,
   currency,
+  priceUnit,
   distance,
   distanceUnit,
   duration,
   address,
   onPress,
   onReserve,
+  reserveButtonLabel = 'Reserver',
   style,
+  variant = 'hotel',
 }) => {
   const handleReserve = () => {
     onReserve?.();
   };
+
+  // Format price unit based on variant if not provided
+  const getPriceUnit = () => {
+    if (priceUnit) return priceUnit;
+    switch (variant) {
+      case 'hotel':
+        return '/une nuit';
+      case 'tourism':
+        return '';
+      case 'restaurant':
+        return '/table';
+      default:
+        return '';
+    }
+  };
+
+  const formattedPriceUnit = getPriceUnit();
+  const showPriceLabel = variant === 'tourism' && formattedPriceUnit === '';
 
   return (
     <TouchableOpacity
@@ -125,7 +158,7 @@ export const HotelCard: React.FC<HotelCardProps> = ({
           <Text style={styles.title} numberOfLines={1}>
             {title}
           </Text>
-          {rating > 0 && (
+          {rating !== undefined && rating > 0 && (
             <View style={styles.ratingContainer}>
               {renderStars(rating)}
             </View>
@@ -134,10 +167,13 @@ export const HotelCard: React.FC<HotelCardProps> = ({
 
         {/* Price - Right aligned */}
         <View style={styles.priceContainer}>
+          {showPriceLabel && <Text style={styles.priceLabel}>À partir </Text>}
           <Text style={styles.price}>
-            {currency} {pricePerNight}
+            {currency} {price}
           </Text>
-          <Text style={styles.priceUnit}> /une nuit</Text>
+          {formattedPriceUnit && (
+            <Text style={styles.priceUnit}> {formattedPriceUnit}</Text>
+          )}
         </View>
 
         {/* Distance, Time and Address - Same row */}
@@ -171,7 +207,7 @@ export const HotelCard: React.FC<HotelCardProps> = ({
 
         {/* Reserve Button */}
         <Button
-          title="Reserver"
+          title={reserveButtonLabel}
           onPress={handleReserve}
           variant="primary"
           size="small"
@@ -238,6 +274,10 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     marginBottom: spacing.xs,
   },
+  priceLabel: {
+    ...typography.styles.bodyRegular14,
+    color: colors.text.primary,
+  },
   price: {
     ...typography.styles.bodyBold18,
     color: colors.text.primary,
@@ -262,7 +302,6 @@ const styles = StyleSheet.create({
   timeContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    // gap: 4,
   },
   infoText: {
     ...typography.styles.bodyRegular14,

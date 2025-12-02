@@ -23,9 +23,8 @@ import {
   DetailCarousel,
   DetailTabs,
   TransportCard,
-  HotelCard,
+  BookableCard,
   TourismCategoryCard,
-  TourismPlaceCard,
   RestaurantCategoryCard,
   RestaurantCard,
   Icon,
@@ -291,19 +290,21 @@ export const DetailScreen: React.FC = () => {
                       contentContainerStyle={styles.horizontalCardsList}
                     >
                       {popularHotels.map((hotel) => (
-                        <HotelCard
+                        <BookableCard
                           key={hotel.id}
                           id={hotel.id}
                           title={hotel.title}
                           imageUrl={hotel.imageUrl}
                           rating={hotel.rating}
-                          pricePerNight={hotel.pricePerNight}
+                          price={hotel.pricePerNight}
                           currency={hotel.currency}
+                          priceUnit="/une nuit"
                           distance={hotel.distance}
                           distanceUnit={hotel.distanceUnit}
                           duration={hotel.duration}
                           address={hotel.address}
                           onPress={() => handleHotelPress(hotel.id, hotel.title)}
+                          variant="hotel"
                           style={styles.hotelCardHorizontal}
                         />
                       ))}
@@ -321,19 +322,21 @@ export const DetailScreen: React.FC = () => {
                       contentContainerStyle={styles.horizontalCardsList}
                     >
                       {otherHotels.map((hotel) => (
-                        <HotelCard
+                        <BookableCard
                           key={hotel.id}
                           id={hotel.id}
                           title={hotel.title}
                           imageUrl={hotel.imageUrl}
                           rating={hotel.rating}
-                          pricePerNight={hotel.pricePerNight}
+                          price={hotel.pricePerNight}
                           currency={hotel.currency}
+                          priceUnit="/une nuit"
                           distance={hotel.distance}
                           distanceUnit={hotel.distanceUnit}
                           duration={hotel.duration}
                           address={hotel.address}
                           onPress={() => handleHotelPress(hotel.id, hotel.title)}
+                          variant="hotel"
                           style={styles.hotelCardHorizontal}
                         />
                       ))}
@@ -441,18 +444,20 @@ export const DetailScreen: React.FC = () => {
                       contentContainerStyle={styles.horizontalCardsList}
                     >
                       {popularPlaces.map((place) => (
-                        <TourismPlaceCard
+                        <BookableCard
                           key={place.id}
                           id={place.id}
                           title={place.title}
                           imageUrl={place.imageUrl}
-                          startingPrice={place.startingPrice}
-                          currency={place.currency}
+                          price={place.startingPrice || 0}
+                          currency={place.currency || ''}
+                          priceUnit=""
                           distance={place.distance}
                           distanceUnit={place.distanceUnit}
                           duration={place.duration}
                           address={place.address}
                           onPress={() => handleTourismPlacePress(place.id, place.title)}
+                          variant="tourism"
                           style={styles.placeCardHorizontal}
                         />
                       ))}

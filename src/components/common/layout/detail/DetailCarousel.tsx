@@ -16,8 +16,8 @@ import {
   ImageSourcePropType,
 } from 'react-native';
 
-import { colors, spacing, typography } from '../../../theme';
-import { Icon } from '../icons/Icon';
+import { colors, spacing, typography } from '@theme';
+import { Icon } from '@components/common/icons';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    gap: spacing.sm,
+    gap: spacing.xs,
     // paddingTop: spacing.sm,
     // paddingBottom: spacing.sm,
   },

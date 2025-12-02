@@ -15,9 +15,9 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
-import { colors, spacing, typography } from '../../../theme';
-import { Icon } from '../icons/Icon';
-import { Button } from '../forms/Button';
+import { colors, spacing, typography } from '@theme';
+import { Icon } from '@components/common/icons';
+import { Button } from '@components/common/forms';
 
 export interface RestaurantCardProps {
   id: string;

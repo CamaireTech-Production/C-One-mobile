@@ -13,8 +13,8 @@ import {
   ViewStyle,
 } from 'react-native';
 
-import { colors, spacing, typography } from '../../../theme';
-import { Icon } from '../icons/Icon';
+import { colors, spacing, typography } from '@theme';
+import { Icon } from '@components/common/icons';
 
 export type TransportType = 'plane' | 'train' | 'car';
 

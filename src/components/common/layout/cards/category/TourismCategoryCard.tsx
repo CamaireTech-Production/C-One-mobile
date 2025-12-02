@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
-import { colors, spacing, typography } from '../../../theme';
+import { colors, spacing, typography } from '@theme';
 
 export interface TourismCategoryCardProps {
   id: string;

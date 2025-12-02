@@ -18,7 +18,7 @@ import type { HomeStackParamList } from '../../types';
 import {
   ScreenBackground,
   DetailHeader,
-  TourismPlaceCard,
+  BookableCard,
 } from '../../components/common';
 import { colors, spacing, typography } from '../../theme';
 import { useTourismData } from '../../hooks';
@@ -77,18 +77,20 @@ export const TourismListScreen: React.FC = () => {
           ) : filteredPlaces.length > 0 ? (
             <View style={styles.cardsList}>
               {filteredPlaces.map((place) => (
-                <TourismPlaceCard
+                <BookableCard
                   key={place.id}
                   id={place.id}
                   title={place.title}
                   imageUrl={place.imageUrl}
-                  startingPrice={place.startingPrice}
+                  price={place.startingPrice || 0}
                   currency={place.currency}
+                  priceUnit=""
                   distance={place.distance}
                   distanceUnit={place.distanceUnit}
                   duration={place.duration}
                   address={place.address}
                   onPress={() => handlePlacePress(place.id, place.title)}
+                  variant="tourism"
                   style={styles.placeCard}
                 />
               ))}
