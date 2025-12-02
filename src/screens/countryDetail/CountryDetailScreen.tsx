@@ -626,7 +626,10 @@ const styles = StyleSheet.create({
     // marginTop: spacing.sm,
   },
   content: {
-    padding: spacing.lg,
+    paddingTop: spacing.lg,
+    paddingLeft: spacing.lg,
+    paddingBottom: spacing.lg,
+    paddingRight: 0,
   },
   tabContent: {
     gap: spacing.xl,
@@ -658,7 +661,7 @@ const styles = StyleSheet.create({
     gap: spacing.base,
   },
   horizontalCardsList: {
-    paddingRight: spacing.lg,
+    paddingRight: 0,
     gap: spacing.base,
   },
   cardsContainer: {
