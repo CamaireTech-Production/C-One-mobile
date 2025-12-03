@@ -252,6 +252,81 @@
       "required": "Confirmation requise",
       "mismatch": "Les mots de passe ne correspondent pas"
     }
+  },
+  "transport": {
+    "flight": {
+      "title": "Réservation - avion",
+      "subtitle": "Découvrez les meilleurs vol pour vous",
+      "search": {
+        "title": "Rechercher",
+        "positionLabel": "Ma position",
+        "destinationLabel": "Ma destination",
+        "dateLabel": "Date",
+        "passengersLabel": "Nombre de passagers",
+        "positionPlaceholder": "Entrer votre adresse",
+        "destinationPlaceholder": "Entrer votre destination",
+        "datePlaceholder": "10-11-2025",
+        "availableFlights": "Vols disponible",
+        "allFlights": "Tous les vols {{origin}} - {{destination}}",
+        "seeAll": "Voir tout"
+      }
+    },
+    "train": {
+      "title": "Réservation - train",
+      "subtitle": "Découvrez les meilleurs trains pour vous",
+      "description": "Déplacez vous en toute sécurité avec votre ticket",
+      "search": {
+        "title": "Rechercher",
+        "positionLabel": "Ma position",
+        "destinationLabel": "Ma destination",
+        "dateLabel": "Date",
+        "passengersLabel": "Nombre de passagers",
+        "positionPlaceholder": "Entrer votre adresse",
+        "destinationPlaceholder": "Entrer votre destination",
+        "datePlaceholder": "10-11-2025",
+        "availableTrains": "Trains disponible",
+        "allTrains": "Tous les trains {{origin}} - {{destination}}",
+        "seeAll": "Voir tout"
+      }
+    },
+    "car": {
+      "title": "Réservation - voiture",
+      "subtitle": "Découvrez les meilleurs services de transport pour vous",
+      "search": {
+        "title": "Rechercher",
+        "positionLabel": "Ma position",
+        "destinationLabel": "Ma destination",
+        "dateLabel": "Date",
+        "positionPlaceholder": "Entrer votre adresse",
+        "destinationPlaceholder": "Entrer votre destination",
+        "datePlaceholder": "10-11-2025",
+        "availableServices": "Services disponible",
+        "seeAll": "Voir tout"
+      }
+    },
+    "common": {
+      "search": "Rechercher",
+      "seeAll": "Voir tout",
+      "reserve": "Réserver",
+      "book": "Réserver",
+      "download": "Télécharger",
+      "back": "Retour",
+      "myPosition": "Ma position"
+    },
+    "booking": {
+      "passengers": {
+        "adults": "Adultes",
+        "children": "Enfants",
+        "babies": "Bébés"
+      },
+      "baggage": {
+        "title": "Prendre bagages",
+        "label": "Nombre de bagages",
+        "weightLabel": "Poids",
+        "baggageLabel": "bagage {{index}}",
+        "empty": ""
+      }
+    }
   }
 }
 

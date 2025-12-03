@@ -5,6 +5,7 @@
 
 import React from 'react';
 import { View, Text, StyleSheet, ViewStyle, TouchableOpacity } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { colors, typography, spacing } from '../../../theme';
 import { Icon } from '../../common/icons/Icon';
 import { PassengerCounter } from '../forms/PassengerCounter';
@@ -20,9 +21,11 @@ interface BaggageSelectorProps {
 export const BaggageSelector: React.FC<BaggageSelectorProps> = ({
   baggage,
   onChange,
-  title = 'Prendre bagages',
+  title,
   containerStyle,
 }) => {
+  const { t } = useTranslation();
+  const displayTitle = title || t('transport.booking.baggage.title');
   const handleBaggageCountChange = (count: number) => {
     const newBaggage: BaggageItem[] = [];
     for (let i = 0; i < count; i++) {
@@ -45,10 +48,10 @@ export const BaggageSelector: React.FC<BaggageSelectorProps> = ({
 
   return (
     <View style={[styles.container, containerStyle]}>
-      <Text style={styles.title}>{title}</Text>
+      <Text style={styles.title}>{displayTitle}</Text>
 
       <PassengerCounter
-        label="Nombre de bagages"
+        label={t('transport.booking.baggage.label')}
         value={baggage.length}
         onChange={handleBaggageCountChange}
         min={0}
@@ -57,12 +60,14 @@ export const BaggageSelector: React.FC<BaggageSelectorProps> = ({
 
       {baggage.length > 0 && (
         <View style={styles.weightContainer}>
-          <Text style={styles.weightLabel}>Poids</Text>
+          <Text style={styles.weightLabel}>{t('transport.booking.baggage.weightLabel')}</Text>
           {baggage.map((item, index) => (
             <View key={item.id} style={styles.weightItem}>
-              <Text style={styles.baggageLabel}>bagage {index + 1}</Text>
+              <Text style={styles.baggageLabel}>
+                {t('transport.booking.baggage.baggageLabel', { index: index + 1 })}
+              </Text>
               <PassengerCounter
-                label=""
+                label={t('transport.booking.baggage.empty')}
                 value={item.weight}
                 onChange={(weight) => handleWeightChange(index, weight)}
                 min={1}

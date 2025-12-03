@@ -6,6 +6,7 @@
  */
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   View,
   Text,
@@ -31,6 +32,7 @@ export const TrainCard: React.FC<TrainCardProps> = ({
   onReserve,
   style,
 }) => {
+  const { t } = useTranslation();
   const formatPrice = (price: number, currency: string) => {
     return `${price}${currency}`;
   };
@@ -118,7 +120,7 @@ export const TrainCard: React.FC<TrainCardProps> = ({
 
       {/* Reserve Button */}
       <Button
-        title="Réserver"
+        title={t('transport.common.reserve')}
         onPress={onReserve || onPress || (() => {})}
         variant="primary"
         size="medium"

@@ -113,7 +113,7 @@ export const TrainSearchScreen: React.FC = () => {
   return (
     <ScreenBackground backgroundColor={colors.transport.train.background}>
       <DetailHeader
-        title="Réservation - train"
+        title={t('transport.train.title')}
         onBack={handleBack}
         rightIconName="home"
         rightIconFamily="ionicons"
@@ -128,7 +128,7 @@ export const TrainSearchScreen: React.FC = () => {
         {/* Title */}
         <View style={styles.titleContainer}>
           <Text style={styles.title}>
-            Déplacez vous en toute sécurité avec votre ticket
+            {t('transport.train.description')}
           </Text>
         </View>
 
@@ -136,7 +136,7 @@ export const TrainSearchScreen: React.FC = () => {
         <View style={styles.formCard}>
           <LocationInputField
             type="position"
-            label="Ma position"
+            label={t('transport.train.search.positionLabel')}
             value={origin}
             onChangeText={setOrigin}
             preFilledValue={
@@ -144,26 +144,26 @@ export const TrainSearchScreen: React.FC = () => {
                 ? geolocationLocation.city
                 : undefined
             }
-            placeholder="Entrer votre adresse"
+            placeholder={t('transport.train.search.positionPlaceholder')}
           />
 
           <LocationInputField
             type="destination"
-            label="Ma destination"
+            label={t('transport.train.search.destinationLabel')}
             value={destination}
             onChangeText={setDestination}
-            placeholder="Entrer votre destination"
+            placeholder={t('transport.train.search.destinationPlaceholder')}
           />
 
           <DateInputField
-            label="Date"
+            label={t('transport.train.search.dateLabel')}
             value={date}
             onChange={setDate}
-            placeholder="10-11-2025"
+            placeholder={t('transport.train.search.datePlaceholder')}
           />
 
           <PassengerCounter
-            label="Nombre de passagers"
+            label={t('transport.train.search.passengersLabel')}
             value={passengers}
             onChange={setPassengers}
             min={1}
@@ -171,7 +171,7 @@ export const TrainSearchScreen: React.FC = () => {
           />
 
           <Button
-            title="Rechercher"
+            title={t('transport.train.search.title')}
             onPress={handleSearch}
             variant="primary"
             size="large"
@@ -184,9 +184,9 @@ export const TrainSearchScreen: React.FC = () => {
         {previewTrains.length > 0 && (
           <View style={styles.previewSection}>
             <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Trains disponible</Text>
+              <Text style={styles.sectionTitle}>{t('transport.train.search.availableTrains')}</Text>
               <TouchableOpacity onPress={handleSeeAll} activeOpacity={0.7}>
-                <Text style={styles.seeAllText}>Voir tout</Text>
+                <Text style={styles.seeAllText}>{t('transport.train.search.seeAll')}</Text>
               </TouchableOpacity>
             </View>
 

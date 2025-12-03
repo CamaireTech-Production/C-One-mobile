@@ -13,6 +13,7 @@ import {
   TouchableOpacity,
   ViewStyle,
 } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { colors, typography, spacing } from '../../../theme';
 import { Icon } from '../../common/icons/Icon';
 import { Button } from '../../common/forms/Button';
@@ -31,6 +32,7 @@ export const FlightCard: React.FC<FlightCardProps> = ({
   onReserve,
   style,
 }) => {
+  const { t } = useTranslation();
   const formatPrice = (price: number, currency: string) => {
     return `${price}${currency}`;
   };
@@ -118,7 +120,7 @@ export const FlightCard: React.FC<FlightCardProps> = ({
 
       {/* Reserve Button */}
       <Button
-        title="Réserver"
+        title={t('transport.common.reserve')}
         onPress={onReserve || onPress || (() => {})}
         variant="primary"
         size="medium"

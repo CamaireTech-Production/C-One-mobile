@@ -5,6 +5,7 @@
  */
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   View,
   Text,
@@ -27,6 +28,7 @@ export const RideHailingCard: React.FC<RideHailingCardProps> = ({
   onDownload,
   style,
 }) => {
+  const { t } = useTranslation();
   const getServiceColor = () => {
     if (service.color) {
       return service.color;
@@ -60,7 +62,7 @@ export const RideHailingCard: React.FC<RideHailingCardProps> = ({
 
       {/* Download Button */}
       <Button
-        title="Télécharger"
+        title={t('transport.common.download')}
         onPress={onDownload || (() => {})}
         variant="primary"
         size="medium"

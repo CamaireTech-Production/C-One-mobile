@@ -32,6 +32,9 @@ export const images = {
   // Detail
   detailBackground: require('../../assets/images/detail_bg.jpg'),
 
+  // Transport
+  mapVector: require('../../assets/images/map-vector.png'),
+
   // Add more images here as needed
   // exampleImage: 'https://example.com/image.jpg',
   // or

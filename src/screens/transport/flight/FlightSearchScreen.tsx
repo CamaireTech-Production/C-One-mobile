@@ -26,8 +26,9 @@ import {
   PassengerCounter,
   FlightCard,
 } from '../../../components/transport';
-import { FlightSearchHeader } from '../../../components/transport/headers/FlightSearchHeader';
-import { colors, spacing, typography } from '../../../theme';
+import { OverlayHeader } from '../../../components/transport/headers/OverlayHeader';
+import { colors, spacing, typography, shadows } from '../../../theme';
+import { images } from '../../../config';
 import { useFlightData, useGeolocation } from '../../../hooks';
 import type { SearchContext } from '../../../types/transport';
 
@@ -112,27 +113,33 @@ export const FlightSearchScreen: React.FC = () => {
   return (
     <View style={styles.container}>
       {/* Special Header with Background */}
-      <FlightSearchHeader
-        title="Réservation - avion"
-        subtitle="Découvrez les meilleurs vol pour vous"
+      <OverlayHeader
+        title={t('transport.flight.title')}
+        subtitle={t('transport.flight.subtitle')}
         onBack={handleBack}
-        rightIconName="home"
-        rightIconFamily="ionicons"
+        // Left icon - matching DetailHeader style
+        leftIconName="chevron-back"
+        leftIconFamily="ionicons"
+        leftIconSize={20}
+        leftIconColor={colors.text.primary}
+        leftIconWithContainer={true}
+        // Right icon - matching DetailHeader style
+        rightIconName="smart-toy"
+        rightIconFamily="material"
+        rightIconSize={20}
+        rightIconColor={colors.primary.normal}
+        rightIconWithContainer={true}
         onRightIconPress={() => navigation.navigate('HomeMain')}
         backgroundColor={colors.transport.flight.primary}
-        backgroundImage={undefined} // TODO: Add background image URL from Figma
+        backgroundImage={images.mapVector}
       />
 
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* Search Form Card - Overlaps on header background */}
+      {/* Search Form Card - Positioned absolutely to overlap header */}
+      <View style={styles.formCardWrapper}>
         <View style={styles.formCard}>
           <LocationInputField
             type="position"
-            label="Ma position"
+            label={t('transport.flight.search.positionLabel')}
             value={origin}
             onChangeText={setOrigin}
             preFilledValue={
@@ -140,26 +147,26 @@ export const FlightSearchScreen: React.FC = () => {
                 ? geolocationLocation.city
                 : undefined
             }
-            placeholder="Entrer votre adresse"
+            placeholder={t('transport.flight.search.positionPlaceholder')}
           />
 
           <LocationInputField
             type="destination"
-            label="Ma destination"
+            label={t('transport.flight.search.destinationLabel')}
             value={destination}
             onChangeText={setDestination}
-            placeholder="Entrer votre destination"
+            placeholder={t('transport.flight.search.destinationPlaceholder')}
           />
 
           <DateInputField
-            label="Date"
+            label={t('transport.flight.search.dateLabel')}
             value={date}
             onChange={setDate}
-            placeholder="10-11-2025"
+            placeholder={t('transport.flight.search.datePlaceholder')}
           />
 
           <PassengerCounter
-            label="Nombre de passagers"
+            label={t('transport.flight.search.passengersLabel')}
             value={passengers}
             onChange={setPassengers}
             min={1}
@@ -167,7 +174,7 @@ export const FlightSearchScreen: React.FC = () => {
           />
 
           <Button
-            title="Rechercher"
+            title={t('transport.flight.search.title')}
             onPress={handleSearch}
             variant="primary"
             size="large"
@@ -175,18 +182,25 @@ export const FlightSearchScreen: React.FC = () => {
             style={styles.searchButton}
           />
         </View>
+      </View>
 
+      {/* Scrollable Content - Starts below the form card */}
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
         {/* Preview Flights Section */}
         {previewFlights.length > 0 && (
           <View style={styles.previewSection}>
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionTitle}>
                 {origin && destination
-                  ? `Tous les vols ${origin} - ${destination}`
-                  : 'Vols disponible'}
+                  ? t('transport.flight.search.allFlights', { origin, destination })
+                  : t('transport.flight.search.availableFlights')}
               </Text>
               <TouchableOpacity onPress={handleSeeAll} activeOpacity={0.7}>
-                <Text style={styles.seeAllText}>Voir tout</Text>
+                <Text style={styles.seeAllText}>{t('transport.flight.search.seeAll')}</Text>
               </TouchableOpacity>
             </View>
 
@@ -214,21 +228,23 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingTop: 0, // No top padding - form overlaps header
+    paddingTop: 200, // Space for the overlapping form card
     paddingHorizontal: spacing.base,
-    paddingBottom: spacing.base,
+    paddingBottom: spacing['4xl'],
+  },
+  formCardWrapper: {
+    position: 'absolute',
+    top: 180, // Position from top of screen (adjust based on header height)
+    left: spacing.base,
+    right: spacing.base,
+    zIndex: 1000, // High zIndex to ensure it's above header
   },
   formCard: {
     backgroundColor: colors.background.primary,
-    borderRadius: 12,
+    borderRadius: 16, // Increased border radius according to Figma
     padding: spacing.lg,
-    marginTop: -spacing.xl, // Negative margin to overlap header
-    marginBottom: spacing.lg,
-    ...colors.shadow.card,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
-    elevation: 5,
+    ...shadows.medium,
+    elevation: 8, // Higher elevation for Android
   },
   searchButton: {
     marginTop: spacing.base,

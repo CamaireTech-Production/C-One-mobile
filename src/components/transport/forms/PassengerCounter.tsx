@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background.primary,
     borderWidth: 1,
     borderColor: colors.border.normal,
-    borderRadius: 8,
+    borderRadius: 12, // Increased border radius to match Figma
     minHeight: 48,
     paddingHorizontal: spacing.base,
   },
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     height: 40,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 8,
+    borderRadius: 20, // Circular buttons
     backgroundColor: colors.background.tertiary,
   },
   buttonDisabled: {

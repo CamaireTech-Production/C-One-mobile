@@ -5,6 +5,7 @@
 
 import React from 'react';
 import { View, Text, StyleSheet, ViewStyle } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { colors, typography, spacing } from '../../../theme';
 import { PassengerCounter } from '../forms/PassengerCounter';
 import type { PassengerCount } from '../../../types/transport';
@@ -22,6 +23,7 @@ export const PassengerSelector: React.FC<PassengerSelectorProps> = ({
   title = 'Qui veut vous voir?',
   containerStyle,
 }) => {
+  const { t } = useTranslation();
   const handleAdultsChange = (value: number) => {
     onChange({ ...passengers, adults: value });
   };
@@ -39,7 +41,7 @@ export const PassengerSelector: React.FC<PassengerSelectorProps> = ({
       <Text style={styles.title}>{title}</Text>
 
       <PassengerCounter
-        label="Adultes"
+        label={t('transport.booking.passengers.adults')}
         value={passengers.adults}
         onChange={handleAdultsChange}
         min={1}
@@ -47,7 +49,7 @@ export const PassengerSelector: React.FC<PassengerSelectorProps> = ({
       />
 
       <PassengerCounter
-        label="Enfants"
+        label={t('transport.booking.passengers.children')}
         value={passengers.children}
         onChange={handleChildrenChange}
         min={0}
@@ -55,7 +57,7 @@ export const PassengerSelector: React.FC<PassengerSelectorProps> = ({
       />
 
       <PassengerCounter
-        label="Bébés"
+        label={t('transport.booking.passengers.babies')}
         value={passengers.babies}
         onChange={handleBabiesChange}
         min={0}

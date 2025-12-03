@@ -81,7 +81,7 @@ export const Button: React.FC<ButtonProps> = ({
 
 const styles = StyleSheet.create({
   base: {
-    borderRadius: 8,
+    borderRadius: 12, // Increased border radius for transport forms
     alignItems: 'center',
     justifyContent: 'center',
     ...shadows.small,

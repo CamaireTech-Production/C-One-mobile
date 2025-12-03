@@ -2,5 +2,6 @@
  * Transport Headers - Central Export
  */
 
-export { FlightSearchHeader } from './FlightSearchHeader';
+export { OverlayHeader } from './OverlayHeader';
+export type { OverlayHeaderProps } from './OverlayHeader';
 
