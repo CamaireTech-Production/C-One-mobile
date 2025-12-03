@@ -18,8 +18,6 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { HomeStackParamList } from '../../../types';
 
 import {
-  ScreenBackground,
-  DetailHeader,
   Button,
 } from '../../../components/common';
 import {
@@ -28,6 +26,7 @@ import {
   PassengerCounter,
   FlightCard,
 } from '../../../components/transport';
+import { FlightSearchHeader } from '../../../components/transport/headers/FlightSearchHeader';
 import { colors, spacing, typography } from '../../../theme';
 import { useFlightData, useGeolocation } from '../../../hooks';
 import type { SearchContext } from '../../../types/transport';
@@ -111,13 +110,17 @@ export const FlightSearchScreen: React.FC = () => {
   };
 
   return (
-    <ScreenBackground backgroundColor={colors.transport.flight.background}>
-      <DetailHeader
+    <View style={styles.container}>
+      {/* Special Header with Background */}
+      <FlightSearchHeader
         title="Réservation - avion"
+        subtitle="Découvrez les meilleurs vol pour vous"
         onBack={handleBack}
         rightIconName="home"
         rightIconFamily="ionicons"
         onRightIconPress={() => navigation.navigate('HomeMain')}
+        backgroundColor={colors.transport.flight.primary}
+        backgroundImage={undefined} // TODO: Add background image URL from Figma
       />
 
       <ScrollView
@@ -125,14 +128,7 @@ export const FlightSearchScreen: React.FC = () => {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* Title */}
-        <View style={styles.titleContainer}>
-          <Text style={styles.title}>
-            Découvrez les meilleurs vol pour vous
-          </Text>
-        </View>
-
-        {/* Search Form Card */}
+        {/* Search Form Card - Overlaps on header background */}
         <View style={styles.formCard}>
           <LocationInputField
             type="position"
@@ -184,7 +180,11 @@ export const FlightSearchScreen: React.FC = () => {
         {previewFlights.length > 0 && (
           <View style={styles.previewSection}>
             <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Vols disponible</Text>
+              <Text style={styles.sectionTitle}>
+                {origin && destination
+                  ? `Tous les vols ${origin} - ${destination}`
+                  : 'Vols disponible'}
+              </Text>
               <TouchableOpacity onPress={handleSeeAll} activeOpacity={0.7}>
                 <Text style={styles.seeAllText}>Voir tout</Text>
               </TouchableOpacity>
@@ -201,34 +201,34 @@ export const FlightSearchScreen: React.FC = () => {
           </View>
         )}
       </ScrollView>
-    </ScreenBackground>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.transport.flight.background,
+  },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
-    padding: spacing.base,
-  },
-  titleContainer: {
-    marginBottom: spacing.lg,
-  },
-  title: {
-    ...typography.styles.h3,
-    color: colors.text.primary,
+    paddingTop: 0, // No top padding - form overlaps header
+    paddingHorizontal: spacing.base,
+    paddingBottom: spacing.base,
   },
   formCard: {
     backgroundColor: colors.background.primary,
     borderRadius: 12,
     padding: spacing.lg,
+    marginTop: -spacing.xl, // Negative margin to overlap header
     marginBottom: spacing.lg,
     ...colors.shadow.card,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 5,
   },
   searchButton: {
     marginTop: spacing.base,

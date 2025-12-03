@@ -2,5 +2,5 @@
  * Detail Screen - Export
  */
 
-export { DetailScreen } from './CountryDetailScreen';
+export { DetailScreen } from './DetailScreen';
 
