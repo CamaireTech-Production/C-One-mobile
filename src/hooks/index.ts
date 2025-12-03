@@ -19,4 +19,9 @@ export { useHotelData } from './useHotelData';
 export { useTourismData } from './useTourismData';
 export { useRestaurantData } from './useRestaurantData';
 export { useTransportData } from './useTransportData';
+// Transport hooks
+export { useFlightData } from './transport/useFlightData';
+export { useTrainData } from './transport/useTrainData';
+export { useCarData } from './transport/useCarData';
+export { useTransportSearch } from './transport/useTransportSearch';
 

@@ -105,6 +105,47 @@ export const colors = {
   overlay: {
     white33: '#FFFFFF33', // White with 33% opacity for carousel button
   },
+
+  // Transport Theme Colors
+  transport: {
+    // Flight Theme (Blue)
+    flight: {
+      primary: '#288cbe', // Same as primary.normal
+      primaryHover: '#247eab',
+      primaryActive: '#207098',
+      background: '#FFFFFF', // White
+      card: '#FFFFFF', // White cards
+      text: '#333538', // Primary text
+      textSecondary: '#7a7c7e', // Secondary text
+      success: '#10b981', // Green for "Réserver" button
+      border: '#e5e7eb', // Light border
+    },
+    // Train Theme (Gold)
+    train: {
+      primary: '#ccb47b', // Yellow normal (gold)
+      primaryHover: '#b8a26f',
+      primaryActive: '#a39062',
+      background: '#FFFFFF', // White
+      card: '#faf8f2', // Yellow light (light gold background)
+      header: '#ccb47b', // Golden-beige header
+      text: '#333538', // Primary text
+      textSecondary: '#7a7c7e', // Secondary text
+      success: '#10b981', // Green for "Réserver" button
+      border: '#efebde', // Yellow lightActive border
+    },
+    // Car Theme (Same as Flight - Blue)
+    car: {
+      primary: '#288cbe',
+      primaryHover: '#247eab',
+      primaryActive: '#207098',
+      background: '#FFFFFF',
+      card: '#FFFFFF',
+      text: '#333538',
+      textSecondary: '#7a7c7e',
+      success: '#10b981',
+      border: '#e5e7eb',
+    },
+  },
 } as const;
 
 export type Colors = typeof colors;

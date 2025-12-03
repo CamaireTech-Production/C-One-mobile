@@ -38,6 +38,7 @@ import {
   useTourismData,
   useRestaurantData,
   useTransportData,
+  useGeolocation,
 } from '../../hooks';
 import {
   SkeletonHorizontalCard,
@@ -69,6 +70,17 @@ export const DetailScreen: React.FC = () => {
   const isCity = params?.type === 'city';
   const countryCode = params?.countryCode || '';
   const cityId = params?.cityId;
+
+  // Get user location for context determination
+  const { location: geolocationLocation } = useGeolocation({ useCache: true });
+
+  // Determine context: client-location if user is in the same country, otherwise other-country
+  const getContext = (): 'client-location' | 'other-country' => {
+    if (geolocationLocation?.countryCode === countryCode) {
+      return 'client-location';
+    }
+    return 'other-country';
+  };
 
   // Fetch data using hooks
   const { data: hotels, loading: hotelsLoading } = useHotelData(countryCode, cityId);
@@ -166,11 +178,35 @@ export const DetailScreen: React.FC = () => {
   };
 
   const handleTransportPress = (transportId: string, transportType: 'plane' | 'train' | 'car', transportTitle: string) => {
-    navigation.navigate('TransportDetail', {
-      transportId,
-      type: transportType,
-      title: transportTitle,
-    });
+    const context = getContext();
+    
+    // Navigate to the appropriate search screen based on transport type
+    if (transportType === 'plane') {
+      navigation.navigate('FlightSearch', {
+        countryCode,
+        cityId,
+        context,
+      });
+    } else if (transportType === 'train') {
+      navigation.navigate('TrainSearch', {
+        countryCode,
+        cityId,
+        context,
+      });
+    } else if (transportType === 'car') {
+      navigation.navigate('CarSearch', {
+        countryCode,
+        cityId,
+        context,
+      });
+    } else {
+      // Fallback to old TransportDetail screen
+      navigation.navigate('TransportDetail', {
+        transportId,
+        type: transportType,
+        title: transportTitle,
+      });
+    }
   };
 
   const handleHotelPress = (hotelId: string, hotelTitle: string) => {

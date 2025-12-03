@@ -38,6 +38,81 @@ export type HomeStackParamList = {
     type: 'plane' | 'train' | 'car';
     title: string;
   };
+  // Flight routes
+  FlightSearch: {
+    countryCode: string;
+    cityId?: string;
+    context?: 'client-location' | 'other-country';
+  };
+  FlightResults: {
+    countryCode: string;
+    cityId?: string;
+    context?: 'client-location' | 'other-country';
+    origin?: string;
+    destination?: string;
+    date?: string;
+    passengers?: number;
+  };
+  FlightBooking: {
+    offerId: string;
+    offer: any; // TransportOffer - will be properly typed
+  };
+  FlightTicket: {
+    ticketId: string;
+    ticket: any; // TransportTicket - will be properly typed
+  };
+  // Train routes
+  TrainSearch: {
+    countryCode: string;
+    cityId?: string;
+    context?: 'client-location' | 'other-country';
+  };
+  TrainResults: {
+    countryCode: string;
+    cityId?: string;
+    context?: 'client-location' | 'other-country';
+    origin?: string;
+    destination?: string;
+    date?: string;
+    passengers?: number;
+  };
+  TrainBooking: {
+    offerId: string;
+    offer: any; // TransportOffer
+  };
+  TrainTicket: {
+    ticketId: string;
+    ticket: any; // TransportTicket
+  };
+  // Car routes
+  CarSearch: {
+    countryCode: string;
+    cityId?: string;
+    context?: 'client-location' | 'other-country';
+  };
+  CarResults: {
+    countryCode: string;
+    cityId?: string;
+    origin?: string;
+    destination?: string;
+  };
+  // Shared routes
+  PersonalInformation: {
+    bookingDetails?: any; // BookingDetails
+    returnTo?: string; // Screen to return to after completion
+  };
+  Payment: {
+    bookingDetails: any; // BookingDetails
+    personalInfo?: any; // Personal information
+  };
+  BookingConfirmation: {
+    bookingId: string;
+    type: 'plane' | 'train';
+  };
+  Password: {
+    purpose?: 'payment' | 'verification';
+    onSuccess?: () => void;
+  };
   // Hotel routes
   HotelList: {
     countryId: string;
