@@ -71,6 +71,7 @@ export interface OverlayHeaderProps {
   
   // Layout
   minHeight?: number;
+  headerHeight?: number; // Explicit header height - overrides minHeight if provided
   showBackButton?: boolean;
 }
 
@@ -115,9 +116,13 @@ export const OverlayHeader: React.FC<OverlayHeaderProps> = ({
   subtitleStyle,
   // Layout props
   minHeight = 240,
+  headerHeight,
   showBackButton = true,
 }) => {
   const insets = useSafeAreaInsets();
+  
+  // Use headerHeight if provided, otherwise use minHeight
+  const finalHeight = headerHeight || minHeight;
 
   const HeaderContent = (
     <View style={[styles.container, { paddingTop: insets.top }, containerStyle, style]}>
@@ -223,7 +228,7 @@ export const OverlayHeader: React.FC<OverlayHeaderProps> = ({
           source={imageSource}
           style={[
             styles.imageBackground, 
-            { backgroundColor, minHeight },
+            { backgroundColor, minHeight: finalHeight },
             imageBackgroundStyle
           ]}
           imageStyle={[
@@ -248,7 +253,7 @@ export const OverlayHeader: React.FC<OverlayHeaderProps> = ({
       />
       <View style={[
         styles.solidBackground, 
-        { backgroundColor, minHeight },
+        { backgroundColor, minHeight: finalHeight },
         imageBackgroundStyle
       ]}>
         {HeaderContent}

@@ -43,6 +43,9 @@ type FlightSearchScreenNavigationProp = NativeStackNavigationProp<
   'FlightSearch'
 >;
 
+const HEADER_HEIGHT = 350;
+const FORM_OVERLAP_OFFSET = 150;
+
 export const FlightSearchScreen: React.FC = () => {
   const { t } = useTranslation();
   const route = useRoute();
@@ -132,6 +135,7 @@ export const FlightSearchScreen: React.FC = () => {
         onRightIconPress={() => navigation.navigate('HomeMain')}
         backgroundColor={colors.transport.flight.primary}
         backgroundImage={images.mapVector}
+        headerHeight={HEADER_HEIGHT}
       />
 
       {/* Search Form Card - Positioned absolutely to overlap header */}
@@ -228,13 +232,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingTop: 200, // Space for the overlapping form card
+    paddingTop: HEADER_HEIGHT - FORM_OVERLAP_OFFSET, // Space for the overlapping form card
     paddingHorizontal: spacing.base,
     paddingBottom: spacing['4xl'],
   },
   formCardWrapper: {
     position: 'absolute',
-    top: 180, // Position from top of screen (adjust based on header height)
+    top: HEADER_HEIGHT - FORM_OVERLAP_OFFSET, // Position from top of screen (adjust based on header height)
     left: spacing.base,
     right: spacing.base,
     zIndex: 1000, // High zIndex to ensure it's above header
