@@ -136,6 +136,10 @@ export const FlightSearchScreen: React.FC = () => {
         backgroundColor={colors.transport.flight.primary}
         backgroundImage={images.mapVector}
         headerHeight={HEADER_HEIGHT}
+        imageBackgroundStyle={{
+          borderBottomLeftRadius: 20,
+          borderBottomRightRadius: 20,
+        }}
       />
 
       {/* Search Form Card - Positioned absolutely to overlap header */}
@@ -232,7 +236,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingTop: HEADER_HEIGHT - FORM_OVERLAP_OFFSET, // Space for the overlapping form card
+    paddingTop: 400,
     paddingHorizontal: spacing.base,
     paddingBottom: spacing['4xl'],
   },
@@ -241,7 +245,7 @@ const styles = StyleSheet.create({
     top: HEADER_HEIGHT - FORM_OVERLAP_OFFSET, // Position from top of screen (adjust based on header height)
     left: spacing.base,
     right: spacing.base,
-    zIndex: 1000, // High zIndex to ensure it's above header
+    zIndex: 1000,
   },
   formCard: {
     backgroundColor: colors.background.primary,
