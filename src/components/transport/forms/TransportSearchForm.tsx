@@ -5,13 +5,11 @@
  * Matches Figma design exactly
  */
 
-import React from 'react';
-import { View, StyleSheet, ViewStyle } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TextInput, StyleSheet, ViewStyle, Modal, TouchableOpacity, Platform } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { colors, spacing, shadows } from '../../../theme';
-import { LocationInputField } from './LocationInputField';
-import { DateInputField } from './DateInputField';
-import { PassengerCounter } from './PassengerCounter';
+import { colors, spacing, shadows, typography } from '../../../theme';
+import { TransportInputField } from './TransportInputField';
 import { Button } from '../../common/forms/Button';
 
 export type TransportType = 'flight' | 'train' | 'car';
@@ -134,6 +132,23 @@ export const TransportSearchForm: React.FC<TransportSearchFormProps> = ({
   // Use global iconColor if provided, otherwise use individual colors or default
   const iconColor = globalIconColor || originIconColor || destinationIconColor || defaultPrimaryColor;
   
+  // Get background color for input fields based on transport type
+  const getInputBackgroundColor = () => {
+    switch (transportType) {
+      case 'train':
+        return colors.transport.train.card; // Light gold background for train
+      case 'flight':
+      case 'car':
+      default:
+        return colors.secondary.light; // Light grey background for flight/car
+    }
+  };
+  
+  const inputBackgroundColor = getInputBackgroundColor();
+  
+  // Date picker state
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  
   // Get default icons based on transport type
   const getDefaultOriginIcon = () => {
     if (originIconName) return originIconName;
@@ -168,26 +183,40 @@ export const TransportSearchForm: React.FC<TransportSearchFormProps> = ({
     return `transport.${transportType}.search.${key}`;
   };
   
+  // Date formatting helpers
+  const formatDate = (dateString: string): string => {
+    return dateString || datePlaceholder || '10-11-2025';
+  };
+  
+  const handleDatePress = () => {
+    setShowDatePicker(true);
+  };
+  
+  const handleDateConfirm = (newDate: string) => {
+    onDateChange(newDate);
+    setShowDatePicker(false);
+  };
+  
   return (
     <View style={[styles.container, containerStyle]}>
       <View style={[styles.card, cardStyle]}>
         {/* Origin Input */}
-        <LocationInputField
-          type="position"
+        <TransportInputField
+          type="text"
           label={originLabel || t(getTranslationKey('positionLabel'))}
-          value={origin}
+          value={originPreFilled || origin}
           onChangeText={onOriginChange}
           placeholder={originPlaceholder || t(getTranslationKey('positionPlaceholder'))}
-          preFilledValue={originPreFilled}
           containerStyle={styles.inputField}
           iconName={originIconName || getDefaultOriginIcon()}
           iconFamily={originIconFamily}
           iconColor={iconColor}
+          backgroundColor={inputBackgroundColor}
         />
         
         {/* Destination Input */}
-        <LocationInputField
-          type="destination"
+        <TransportInputField
+          type="text"
           label={destinationLabel || t(getTranslationKey('destinationLabel'))}
           value={destination}
           onChangeText={onDestinationChange}
@@ -196,33 +225,42 @@ export const TransportSearchForm: React.FC<TransportSearchFormProps> = ({
           iconName={destinationIconName || getDefaultDestinationIcon()}
           iconFamily={destinationIconFamily}
           iconColor={iconColor}
+          backgroundColor={inputBackgroundColor}
         />
         
         {/* Date Input */}
-        <DateInputField
+        <TransportInputField
+          type="text"
           label={dateLabel || t(getTranslationKey('dateLabel'))}
-          value={date}
-          onChange={onDateChange}
+          value={formatDate(date)}
+          onPress={handleDatePress}
           placeholder={datePlaceholder || t(getTranslationKey('datePlaceholder'))}
           containerStyle={styles.inputField}
+          iconName="calendar-outline"
+          iconFamily="ionicons"
           iconColor={iconColor}
+          backgroundColor={inputBackgroundColor}
+          editable={false}
         />
         
         {/* Passengers Counter */}
         {showPassengers && (
-          <PassengerCounter
+          <TransportInputField
+            type="counter"
             label={passengersLabel || t(getTranslationKey('passengersLabel'))}
             value={passengers}
             onChange={onPassengersChange}
             min={passengersMin}
             max={passengersMax}
             containerStyle={styles.inputField}
+            backgroundColor={inputBackgroundColor}
+            formatValue={(val) => String(val).padStart(2, '0')}
           />
         )}
         
         {/* Search Button */}
         <Button
-          title={searchButtonLabel || t(getTranslationKey('title'))}
+          title={searchButtonLabel || t(getTranslationKey('searchButton'))}
           onPress={onSearch}
           variant="primary"
           size="large"
@@ -233,6 +271,56 @@ export const TransportSearchForm: React.FC<TransportSearchFormProps> = ({
           }}
         />
       </View>
+      
+      {/* Date Picker Modal */}
+      <Modal
+        visible={showDatePicker}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setShowDatePicker(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Sélectionner une date</Text>
+            <Text style={styles.modalHint}>
+              Utilisez le format DD-MM-YYYY (ex: 10-11-2025)
+            </Text>
+            <View style={styles.modalInput}>
+              <Text style={styles.modalLabel}>Date (DD-MM-YYYY)</Text>
+              <View style={styles.modalInputContainer}>
+                <TextInput
+                  style={styles.modalTextInput}
+                  value={date}
+                  onChangeText={(text) => {
+                    // Simple validation - you can enhance this
+                    if (text.length <= 10) {
+                      onDateChange(text);
+                    }
+                  }}
+                  placeholder="DD-MM-YYYY"
+                  placeholderTextColor={colors.text.tertiary}
+                />
+              </View>
+            </View>
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.modalButtonCancel]}
+                onPress={() => setShowDatePicker(false)}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.modalButtonTextCancel}>Annuler</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.modalButtonConfirm]}
+                onPress={() => handleDateConfirm(date)}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.modalButtonTextConfirm}>Confirmer</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -253,6 +341,76 @@ const styles = StyleSheet.create({
   },
   searchButton: {
     marginTop: spacing.base,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: colors.background.primary,
+    borderRadius: 12,
+    padding: spacing.lg,
+    width: '80%',
+    maxWidth: 400,
+  },
+  modalTitle: {
+    ...typography.styles.h4,
+    color: colors.text.primary,
+    marginBottom: spacing.sm,
+  },
+  modalHint: {
+    ...typography.styles.caption,
+    color: colors.text.secondary,
+    marginBottom: spacing.base,
+  },
+  modalInput: {
+    marginBottom: spacing.base,
+  },
+  modalLabel: {
+    ...typography.styles.inputLabel,
+    color: colors.text.primary,
+    marginBottom: spacing.xs,
+  },
+  modalInputContainer: {
+    backgroundColor: colors.background.tertiary,
+    borderRadius: 12,
+    paddingHorizontal: spacing.base,
+    paddingVertical: spacing.sm,
+    borderWidth: 1,
+    borderColor: colors.border.normal,
+  },
+  modalTextInput: {
+    ...typography.styles.input,
+    color: colors.text.primary,
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: spacing.base,
+    gap: spacing.base,
+  },
+  modalButton: {
+    flex: 1,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.lg,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  modalButtonCancel: {
+    backgroundColor: colors.background.tertiary,
+  },
+  modalButtonConfirm: {
+    backgroundColor: colors.primary.normal,
+  },
+  modalButtonTextCancel: {
+    ...typography.styles.button,
+    color: colors.text.primary,
+  },
+  modalButtonTextConfirm: {
+    ...typography.styles.button,
+    color: colors.text.inverse,
   },
 });
 

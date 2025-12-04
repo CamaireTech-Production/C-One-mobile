@@ -8,6 +8,8 @@ export type { LocationInputType } from './forms/LocationInputField';
 export { DateInputField } from './forms/DateInputField';
 export { PassengerCounter } from './forms/PassengerCounter';
 export { DocumentUploadField } from './forms/DocumentUploadField';
+export { TransportInputField } from './forms/TransportInputField';
+export type { TransportInputFieldProps, TransportInputType } from './forms/TransportInputField';
 export { TransportSearchForm } from './forms/TransportSearchForm';
 export type { TransportSearchFormProps, TransportType } from './forms/TransportSearchForm';
 

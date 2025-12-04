@@ -27,8 +27,8 @@ type RetriableRequestConfig = InternalAxiosRequestConfig & {
  * Pour le développement local : Modifiez directement l'URL ci-dessous
  * Pour la production : Configurez dans app.json -> extra.apiUrl
  */
-const DEFAULT_API_URL = 'http://192.168.1.130:8000';
-// const DEFAULT_API_URL = 'http://192.168.1.140:8000';
+// const DEFAULT_API_URL = 'http://192.168.1.130:8000';
+const DEFAULT_API_URL = 'http://192.168.1.140:8000';
 
 // Utilise la config de app.json si disponible, sinon utilise la valeur par défaut
 const API_BASE_URL =
