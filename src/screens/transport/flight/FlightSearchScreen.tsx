@@ -163,8 +163,10 @@ export const FlightSearchScreen: React.FC = () => {
               ? geolocationLocation.city
               : undefined
           }
-          originIconName="airplane"
-          destinationIconName="airplane"
+          originIconName="airplane-takeoff"
+          originIconFamily="materialcommunity"
+          destinationIconName="airplane-landing"
+          destinationIconFamily="materialcommunity"
           iconColor={colors.transport.flight.primary}
           containerStyle={styles.formCard}
         />
