@@ -140,6 +140,7 @@ export const colors = {
       success: '#10b981', // Green for "Réserver" button
       border: '#efebde', // Yellow lightActive border
       searchButtonBackground: '#EAF4F9', // Light blue background for search button
+      connector: '#A3A4A5', // Color for connector dots and train icon
     },
     // Car Theme (Same as Flight - Blue)
     car: {
