@@ -120,11 +120,13 @@ export const FlightCard: React.FC<FlightCardProps> = ({
           <View style={styles.column2}>
             <View style={styles.airlineContainer}>
               {offer.airlineLogo ? (
-                <Image 
-                  source={{ uri: offer.airlineLogo }} 
-                  style={styles.airlineLogoImage}
-                  resizeMode="contain"
-                />
+                <View style={styles.airlineLogoContainer}>
+                  <Image 
+                    source={{ uri: offer.airlineLogo }} 
+                    style={styles.airlineLogoImage}
+                    resizeMode="contain"
+                  />
+                </View>
               ) : (
                 <View style={[styles.airlineLogoCircle, { backgroundColor: colors.transport.flight.primary }]}>
                   <Text style={styles.airlineLogoText}>
@@ -144,23 +146,30 @@ export const FlightCard: React.FC<FlightCardProps> = ({
 
       {/* Row 3: Duration, Type (Non stop), Number of people, Price */}
       <View style={styles.detailsRow}>
-        <View style={styles.detailItem}>
-          <Icon name="time-outline" size={16} color={colors.transport.flight.primary} family="ionicons" />
-          <Text style={styles.detailText}>{offer.duration}</Text>
+        <View style={styles.detailItemWrapper}>
+          <View style={styles.detailItem}>
+            <Icon name="time-outline" size={16} color={colors.transport.flight.primary} family="ionicons" />
+            <Text style={styles.detailText}>{offer.duration}</Text>
+          </View>
         </View>
 
-        <Text style={[styles.detailText, styles.nonStopText]}>
-          {offer.isNonStop ? 'Non stop' : `${offer.numberOfStops || offer.stops?.length || 0} escales`}
-        </Text>
+        <View style={styles.detailItemWrapper}>
+          <Text style={[styles.detailText, styles.nonStopText]}>
+            {offer.isNonStop ? 'Non stop' : `${offer.numberOfStops || offer.stops?.length || 0} escales`}
+          </Text>
+        </View>
 
-        <Text style={styles.detailText}>
-          {offer.passengersIncluded} Personnes
-        </Text>
+        <View style={styles.detailItemWrapper}>
+          <Text style={styles.detailText}>
+            {offer.passengersIncluded} Personnes
+          </Text>
+        </View>
 
-        {/* Price on the right */}
-        <Text style={styles.priceText}>
-          {formatPrice(offer.price, offer.currency)}
-        </Text>
+        <View style={styles.detailItemWrapper}>
+          <Text style={styles.priceText}>
+            {formatPrice(offer.price, offer.currency)}
+          </Text>
+        </View>
       </View>
 
       {/* Row 4: Reserve Button */}
@@ -171,7 +180,7 @@ export const FlightCard: React.FC<FlightCardProps> = ({
         size="medium"
         fullWidth
         style={styles.reserveButton}
-        backgroundColor={colors.transport.flight.success}
+        backgroundColor={colors.transport.flight.buttonGreen}
         textColor={colors.text.inverse}
       />
     </TouchableOpacity>
@@ -293,10 +302,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: spacing.xs,
   },
+  airlineLogoContainer: {
+    width: 20,
+    height: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: spacing.xs,
+  },
   airlineLogoImage: {
     width: 20,
     height: 20,
-    marginRight: spacing.xs,
   },
   airlineNameContainer: {
     alignItems: 'flex-start',
@@ -315,9 +330,14 @@ const styles = StyleSheet.create({
   detailsRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.md,
+    justifyContent: 'space-between',
     marginBottom: spacing.md,
     flexWrap: 'wrap',
+  },
+  detailItemWrapper: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   detailItem: {
     flexDirection: 'row',
@@ -330,14 +350,15 @@ const styles = StyleSheet.create({
   },
   nonStopText: {
     color: colors.transport.flight.primary,
-    textDecorationLine: 'underline',
+    borderBottomWidth: 1,
+    borderBottomColor: colors.transport.flight.primary,
   },
   priceText: {
-    ...typography.styles.bodyBold18,
+    ...typography.styles.bodySemibold24,
     color: colors.transport.flight.primary,
     marginLeft: 'auto',
   },
   reserveButton: {
-    backgroundColor: colors.transport.flight.success,
+    backgroundColor: colors.transport.flight.buttonGreen,
   },
 });

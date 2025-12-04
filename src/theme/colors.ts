@@ -122,6 +122,7 @@ export const colors = {
       text: '#333538', // Primary text
       textSecondary: '#7a7c7e', // Secondary text
       success: '#10b981', // Green for "Réserver" button
+      buttonGreen: '#34C759', // Green for flight card reserve button
       border: '#e5e7eb', // Light border
       searchButtonBackground: '#EAF4F9', // Light blue background for search button
       connector: '#A3A4A5', // Color for connector dots and plane icon
