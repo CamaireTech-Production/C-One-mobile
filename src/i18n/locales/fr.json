@@ -259,6 +259,7 @@
       "subtitle": "Découvrez les meilleurs vol pour vous",
       "search": {
         "title": "Rechercher",
+        "searchButton": "Rechercher",
         "positionLabel": "Ma position",
         "destinationLabel": "Ma destination",
         "dateLabel": "Date",
@@ -277,6 +278,7 @@
       "description": "Déplacez vous en toute sécurité avec votre ticket",
       "search": {
         "title": "Rechercher",
+        "searchButton": "Rechercher",
         "positionLabel": "Ma position",
         "destinationLabel": "Ma destination",
         "dateLabel": "Date",
@@ -294,6 +296,7 @@
       "subtitle": "Découvrez les meilleurs services de transport pour vous",
       "search": {
         "title": "Rechercher",
+        "searchButton": "Rechercher",
         "positionLabel": "Ma position",
         "destinationLabel": "Ma destination",
         "dateLabel": "Date",
