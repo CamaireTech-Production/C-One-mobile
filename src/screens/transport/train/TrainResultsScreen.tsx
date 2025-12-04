@@ -1,10 +1,11 @@
 /**
  * TrainResultsScreen
  * Train results list with date filter and trip type filter
- * Same structure as FlightResultsScreen but with gold theme
+ * Uses OverlayHeader with integrated date calendar and tab filters
+ * Same structure as FlightResultsScreen but with train theme
  */
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   View,
   Text,
@@ -18,17 +19,17 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { HomeStackParamList } from '../../../types';
 
 import {
-  ScreenBackground,
-  DetailHeader,
-} from '../../../components/common';
-import {
   DateFilterBar,
   TripTypeFilter,
   TrainCard,
 } from '../../../components/transport';
+import type { TripType } from '../../../components/transport/filters/TripTypeFilter';
+import { OverlayHeader } from '../../../components/transport/headers/OverlayHeader';
+import { SkeletonTransportCard } from '../../../components/skeleton';
 import { colors, spacing, typography } from '../../../theme';
+import { images } from '../../../config';
 import { useTrainData, useHideTabBar } from '../../../hooks';
-import type { SearchContext, TripType } from '../../../types/transport';
+import type { SearchContext } from '../../../types/transport';
 
 interface TrainResultsScreenParams {
   countryCode: string;
@@ -45,6 +46,9 @@ type TrainResultsScreenNavigationProp = NativeStackNavigationProp<
   'TrainResults'
 >;
 
+// Header height constant - matches TrainSearchScreen
+const HEADER_HEIGHT = 300;
+
 export const TrainResultsScreen: React.FC = () => {
   const { t } = useTranslation();
   const route = useRoute();
@@ -54,11 +58,52 @@ export const TrainResultsScreen: React.FC = () => {
   // Hide tab bar when this screen is focused
   useHideTabBar();
 
-  const [selectedDate, setSelectedDate] = useState<string>(
-    params.date || '17-11-2025'
-  );
+  // Get today's date as default
+  const getTodayDate = (): string => {
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const year = today.getFullYear();
+    return `${day}-${month}-${year}`;
+  };
+
+  // Get month name from date string (DD-MM-YYYY format)
+  const getMonthFromDate = (dateString: string): string => {
+    const months = [
+      'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+      'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre',
+    ];
+    const parts = dateString.split('-');
+    if (parts.length === 3) {
+      const monthIndex = parseInt(parts[1], 10) - 1;
+      return months[monthIndex] || months[new Date().getMonth()];
+    }
+    return months[new Date().getMonth()];
+  };
+
+  // Get current month name in French
+  const getCurrentMonth = (): string => {
+    const months = [
+      'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+      'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre',
+    ];
+    return months[new Date().getMonth()];
+  };
+
+  const defaultDate = params.date || getTodayDate();
+  const defaultMonth = params.date ? getMonthFromDate(params.date) : getCurrentMonth();
+  
+  const [selectedDate, setSelectedDate] = useState<string>(defaultDate);
   const [selectedTripType, setSelectedTripType] = useState<TripType>('non-stop');
-  const [currentMonth, setCurrentMonth] = useState<string>('Novembre');
+  const [currentMonth, setCurrentMonth] = useState<string>(defaultMonth);
+  
+  // Update month when date changes
+  useEffect(() => {
+    if (selectedDate) {
+      const monthFromDate = getMonthFromDate(selectedDate);
+      setCurrentMonth(monthFromDate);
+    }
+  }, [selectedDate]);
 
   // Get trains data
   const { trains, loading } = useTrainData(
@@ -143,49 +188,85 @@ export const TrainResultsScreen: React.FC = () => {
     }
   };
 
-  return (
-    <ScreenBackground backgroundColor={colors.transport.train.background}>
-      <DetailHeader
-        title="Réservation - Details"
-        onBack={handleBack}
-        rightIconName="bookmark-outline"
-        rightIconFamily="ionicons"
-      />
+  // Build section title with origin and destination
+  const sectionTitle = params.origin && params.destination
+    ? `${t('transport.train.search.allTrains', { origin: params.origin, destination: params.destination })}`
+    : t('transport.train.search.availableTrains');
 
+  return (
+    <View style={styles.container}>
+      {/* OverlayHeader with integrated date calendar and tab filters */}
+      <OverlayHeader
+        title={t('transport.train.title')}
+        onBack={handleBack}
+        // Left icon - matching TrainSearchScreen style
+        leftIconName="chevron-back"
+        leftIconFamily="ionicons"
+        leftIconSize={20}
+        leftIconColor={colors.text.primary}
+        leftIconWithContainer={true}
+        // Right icon - matching TrainSearchScreen style
+        rightIconName="smart-toy"
+        rightIconFamily="material"
+        rightIconSize={20}
+        rightIconColor={colors.primary.normal}
+        rightIconWithContainer={true}
+        onRightIconPress={() => navigation.navigate('HomeMain')}
+        backgroundColor={colors.transport.train.primary}
+        backgroundImage={images.mapVector}
+        backgroundImageOpacity={0.8}
+        headerHeight={HEADER_HEIGHT}
+        navBarPaddingTop={0}
+        imageBackgroundStyle={{
+          borderBottomLeftRadius: 20,
+          borderBottomRightRadius: 20,
+        }}
+      >
+        {/* Date Filter Bar - integrated in header */}
+        <DateFilterBar
+          key={`${selectedDate}-${currentMonth}`} // Force re-render when date or month changes
+          selectedDate={selectedDate}
+          onDateSelect={setSelectedDate}
+          month={currentMonth}
+          onMonthChange={handleMonthChange}
+          containerStyle={styles.dateFilterContainer}
+          iconColor={colors.text.inverse}
+          monthTextColor={colors.text.inverse}
+        />
+
+        {/* Trip Type Filter - integrated in header */}
+        <TripTypeFilter
+          selectedType={selectedTripType}
+          onTypeChange={setSelectedTripType}
+          containerStyle={styles.tripFilterContainer}
+        />
+      </OverlayHeader>
+
+      {/* Train List Section */}
       <ScrollView
         style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[
+          styles.scrollContent,
+          { paddingTop: HEADER_HEIGHT + spacing.base },
+        ]}
         showsVerticalScrollIndicator={false}
       >
-        {/* Date Filter Bar - Gold Theme */}
-        <View style={[styles.dateFilterContainer, { backgroundColor: colors.transport.train.header }]}>
-          <DateFilterBar
-            selectedDate={selectedDate}
-            onDateSelect={setSelectedDate}
-            month={currentMonth}
-            onMonthChange={handleMonthChange}
-          />
-        </View>
-
-        {/* Trip Type Filter */}
-        <View style={styles.tripFilterContainer}>
-          <TripTypeFilter
-            selectedType={selectedTripType}
-            onTypeChange={setSelectedTripType}
-          />
-        </View>
-
-        {/* Results Section */}
         <View style={styles.resultsSection}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Trains disponible</Text>
+            <Text style={styles.sectionTitle}>{sectionTitle}</Text>
             <TouchableOpacity activeOpacity={0.7}>
-              <Text style={styles.searchText}>Rechercher</Text>
+              <Text style={styles.searchText}>{t('transport.train.search.searchButton')}</Text>
             </TouchableOpacity>
           </View>
 
           {loading ? (
-            <Text style={styles.loadingText}>Chargement des trains...</Text>
+            // Show skeleton loaders while loading
+            <>
+              <SkeletonTransportCard isFlight={false} style={styles.trainCard} />
+              <SkeletonTransportCard isFlight={false} style={styles.trainCard} />
+              <SkeletonTransportCard isFlight={false} style={styles.trainCard} />
+              <SkeletonTransportCard isFlight={false} style={styles.trainCard} />
+            </>
           ) : filteredTrains.length > 0 ? (
             filteredTrains.map((train) => (
               <TrainCard
@@ -196,27 +277,33 @@ export const TrainResultsScreen: React.FC = () => {
               />
             ))
           ) : (
-            <Text style={styles.emptyText}>Aucun train disponible</Text>
+            <Text style={styles.emptyText}>{t('transport.train.search.noTrains') || 'Aucun train disponible'}</Text>
           )}
         </View>
       </ScrollView>
-    </ScreenBackground>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.transport.train.background,
+  },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: spacing.lg,
+    paddingBottom: spacing['4xl'],
   },
   dateFilterContainer: {
-    paddingVertical: spacing.base,
+    backgroundColor: 'transparent', // Transparent since it's inside the header
+    paddingVertical: spacing.sm,
+    paddingHorizontal: 0, // Remove horizontal padding to allow full-width scroll
+    marginHorizontal: -spacing.lg, // Negative margin to compensate for OverlayHeader childrenContainer padding
   },
   tripFilterContainer: {
-    backgroundColor: colors.transport.train.header,
-    paddingBottom: spacing.sm,
+    paddingTop: 0,
   },
   resultsSection: {
     padding: spacing.base,
@@ -239,12 +326,6 @@ const styles = StyleSheet.create({
   trainCard: {
     marginBottom: spacing.base,
   },
-  loadingText: {
-    ...typography.styles.bodyRegular16,
-    color: colors.text.secondary,
-    textAlign: 'center',
-    marginTop: spacing.lg,
-  },
   emptyText: {
     ...typography.styles.bodyRegular16,
     color: colors.text.secondary,
@@ -252,4 +333,3 @@ const styles = StyleSheet.create({
     marginTop: spacing.lg,
   },
 });
-
