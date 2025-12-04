@@ -119,21 +119,11 @@ export const FlightCard: React.FC<FlightCardProps> = ({
         {offer.airline && (
           <View style={styles.column2}>
             <View style={styles.airlineContainer}>
-              {offer.airlineLogo ? (
-                <View style={styles.airlineLogoContainer}>
-                  <Image 
-                    source={{ uri: offer.airlineLogo }} 
-                    style={styles.airlineLogoImage}
-                    resizeMode="contain"
-                  />
-                </View>
-              ) : (
-                <View style={[styles.airlineLogoCircle, { backgroundColor: colors.transport.flight.primary }]}>
-                  <Text style={styles.airlineLogoText}>
-                    {offer.airline.split(' ').map(word => word[0]).join('').toUpperCase().slice(0, 2)}
-                  </Text>
-                </View>
-              )}
+              <View style={[styles.airlineLogoCircle, { backgroundColor: colors.transport.flight.primary }]}>
+                <Text style={styles.airlineLogoText}>
+                  {offer.airline.split(' ').map(word => word[0]).join('').toUpperCase().slice(0, 2)}
+                </Text>
+              </View>
               <View style={styles.airlineNameContainer}>
                 {offer.airline.split(' ').map((word, index) => (
                   <Text key={index} style={styles.airlineName}>{word}</Text>
@@ -303,15 +293,18 @@ const styles = StyleSheet.create({
     marginRight: spacing.xs,
   },
   airlineLogoContainer: {
-    width: 20,
-    height: 20,
+    width: 24,
+    height: 24,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: spacing.xs,
+    borderRadius: 12,
+    overflow: 'hidden',
+    backgroundColor: colors.background.primary,
   },
   airlineLogoImage: {
-    width: 20,
-    height: 20,
+    width: 24,
+    height: 24,
   },
   airlineNameContainer: {
     alignItems: 'flex-start',
