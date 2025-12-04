@@ -73,6 +73,7 @@ export interface OverlayHeaderProps {
   minHeight?: number;
   headerHeight?: number; // Explicit header height - overrides minHeight if provided
   showBackButton?: boolean;
+  navBarPaddingTop?: number; // Custom top padding for navigation bar
 }
 
 export const OverlayHeader: React.FC<OverlayHeaderProps> = ({
@@ -118,6 +119,7 @@ export const OverlayHeader: React.FC<OverlayHeaderProps> = ({
   minHeight = 240,
   headerHeight,
   showBackButton = true,
+  navBarPaddingTop,
 }) => {
   const insets = useSafeAreaInsets();
   
@@ -128,7 +130,11 @@ export const OverlayHeader: React.FC<OverlayHeaderProps> = ({
     <View style={[styles.container, { paddingTop: insets.top }, containerStyle, style]}>
       {/* Navigation Bar */}
       {(title || onBack || onRightIconPress || leftIconComponent || rightIconComponent) && (
-        <View style={[styles.navBar, navBarStyle]}>
+        <View style={[
+          styles.navBar, 
+          navBarPaddingTop !== undefined && { paddingTop: navBarPaddingTop },
+          navBarStyle
+        ]}>
           {/* Left Icon / Back Button */}
           {showBackButton && (onBack || leftIconComponent) && (
             <TouchableOpacity

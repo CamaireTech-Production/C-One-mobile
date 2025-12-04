@@ -135,6 +135,7 @@ export const FlightSearchScreen: React.FC = () => {
         backgroundImage={images.mapVector}
         backgroundImageOpacity={0.8}
         headerHeight={HEADER_HEIGHT}
+        navBarPaddingTop={spacing.lg}
         imageBackgroundStyle={{
           borderBottomLeftRadius: 20,
           borderBottomRightRadius: 20,
