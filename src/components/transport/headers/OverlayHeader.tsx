@@ -123,7 +123,6 @@ export const OverlayHeader: React.FC<OverlayHeaderProps> = ({
 }) => {
   const insets = useSafeAreaInsets();
   
-  // Use headerHeight if provided, otherwise use minHeight
   const finalHeight = headerHeight || minHeight;
 
   const HeaderContent = (
@@ -131,8 +130,8 @@ export const OverlayHeader: React.FC<OverlayHeaderProps> = ({
       {/* Navigation Bar */}
       {(title || onBack || onRightIconPress || leftIconComponent || rightIconComponent) && (
         <View style={[
-          styles.navBar, 
-          navBarPaddingTop !== undefined && { paddingTop: navBarPaddingTop },
+          styles.navBar,
+          navBarPaddingTop !== undefined ? { paddingTop: navBarPaddingTop } : { paddingTop: spacing.xs },
           navBarStyle
         ]}>
           {/* Left Icon / Back Button */}
@@ -256,7 +255,7 @@ export const OverlayHeader: React.FC<OverlayHeaderProps> = ({
               imageStyle
             ]}
           >
-            {/* Content starts below status bar */}
+            {/* Content starts below status bar - positioned to be above form */}
             <View style={styles.imageContentWrapper}>
               {HeaderContent}
             </View>
@@ -295,28 +294,33 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     width: '100%',
+    zIndex: 1, // Background layer - lowest
   },
   imageBackground: {
     position: 'absolute',
     left: 0,
     right: 0,
     width: '100%',
+    zIndex: 2, // Image layer above color layer
   },
   imageContentWrapper: {
     flex: 1,
     width: '100%',
+    position: 'relative',
+    zIndex: 100, // Header content must be above form (which has zIndex: 10)
   },
   imageStyle: {
     resizeMode: 'cover',
   },
   solidBackground: {
     width: '100%',
+    position: 'relative',
+    zIndex: 100, // Header content must be above form (which has zIndex: 10)
   },
   navBar: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
     minHeight: 56,
   },
   backButton: {

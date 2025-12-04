@@ -4,7 +4,7 @@
  * Supports context: client-location (ma position) or other-country
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -41,14 +41,22 @@ type FlightSearchScreenNavigationProp = NativeStackNavigationProp<
   'FlightSearch'
 >;
 
+// Header and form positioning constants
+// Based on Figma design: header is ~350px, form overlaps by ~150px
 const HEADER_HEIGHT = 350;
-const FORM_OVERLAP_OFFSET = 150;
+const FORM_OVERLAP_OFFSET = 140; // How much the form overlaps the header
+const FORM_TOP_POSITION = HEADER_HEIGHT - FORM_OVERLAP_OFFSET; // ~200px from top
 
 export const FlightSearchScreen: React.FC = () => {
   const { t } = useTranslation();
   const route = useRoute();
   const navigation = useNavigation<FlightSearchScreenNavigationProp>();
   const params = route.params as FlightSearchScreenParams;
+
+  // Refs for measuring component heights
+  const formCardRef = useRef<View>(null);
+  const [formCardHeight, setFormCardHeight] = useState<number>(280); // Estimated initial height
+  const [formCardTop, setFormCardTop] = useState<number>(FORM_TOP_POSITION);
 
   // Determine context
   const { location: geolocationLocation } = useGeolocation({ useCache: true });
@@ -80,6 +88,20 @@ export const FlightSearchScreen: React.FC = () => {
       setOrigin(geolocationLocation.city);
     }
   }, [context, geolocationLocation]);
+
+  // Measure form card height and position dynamically
+  const handleFormCardLayout = (event: any) => {
+    const { height, y } = event.nativeEvent.layout;
+    if (height > 0 && height !== formCardHeight) {
+      setFormCardHeight(height);
+    }
+    // y should match FORM_TOP_POSITION, but we measure it to be sure
+    if (y > 0 && Math.abs(y - formCardTop) > 1) {
+      setFormCardTop(y);
+    }
+  };
+
+  const scrollContentPaddingTop = formCardTop + formCardHeight + spacing.sm;
 
   // Get preview flights (first 2-3)
   const previewFlights = flights.slice(0, 3);
@@ -138,7 +160,7 @@ export const FlightSearchScreen: React.FC = () => {
         backgroundImage={images.mapVector}
         backgroundImageOpacity={0.8}
         headerHeight={HEADER_HEIGHT}
-        navBarPaddingTop={spacing.lg}
+        navBarPaddingTop={0}
         imageBackgroundStyle={{
           borderBottomLeftRadius: 20,
           borderBottomRightRadius: 20,
@@ -146,7 +168,11 @@ export const FlightSearchScreen: React.FC = () => {
       />
 
       {/* Search Form Card - Positioned absolutely to overlap header */}
-      <View style={styles.formCardWrapper}>
+      <View 
+        ref={formCardRef}
+        style={styles.formCardWrapper}
+        onLayout={handleFormCardLayout}
+      >
         <TransportSearchForm
           transportType="flight"
           origin={origin}
@@ -171,11 +197,14 @@ export const FlightSearchScreen: React.FC = () => {
           containerStyle={styles.formCard}
         />
       </View>
-
-      {/* Scrollable Content - Starts below the form card */}
       <ScrollView
         style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[
+          styles.scrollContent,
+          { 
+            paddingTop: scrollContentPaddingTop || (FORM_TOP_POSITION + 280 + spacing.lg), // Fallback calculation
+          },
+        ]}
         showsVerticalScrollIndicator={false}
       >
         {/* Preview Flights Section */}
@@ -216,16 +245,16 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingTop: 280,
     paddingHorizontal: spacing.base,
     paddingBottom: spacing['4xl'],
   },
   formCardWrapper: {
     position: 'absolute',
-    top: HEADER_HEIGHT - FORM_OVERLAP_OFFSET, // Position from top of screen (adjust based on header height)
+    top: FORM_TOP_POSITION, // Position from top of screen (~200px)
     left: spacing.base,
     right: spacing.base,
-    zIndex: 1000,
+    zIndex: 10, // Form overlaps header background (zIndex: 1-2) but stays below header content (zIndex: 100)
+    elevation: 4, // Android shadow/elevation
   },
   formCard: {
     // Styles are handled by TransportSearchForm component
