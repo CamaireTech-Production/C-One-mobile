@@ -165,7 +165,14 @@ export const TransportSearchForm: React.FC<TransportSearchFormProps> = ({
   };
   
   const formatDate = (dateString: string): string => {
-    return dateString || datePlaceholder || '10-11-2025';
+    if (dateString) return dateString;
+    if (datePlaceholder) return datePlaceholder;
+    // Default to today's date
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const year = today.getFullYear();
+    return `${day}-${month}-${year}`;
   };
   
   const handleDatePress = () => {

@@ -67,10 +67,19 @@ export const FlightSearchScreen: React.FC = () => {
       ? 'client-location'
       : 'other-country');
 
+  // Get today's date as default
+  const getTodayDate = (): string => {
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const year = today.getFullYear();
+    return `${day}-${month}-${year}`;
+  };
+
   // Form state
   const [origin, setOrigin] = useState<string>('');
   const [destination, setDestination] = useState<string>('');
-  const [date, setDate] = useState<string>('10-11-2025');
+  const [date, setDate] = useState<string>(getTodayDate());
   const [passengers, setPassengers] = useState<number>(6);
 
   // Get flights data
@@ -124,7 +133,24 @@ export const FlightSearchScreen: React.FC = () => {
   };
 
   const handleSeeAll = () => {
-    handleSearch();
+    // Get today's date for "Voir tout"
+    const getTodayDate = (): string => {
+      const today = new Date();
+      const day = String(today.getDate()).padStart(2, '0');
+      const month = String(today.getMonth() + 1).padStart(2, '0');
+      const year = today.getFullYear();
+      return `${day}-${month}-${year}`;
+    };
+    
+    navigation.navigate('FlightResults', {
+      countryCode: params.countryCode,
+      cityId: params.cityId,
+      context,
+      origin,
+      destination,
+      date: getTodayDate(), // Use today's date for "Voir tout"
+      passengers,
+    });
   };
 
   const handleFlightPress = (offerId: string) => {

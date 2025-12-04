@@ -4,7 +4,7 @@
  * Uses OverlayHeader with integrated date calendar and tab filters
  */
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   View,
   Text,
@@ -57,11 +57,52 @@ export const FlightResultsScreen: React.FC = () => {
   // Hide tab bar when this screen is focused
   useHideTabBar();
 
-  const [selectedDate, setSelectedDate] = useState<string>(
-    params.date || '17-11-2025'
-  );
+  // Get today's date as default
+  const getTodayDate = (): string => {
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const year = today.getFullYear();
+    return `${day}-${month}-${year}`;
+  };
+
+  // Get month name from date string (DD-MM-YYYY format)
+  const getMonthFromDate = (dateString: string): string => {
+    const months = [
+      'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+      'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre',
+    ];
+    const parts = dateString.split('-');
+    if (parts.length === 3) {
+      const monthIndex = parseInt(parts[1], 10) - 1;
+      return months[monthIndex] || months[new Date().getMonth()];
+    }
+    return months[new Date().getMonth()];
+  };
+
+  // Get current month name in French
+  const getCurrentMonth = (): string => {
+    const months = [
+      'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+      'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre',
+    ];
+    return months[new Date().getMonth()];
+  };
+
+  const defaultDate = params.date || getTodayDate();
+  const defaultMonth = params.date ? getMonthFromDate(params.date) : getCurrentMonth();
+  
+  const [selectedDate, setSelectedDate] = useState<string>(defaultDate);
   const [selectedTripType, setSelectedTripType] = useState<TripType>('non-stop');
-  const [currentMonth, setCurrentMonth] = useState<string>('Novembre');
+  const [currentMonth, setCurrentMonth] = useState<string>(defaultMonth);
+  
+  // Update month when date changes
+  useEffect(() => {
+    if (selectedDate) {
+      const monthFromDate = getMonthFromDate(selectedDate);
+      setCurrentMonth(monthFromDate);
+    }
+  }, [selectedDate]);
 
   // Get flights data
   const { flights, loading } = useFlightData(
@@ -183,6 +224,7 @@ export const FlightResultsScreen: React.FC = () => {
       >
         {/* Date Filter Bar - integrated in header */}
         <DateFilterBar
+          key={`${selectedDate}-${currentMonth}`} // Force re-render when date or month changes
           selectedDate={selectedDate}
           onDateSelect={setSelectedDate}
           month={currentMonth}
@@ -257,6 +299,8 @@ const styles = StyleSheet.create({
   dateFilterContainer: {
     backgroundColor: 'transparent', // Transparent since it's inside the header
     paddingVertical: spacing.sm,
+    paddingHorizontal: 0, // Remove horizontal padding to allow full-width scroll
+    marginHorizontal: -spacing.lg, // Negative margin to compensate for OverlayHeader childrenContainer padding
   },
   tripFilterContainer: {
     paddingTop: 0,
