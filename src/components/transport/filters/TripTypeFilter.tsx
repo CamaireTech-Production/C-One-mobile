@@ -58,26 +58,29 @@ export const TripTypeFilter: React.FC<TripTypeFilterProps> = ({
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    gap: spacing.sm,
+    gap: spacing.lg,
     paddingHorizontal: spacing.base,
     paddingVertical: spacing.sm,
+    paddingBottom: spacing.md,
   },
   tab: {
     paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.base,
-    borderRadius: 8,
+    paddingHorizontal: spacing.xs,
     backgroundColor: 'transparent',
   },
   tabSelected: {
-    backgroundColor: colors.transport.flight.primary,
+    backgroundColor: 'transparent',
   },
   tabText: {
     ...typography.styles.bodyMedium16,
-    color: colors.text.secondary,
+    color: colors.text.inverse,
   },
   tabTextSelected: {
     ...typography.styles.bodyBold16,
     color: colors.text.inverse,
+    borderBottomWidth: 2,
+    borderBottomColor: colors.text.inverse,
+    paddingBottom: spacing.xs,
   },
 });
 

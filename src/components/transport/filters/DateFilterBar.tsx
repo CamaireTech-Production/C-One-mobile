@@ -22,6 +22,8 @@ interface DateFilterBarProps {
   month?: string; // Current month (e.g., "Novembre")
   onMonthChange?: (direction: 'prev' | 'next') => void;
   containerStyle?: ViewStyle;
+  iconColor?: string; // Color for navigation icons (default: colors.text.primary)
+  monthTextColor?: string; // Color for month text (default: colors.text.inverse)
 }
 
 // Generate dates for the current month
@@ -63,6 +65,8 @@ export const DateFilterBar: React.FC<DateFilterBarProps> = ({
   month = 'Novembre',
   onMonthChange,
   containerStyle,
+  iconColor = colors.text.primary,
+  monthTextColor = colors.text.inverse,
 }) => {
   const [currentYear] = useState(2025);
   const dates = generateDates(month, currentYear);
@@ -84,17 +88,17 @@ export const DateFilterBar: React.FC<DateFilterBarProps> = ({
           style={styles.monthButton}
           activeOpacity={0.7}
         >
-          <Icon name="chevron-back" size={20} color={colors.text.primary} family="ionicons" />
+          <Icon name="chevron-back" size={20} color={iconColor} family="ionicons" />
         </TouchableOpacity>
 
-        <Text style={styles.monthText}>{month}</Text>
+        <Text style={[styles.monthText, { color: monthTextColor }]}>{month}</Text>
 
         <TouchableOpacity
           onPress={() => onMonthChange?.('next')}
           style={styles.monthButton}
           activeOpacity={0.7}
         >
-          <Icon name="chevron-forward" size={20} color={colors.text.primary} family="ionicons" />
+          <Icon name="chevron-forward" size={20} color={iconColor} family="ionicons" />
         </TouchableOpacity>
       </View>
 
@@ -144,7 +148,6 @@ const styles = StyleSheet.create({
   },
   monthText: {
     ...typography.styles.bodyMedium18,
-    color: colors.text.inverse,
     marginHorizontal: spacing.base,
   },
   daysContainer: {

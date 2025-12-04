@@ -1,6 +1,7 @@
 /**
  * FlightResultsScreen
  * Flight results list with date filter and trip type filter
+ * Uses OverlayHeader with integrated date calendar and tab filters
  */
 
 import React, { useState, useMemo } from 'react';
@@ -17,17 +18,17 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { HomeStackParamList } from '../../../types';
 
 import {
-  ScreenBackground,
-  DetailHeader,
-} from '../../../components/common';
-import {
   DateFilterBar,
   TripTypeFilter,
   FlightCard,
 } from '../../../components/transport';
+import type { TripType } from '../../../components/transport/filters/TripTypeFilter';
+import { OverlayHeader } from '../../../components/transport/headers/OverlayHeader';
+import { SkeletonTransportCard } from '../../../components/skeleton';
 import { colors, spacing, typography } from '../../../theme';
+import { images } from '../../../config';
 import { useFlightData, useHideTabBar } from '../../../hooks';
-import type { SearchContext, TripType } from '../../../types/transport';
+import type { SearchContext } from '../../../types/transport';
 
 interface FlightResultsScreenParams {
   countryCode: string;
@@ -43,6 +44,9 @@ type FlightResultsScreenNavigationProp = NativeStackNavigationProp<
   HomeStackParamList,
   'FlightResults'
 >;
+
+// Header height constant - matches FlightSearchScreen
+const HEADER_HEIGHT = 300;
 
 export const FlightResultsScreen: React.FC = () => {
   const { t } = useTranslation();
@@ -143,45 +147,83 @@ export const FlightResultsScreen: React.FC = () => {
     }
   };
 
-  return (
-    <ScreenBackground backgroundColor={colors.transport.flight.background}>
-      <DetailHeader
-        title="Réservation - Details"
-        onBack={handleBack}
-        rightIconName="bookmark-outline"
-        rightIconFamily="ionicons"
-      />
+  // Build section title with origin and destination
+  const sectionTitle = params.origin && params.destination
+    ? `${t('transport.flight.search.allFlights', { origin: params.origin, destination: params.destination })}`
+    : t('transport.flight.search.availableFlights');
 
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
+  return (
+    <View style={styles.container}>
+      {/* OverlayHeader with integrated date calendar and tab filters */}
+      <OverlayHeader
+        title={t('transport.flight.title')}
+        onBack={handleBack}
+        // Left icon - matching FlightSearchScreen style
+        leftIconName="chevron-back"
+        leftIconFamily="ionicons"
+        leftIconSize={20}
+        leftIconColor={colors.text.primary}
+        leftIconWithContainer={true}
+        // Right icon - calendar icon
+        rightIconName="calendar-outline"
+        rightIconFamily="ionicons"
+        rightIconSize={20}
+        rightIconColor={colors.text.inverse}
+        rightIconWithContainer={false}
+        backgroundColor={colors.transport.flight.primary}
+        backgroundImage={images.mapVector}
+        backgroundImageOpacity={0.8}
+        headerHeight={HEADER_HEIGHT}
+        navBarPaddingTop={0}
+        imageBackgroundStyle={{
+          borderBottomLeftRadius: 20,
+          borderBottomRightRadius: 20,
+        }}
       >
-        {/* Date Filter Bar */}
+        {/* Date Filter Bar - integrated in header */}
         <DateFilterBar
           selectedDate={selectedDate}
           onDateSelect={setSelectedDate}
           month={currentMonth}
           onMonthChange={handleMonthChange}
+          containerStyle={styles.dateFilterContainer}
+          iconColor={colors.text.inverse}
+          monthTextColor={colors.text.inverse}
         />
 
-        {/* Trip Type Filter */}
+        {/* Trip Type Filter - integrated in header */}
         <TripTypeFilter
           selectedType={selectedTripType}
           onTypeChange={setSelectedTripType}
+          containerStyle={styles.tripFilterContainer}
         />
+      </OverlayHeader>
 
-        {/* Results Section */}
+      {/* Flight List Section */}
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={[
+          styles.scrollContent,
+          { paddingTop: HEADER_HEIGHT + spacing.base },
+        ]}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.resultsSection}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Vols disponible</Text>
+            <Text style={styles.sectionTitle}>{sectionTitle}</Text>
             <TouchableOpacity activeOpacity={0.7}>
-              <Text style={styles.searchText}>Rechercher</Text>
+              <Text style={styles.searchText}>{t('transport.flight.search.searchButton')}</Text>
             </TouchableOpacity>
           </View>
 
           {loading ? (
-            <Text style={styles.loadingText}>Chargement des vols...</Text>
+            // Show skeleton loaders while loading
+            <>
+              <SkeletonTransportCard isFlight={true} style={styles.flightCard} />
+              <SkeletonTransportCard isFlight={true} style={styles.flightCard} />
+              <SkeletonTransportCard isFlight={true} style={styles.flightCard} />
+              <SkeletonTransportCard isFlight={true} style={styles.flightCard} />
+            </>
           ) : filteredFlights.length > 0 ? (
             filteredFlights.map((flight) => (
               <FlightCard
@@ -192,20 +234,31 @@ export const FlightResultsScreen: React.FC = () => {
               />
             ))
           ) : (
-            <Text style={styles.emptyText}>Aucun vol disponible</Text>
+            <Text style={styles.emptyText}>{t('transport.flight.search.noFlights') || 'Aucun vol disponible'}</Text>
           )}
         </View>
       </ScrollView>
-    </ScreenBackground>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.transport.flight.background,
+  },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: spacing.lg,
+    paddingBottom: spacing['4xl'],
+  },
+  dateFilterContainer: {
+    backgroundColor: 'transparent', // Transparent since it's inside the header
+    paddingVertical: spacing.sm,
+  },
+  tripFilterContainer: {
+    paddingTop: 0,
   },
   resultsSection: {
     padding: spacing.base,
@@ -228,12 +281,6 @@ const styles = StyleSheet.create({
   flightCard: {
     marginBottom: spacing.base,
   },
-  loadingText: {
-    ...typography.styles.bodyRegular16,
-    color: colors.text.secondary,
-    textAlign: 'center',
-    marginTop: spacing.lg,
-  },
   emptyText: {
     ...typography.styles.bodyRegular16,
     color: colors.text.secondary,
@@ -241,4 +288,3 @@ const styles = StyleSheet.create({
     marginTop: spacing.lg,
   },
 });
-
