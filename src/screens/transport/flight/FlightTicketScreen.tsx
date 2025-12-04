@@ -22,6 +22,7 @@ import {
 } from '../../../components/common';
 import { TicketCard } from '../../../components/transport';
 import { colors, spacing, typography } from '../../../theme';
+import { useHideTabBar } from '../../../hooks';
 import { Icon } from '../../../components/common/icons/Icon';
 import type { TransportTicket } from '../../../types/transport';
 
@@ -70,6 +71,9 @@ export const FlightTicketScreen: React.FC = () => {
   const route = useRoute();
   const navigation = useNavigation<FlightTicketScreenNavigationProp>();
   const params = route.params as FlightTicketScreenParams;
+
+  // Hide tab bar when this screen is focused
+  useHideTabBar();
 
   const ticket = params.ticket || createMockTicket();
 

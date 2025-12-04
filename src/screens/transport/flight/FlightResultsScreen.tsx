@@ -26,7 +26,7 @@ import {
   FlightCard,
 } from '../../../components/transport';
 import { colors, spacing, typography } from '../../../theme';
-import { useFlightData } from '../../../hooks';
+import { useFlightData, useHideTabBar } from '../../../hooks';
 import type { SearchContext, TripType } from '../../../types/transport';
 
 interface FlightResultsScreenParams {
@@ -49,6 +49,9 @@ export const FlightResultsScreen: React.FC = () => {
   const route = useRoute();
   const navigation = useNavigation<FlightResultsScreenNavigationProp>();
   const params = route.params as FlightResultsScreenParams;
+
+  // Hide tab bar when this screen is focused
+  useHideTabBar();
 
   const [selectedDate, setSelectedDate] = useState<string>(
     params.date || '17-11-2025'

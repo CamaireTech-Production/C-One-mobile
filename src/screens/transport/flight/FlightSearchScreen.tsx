@@ -27,7 +27,7 @@ import {
 import { OverlayHeader } from '../../../components/transport/headers/OverlayHeader';
 import { colors, spacing, typography, shadows } from '../../../theme';
 import { images } from '../../../config';
-import { useFlightData, useGeolocation } from '../../../hooks';
+import { useFlightData, useGeolocation, useHideTabBar } from '../../../hooks';
 import type { SearchContext } from '../../../types/transport';
 
 interface FlightSearchScreenParams {
@@ -70,6 +70,9 @@ export const FlightSearchScreen: React.FC = () => {
     params.cityId,
     context
   );
+
+  // Hide tab bar when this screen is focused
+  useHideTabBar();
 
   // Pre-fill origin if client-location context
   useEffect(() => {

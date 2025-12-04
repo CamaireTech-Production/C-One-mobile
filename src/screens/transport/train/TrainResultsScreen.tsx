@@ -27,7 +27,7 @@ import {
   TrainCard,
 } from '../../../components/transport';
 import { colors, spacing, typography } from '../../../theme';
-import { useTrainData } from '../../../hooks';
+import { useTrainData, useHideTabBar } from '../../../hooks';
 import type { SearchContext, TripType } from '../../../types/transport';
 
 interface TrainResultsScreenParams {
@@ -50,6 +50,9 @@ export const TrainResultsScreen: React.FC = () => {
   const route = useRoute();
   const navigation = useNavigation<TrainResultsScreenNavigationProp>();
   const params = route.params as TrainResultsScreenParams;
+
+  // Hide tab bar when this screen is focused
+  useHideTabBar();
 
   const [selectedDate, setSelectedDate] = useState<string>(
     params.date || '17-11-2025'

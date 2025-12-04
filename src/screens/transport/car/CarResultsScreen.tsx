@@ -24,7 +24,7 @@ import {
   RideHailingCard,
 } from '../../../components/transport';
 import { colors, spacing, typography } from '../../../theme';
-import { useCarData, useGeolocation } from '../../../hooks';
+import { useCarData, useGeolocation, useHideTabBar } from '../../../hooks';
 
 interface CarResultsScreenParams {
   countryCode: string;
@@ -43,6 +43,9 @@ export const CarResultsScreen: React.FC = () => {
   const route = useRoute();
   const navigation = useNavigation<CarResultsScreenNavigationProp>();
   const params = route.params as CarResultsScreenParams;
+
+  // Hide tab bar when this screen is focused
+  useHideTabBar();
 
   // Get user location
   const { location: geolocationLocation } = useGeolocation({ useCache: true });

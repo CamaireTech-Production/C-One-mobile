@@ -29,7 +29,7 @@ import {
   TrainCard,
 } from '../../../components/transport';
 import { colors, spacing, typography } from '../../../theme';
-import { useTrainData, useGeolocation } from '../../../hooks';
+import { useTrainData, useGeolocation, useHideTabBar } from '../../../hooks';
 import type { SearchContext } from '../../../types/transport';
 
 interface TrainSearchScreenParams {
@@ -48,6 +48,9 @@ export const TrainSearchScreen: React.FC = () => {
   const route = useRoute();
   const navigation = useNavigation<TrainSearchScreenNavigationProp>();
   const params = route.params as TrainSearchScreenParams;
+
+  // Hide tab bar when this screen is focused
+  useHideTabBar();
 
   // Determine context
   const { location: geolocationLocation } = useGeolocation({ useCache: true });

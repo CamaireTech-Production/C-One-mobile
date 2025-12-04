@@ -27,6 +27,7 @@ import {
   ClassSelector,
 } from '../../../components/transport';
 import { colors, spacing, typography } from '../../../theme';
+import { useHideTabBar } from '../../../hooks';
 import { Icon } from '../../../components/common/icons/Icon';
 import type {
   TransportOffer,
@@ -50,6 +51,9 @@ export const FlightBookingScreen: React.FC = () => {
   const route = useRoute();
   const navigation = useNavigation<FlightBookingScreenNavigationProp>();
   const params = route.params as FlightBookingScreenParams;
+
+  // Hide tab bar when this screen is focused
+  useHideTabBar();
 
   const offer = params.offer;
 

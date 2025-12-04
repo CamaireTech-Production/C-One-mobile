@@ -9,6 +9,7 @@ import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { colors, spacing } from '../../theme';
+import { useTabBarVisibility } from '../../contexts/TabBarVisibilityContext';
 
 /**
  * Custom bottom tab bar matching Figma design.
@@ -20,6 +21,35 @@ export const BottomTabBar: React.FC<BottomTabBarProps> = ({
   navigation,
 }) => {
   const insets = useSafeAreaInsets();
+  const { isVisible } = useTabBarVisibility();
+
+  // Check if tab bar should be hidden by checking all routes' tabBarStyle
+  // When setOptions is called on the Tab Navigator, it affects all routes
+  // We check the currently focused route's options
+  const currentRoute = state.routes[state.index];
+  const currentOptions = descriptors[currentRoute.key]?.options;
+  const tabBarStyle = currentOptions?.tabBarStyle;
+  
+  // Also check if any route has tabBarStyle set (in case it's set globally)
+  const hasHiddenTabBar = state.routes.some((route) => {
+    const options = descriptors[route.key]?.options;
+    const style = options?.tabBarStyle;
+    if (style && typeof style === 'object') {
+      return style.display === 'none' || style.height === 0;
+    }
+    return false;
+  });
+  
+  // Hide tab bar if:
+  // 1. Context says it should be hidden, OR
+  // 2. tabBarStyle has display: 'none' or height: 0
+  const shouldHide = !isVisible || hasHiddenTabBar || 
+    (tabBarStyle && typeof tabBarStyle === 'object' && 
+     (tabBarStyle.display === 'none' || tabBarStyle.height === 0));
+
+  if (shouldHide) {
+    return null;
+  }
 
   return (
     <View
@@ -28,6 +58,7 @@ export const BottomTabBar: React.FC<BottomTabBarProps> = ({
         {
           paddingBottom: Math.max(insets.bottom, spacing.md),
         },
+        tabBarStyle && typeof tabBarStyle === 'object' ? tabBarStyle : {},
       ]}
     >
       <View style={styles.container}>

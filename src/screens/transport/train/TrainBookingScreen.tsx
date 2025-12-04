@@ -28,6 +28,7 @@ import {
   ClassSelector,
 } from '../../../components/transport';
 import { colors, spacing, typography } from '../../../theme';
+import { useHideTabBar } from '../../../hooks';
 import { Icon } from '../../../components/common/icons/Icon';
 import type {
   TransportOffer,
@@ -51,6 +52,9 @@ export const TrainBookingScreen: React.FC = () => {
   const route = useRoute();
   const navigation = useNavigation<TrainBookingScreenNavigationProp>();
   const params = route.params as TrainBookingScreenParams;
+
+  // Hide tab bar when this screen is focused
+  useHideTabBar();
 
   const offer = params.offer;
 

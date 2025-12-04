@@ -23,6 +23,7 @@ import {
 } from '../../../components/common';
 import { TicketCard } from '../../../components/transport';
 import { colors, spacing, typography } from '../../../theme';
+import { useHideTabBar } from '../../../hooks';
 import type { TransportTicket } from '../../../types/transport';
 
 interface TrainTicketScreenParams {
@@ -69,6 +70,9 @@ export const TrainTicketScreen: React.FC = () => {
   const route = useRoute();
   const navigation = useNavigation<TrainTicketScreenNavigationProp>();
   const params = route.params as TrainTicketScreenParams;
+
+  // Hide tab bar when this screen is focused
+  useHideTabBar();
 
   const ticket = params.ticket || createMockTicket();
 

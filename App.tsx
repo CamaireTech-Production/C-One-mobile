@@ -7,6 +7,7 @@ import './src/i18n';
 import { useFonts } from './src/hooks/useFonts';
 import { AppNavigator } from './src/navigation/AppNavigator';
 import { AuthProvider } from './src/services/auth/authContext';
+import { TabBarVisibilityProvider } from './src/contexts/TabBarVisibilityContext';
 import { colors } from './src/theme';
 
 export default function App() {
@@ -23,8 +24,10 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <AuthProvider>
-        <StatusBar style="auto" />
-        <AppNavigator />
+        <TabBarVisibilityProvider>
+          <StatusBar style="auto" />
+          <AppNavigator />
+        </TabBarVisibilityProvider>
       </AuthProvider>
     </SafeAreaProvider>
   );
