@@ -115,7 +115,7 @@ export const colors = {
       primaryHover: '#247eab',
       primaryActive: '#207098',
       background: '#FFFFFF', // White
-      card: '#FFFFFF', // White cards
+      card: '#F7F7FA', // Card background color
       text: '#333538', // Primary text
       textSecondary: '#7a7c7e', // Secondary text
       success: '#10b981', // Green for "Réserver" button
