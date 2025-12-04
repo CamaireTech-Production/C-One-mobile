@@ -86,7 +86,10 @@ export const colors = {
     tertiary: '#a3a4a5',
     disabled: '#a3a4a5',
     inverse: '#FFFFFF',
-    map: '#373B51', // Text color for map overlays
+    map: '#373B51',
+    destinationTown: '#000F3A80',
+    timeText: '#333538',
+    airlineName: '#000F3A'
   },
 
   // Border Colors
@@ -121,6 +124,7 @@ export const colors = {
       success: '#10b981', // Green for "Réserver" button
       border: '#e5e7eb', // Light border
       searchButtonBackground: '#EAF4F9', // Light blue background for search button
+      connector: '#A3A4A5', // Color for connector dots and plane icon
     },
     // Train Theme (Gold)
     train: {

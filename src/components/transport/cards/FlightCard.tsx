@@ -53,12 +53,14 @@ export const FlightCard: React.FC<FlightCardProps> = ({
             {/* Left: Origin with takeoff icon */}
             <View style={styles.townLeft}>
               <View style={styles.townItem}>
-                <Icon 
-                  name="airplane-takeoff" 
-                  size={20} 
-                  color={colors.yellow.normal} 
-                  family="materialcommunity" 
-                />
+                <View style={styles.townIconContainer}>
+                  <Icon 
+                    name="airplane-takeoff" 
+                    size={16} 
+                    color={colors.text.inverse} 
+                    family="materialcommunity" 
+                  />
+                </View>
                 <Text style={styles.townText}>{offer.origin}</Text>
               </View>
             </View>
@@ -68,12 +70,14 @@ export const FlightCard: React.FC<FlightCardProps> = ({
             {/* Right: Destination with landing icon */}
             <View style={styles.townRight}>
               <View style={styles.townItem}>
-                <Icon 
-                  name="airplane-landing" 
-                  size={20} 
-                  color={colors.yellow.normal} 
-                  family="materialcommunity" 
-                />
+                <View style={styles.townIconContainer}>
+                  <Icon 
+                    name="airplane-landing" 
+                    size={16} 
+                    color={colors.text.inverse} 
+                    family="materialcommunity" 
+                  />
+                </View>
                 <Text style={styles.townText}>{offer.destination}</Text>
               </View>
             </View>
@@ -95,7 +99,7 @@ export const FlightCard: React.FC<FlightCardProps> = ({
                 <Icon
                   name="airplane"
                   size={16}
-                  color={colors.text.secondary}
+                  color={colors.transport.flight.connector}
                   family="ionicons"
                 />
               </View>
@@ -189,12 +193,12 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   column1: {
-    flex: 1,
+    width: '70%', // Column 1 takes 70% of the width
   },
   column2: {
+    width: '30%', // Column 2 takes 30% of the width
     justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: spacing.md,
     alignSelf: 'center',
   },
   townsRow: {
@@ -229,14 +233,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  townIconContainer: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: colors.yellow.normal,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: spacing.xs,
+  },
   townText: {
     ...typography.styles.bodyMedium16,
-    color: colors.text.primary,
-    marginLeft: spacing.xs,
+    color: colors.text.destinationTown,
   },
   time: {
     ...typography.styles.bodyBold18,
-    color: colors.text.primary,
+    color: colors.text.timeText,
   },
   timeEnd: {
     textAlign: 'right',
@@ -254,7 +266,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 1,
     borderTopWidth: 1,
-    borderTopColor: colors.text.secondary,
+    borderTopColor: colors.transport.flight.connector,
     borderStyle: 'dashed',
     alignSelf: 'center',
   },
@@ -262,7 +274,7 @@ const styles = StyleSheet.create({
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: colors.text.secondary,
+    backgroundColor: colors.transport.flight.connector,
     marginHorizontal: 2,
   },
   planeIconContainer: {
@@ -296,8 +308,8 @@ const styles = StyleSheet.create({
     fontSize: 10,
   },
   airlineName: {
-    ...typography.styles.bodyRegular12,
-    color: colors.transport.flight.primary,
+    ...typography.styles.bodyRegular14,
+    color: colors.text.airlineName,
     textAlign: 'center',
   },
   detailsRow: {
