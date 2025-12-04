@@ -133,6 +133,7 @@ export const FlightSearchScreen: React.FC = () => {
         onRightIconPress={() => navigation.navigate('HomeMain')}
         backgroundColor={colors.transport.flight.primary}
         backgroundImage={images.mapVector}
+        backgroundImageOpacity={0.8}
         headerHeight={HEADER_HEIGHT}
         imageBackgroundStyle={{
           borderBottomLeftRadius: 20,

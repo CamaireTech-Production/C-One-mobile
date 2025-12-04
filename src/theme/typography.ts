@@ -53,6 +53,12 @@ export const typography = {
       fontWeight: '700' as const,
       lineHeight: 36, // 30 * 1.2
     },
+    'h2-small': {
+      fontFamily: 'Urbanist-SemiBold',
+      fontSize: 30,
+      fontWeight: '600' as const,
+      lineHeight: 36,
+    },
     h3: {
       fontFamily: 'Urbanist-SemiBold',
       fontSize: 24,

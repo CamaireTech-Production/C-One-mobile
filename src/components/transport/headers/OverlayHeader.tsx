@@ -101,7 +101,7 @@ export const OverlayHeader: React.FC<OverlayHeaderProps> = ({
   // Background props
   backgroundColor = colors.primary.normal,
   backgroundImage,
-  backgroundImageOpacity = 0.4,
+  backgroundImageOpacity = 0.6, // Increased default opacity for better visibility
   // Content props
   children,
   // Status bar props
@@ -317,7 +317,7 @@ const styles = StyleSheet.create({
     paddingTop: spacing.base,
   },
   subtitle: {
-    ...typography.styles.h2,
+    ...typography.styles['h2-small'],
     color: colors.text.inverse,
   },
   childrenContainer: {
