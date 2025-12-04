@@ -248,6 +248,7 @@ export const TransportSearchForm: React.FC<TransportSearchFormProps> = ({
           backgroundColor={defaultSearchButtonBackground}
           textColor={defaultSearchButtonTextColor}
           style={styles.searchButton}
+          textStyle={styles.searchButtonText}
         />
       </View>
       
@@ -320,6 +321,9 @@ const styles = StyleSheet.create({
   },
   searchButton: {
     marginTop: spacing.base,
+  },
+  searchButtonText: {
+    ...typography.styles.bodyBold24,
   },
   modalOverlay: {
     flex: 1,

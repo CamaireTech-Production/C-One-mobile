@@ -94,6 +94,7 @@ export const colors = {
     light: '#e5e7eb',
     normal: '#d1d5db',
     dark: '#9ca3af',
+    counter: '#000F3A4D', // Border color for counter buttons
   },
 
   // Shadow Colors

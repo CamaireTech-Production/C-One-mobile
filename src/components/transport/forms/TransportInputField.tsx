@@ -103,7 +103,7 @@ export const TransportInputField: React.FC<TransportInputFieldProps> = (props) =
               <Icon
                 name="remove"
                 size={20}
-                color={value <= min ? colors.text.tertiary : colors.text.primary}
+                color={value <= min ? colors.text.tertiary : colors.border.counter}
                 family="ionicons"
               />
             </TouchableOpacity>
@@ -121,7 +121,7 @@ export const TransportInputField: React.FC<TransportInputFieldProps> = (props) =
               <Icon
                 name="add"
                 size={20}
-                color={value >= max ? colors.text.tertiary : colors.text.primary}
+                color={value >= max ? colors.text.tertiary : colors.border.counter}
                 family="ionicons"
               />
             </TouchableOpacity>
@@ -252,8 +252,10 @@ const styles = StyleSheet.create({
     height: 36,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 18,
-    backgroundColor: colors.background.tertiary,
+    borderRadius: 40,
+    backgroundColor: colors.background.primary,
+    borderWidth: 0.8,
+    borderColor: colors.border.counter,
   },
   counterButtonDisabled: {
     opacity: 0.5,
