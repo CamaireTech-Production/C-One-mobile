@@ -323,7 +323,7 @@ const styles = StyleSheet.create({
     marginTop: spacing.base,
   },
   searchButtonText: {
-    ...typography.styles.bodyBold24,
+    ...typography.styles.bodyBold20,
   },
   modalOverlay: {
     flex: 1,
