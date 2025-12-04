@@ -25,6 +25,7 @@ import {
   TrainCard,
 } from '../../../components/transport';
 import { OverlayHeader } from '../../../components/transport/headers/OverlayHeader';
+import { SkeletonTransportCard } from '../../../components/skeleton';
 import { colors, spacing, typography, shadows } from '../../../theme';
 import { images } from '../../../config';
 import { useTrainData, useGeolocation, useHideTabBar } from '../../../hooks';
@@ -208,29 +209,38 @@ export const TrainSearchScreen: React.FC = () => {
         showsVerticalScrollIndicator={false}
       >
         {/* Preview Trains Section */}
-        {previewTrains.length > 0 && (
-          <View style={styles.previewSection}>
-            <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>
-                {origin && destination
-                  ? t('transport.train.search.allTrains', { origin, destination })
-                  : t('transport.train.search.availableTrains')}
-              </Text>
+        <View style={styles.previewSection}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>
+              {origin && destination
+                ? t('transport.train.search.allTrains', { origin, destination })
+                : t('transport.train.search.availableTrains')}
+            </Text>
+            {!loading && (
               <TouchableOpacity onPress={handleSeeAll} activeOpacity={0.7}>
                 <Text style={styles.seeAllText}>{t('transport.train.search.seeAll')}</Text>
               </TouchableOpacity>
-            </View>
+            )}
+          </View>
 
-            {previewTrains.map((train) => (
+          {loading ? (
+            // Show skeleton loaders while loading
+            <>
+              <SkeletonTransportCard isFlight={false} style={styles.previewCard} />
+              <SkeletonTransportCard isFlight={false} style={styles.previewCard} />
+              <SkeletonTransportCard isFlight={false} style={styles.previewCard} />
+            </>
+          ) : previewTrains.length > 0 ? (
+            previewTrains.map((train) => (
               <TrainCard
                 key={train.id}
                 offer={train}
                 onReserve={() => handleTrainPress(train.id)}
                 style={styles.previewCard}
               />
-            ))}
-          </View>
-        )}
+            ))
+          ) : null}
+        </View>
       </ScrollView>
     </View>
   );

@@ -25,6 +25,7 @@ import {
   FlightCard,
 } from '../../../components/transport';
 import { OverlayHeader } from '../../../components/transport/headers/OverlayHeader';
+import { SkeletonTransportCard } from '../../../components/skeleton';
 import { colors, spacing, typography, shadows } from '../../../theme';
 import { images } from '../../../config';
 import { useFlightData, useGeolocation, useHideTabBar } from '../../../hooks';
@@ -208,29 +209,38 @@ export const FlightSearchScreen: React.FC = () => {
         showsVerticalScrollIndicator={false}
       >
         {/* Preview Flights Section */}
-        {previewFlights.length > 0 && (
-          <View style={styles.previewSection}>
-            <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>
-                {origin && destination
-                  ? t('transport.flight.search.allFlights', { origin, destination })
-                  : t('transport.flight.search.availableFlights')}
-              </Text>
+        <View style={styles.previewSection}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>
+              {origin && destination
+                ? t('transport.flight.search.allFlights', { origin, destination })
+                : t('transport.flight.search.availableFlights')}
+            </Text>
+            {!loading && (
               <TouchableOpacity onPress={handleSeeAll} activeOpacity={0.7}>
                 <Text style={styles.seeAllText}>{t('transport.flight.search.seeAll')}</Text>
               </TouchableOpacity>
-            </View>
+            )}
+          </View>
 
-            {previewFlights.map((flight) => (
+          {loading ? (
+            // Show skeleton loaders while loading
+            <>
+              <SkeletonTransportCard isFlight={true} style={styles.previewCard} />
+              <SkeletonTransportCard isFlight={true} style={styles.previewCard} />
+              <SkeletonTransportCard isFlight={true} style={styles.previewCard} />
+            </>
+          ) : previewFlights.length > 0 ? (
+            previewFlights.map((flight) => (
               <FlightCard
                 key={flight.id}
                 offer={flight}
                 onReserve={() => handleFlightPress(flight.id)}
                 style={styles.previewCard}
               />
-            ))}
-          </View>
-        )}
+            ))
+          ) : null}
+        </View>
       </ScrollView>
     </View>
   );
