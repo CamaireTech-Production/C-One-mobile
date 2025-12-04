@@ -119,6 +119,7 @@ export const colors = {
       textSecondary: '#7a7c7e', // Secondary text
       success: '#10b981', // Green for "Réserver" button
       border: '#e5e7eb', // Light border
+      searchButtonBackground: '#EAF4F9', // Light blue background for search button
     },
     // Train Theme (Gold)
     train: {
@@ -132,6 +133,7 @@ export const colors = {
       textSecondary: '#7a7c7e', // Secondary text
       success: '#10b981', // Green for "Réserver" button
       border: '#efebde', // Yellow lightActive border
+      searchButtonBackground: '#EAF4F9', // Light blue background for search button
     },
     // Car Theme (Same as Flight - Blue)
     car: {
@@ -144,6 +146,7 @@ export const colors = {
       textSecondary: '#7a7c7e',
       success: '#10b981',
       border: '#e5e7eb',
+      searchButtonBackground: '#EAF4F9', // Light blue background for search button
     },
   },
 } as const;

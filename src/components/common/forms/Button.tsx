@@ -28,6 +28,8 @@ interface ButtonProps {
   fullWidth?: boolean;
   style?: ViewStyle;
   textStyle?: TextStyle;
+  backgroundColor?: string; // Custom background color that overrides variant color
+  textColor?: string; // Custom text color that overrides variant text color
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -40,23 +42,37 @@ export const Button: React.FC<ButtonProps> = ({
   fullWidth = false,
   style,
   textStyle,
+  backgroundColor,
+  textColor,
 }) => {
+  // Build button styles - backgroundColor prop must override variant and style
   const buttonStyles: (ViewStyle | undefined)[] = [
     styles.base,
     styles[variant],
     styles[`${size}Size`],
     fullWidth ? styles.fullWidth : undefined,
     (disabled || loading) ? styles.disabled : undefined,
+    // Apply custom style first
     style,
+    // Apply custom backgroundColor LAST to ensure it overrides everything including style.backgroundColor
+    backgroundColor ? { backgroundColor } : undefined,
   ];
+  
+  const finalButtonStyles = StyleSheet.flatten(buttonStyles);
 
   const textStyles: (TextStyle | undefined)[] = [
     styles.textBase,
     styles[`${variant}Text`],
     styles[`${size}Text`],
     (disabled || loading) ? styles.disabledText : undefined,
+    // Apply custom textColor if provided (overrides variant text color)
+    textColor ? { color: textColor } : undefined,
+    // Apply custom textStyle last to ensure it overrides everything
     textStyle,
   ];
+  
+  // Flatten styles to ensure proper merging
+  const finalTextStyles = StyleSheet.flatten(textStyles);
 
   return (
     <TouchableOpacity
@@ -69,11 +85,11 @@ export const Button: React.FC<ButtonProps> = ({
         <View style={styles.loadingContainer}>
           <Spinner
             size="small"
-            color={variant === 'primary' ? colors.text.inverse : colors.primary.normal}
+            color={textColor || (variant === 'primary' ? colors.text.inverse : colors.primary.normal)}
           />
         </View>
       ) : (
-        <Text style={textStyles}>{title}</Text>
+        <Text style={finalTextStyles}>{title}</Text>
       )}
     </TouchableOpacity>
   );

@@ -163,7 +163,6 @@ export const FlightSearchScreen: React.FC = () => {
           originIconName="airplane"
           destinationIconName="airplane"
           iconColor={colors.transport.flight.primary}
-          buttonBackgroundColor={colors.transport.flight.primary}
           containerStyle={styles.formCard}
         />
       </View>

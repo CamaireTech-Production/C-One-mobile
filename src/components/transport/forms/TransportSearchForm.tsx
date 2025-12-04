@@ -1,10 +1,3 @@
-/**
- * TransportSearchForm Component
- * Reusable search form for transport (Flight, Train, Car)
- * Supports customizable icons, colors, and labels
- * Matches Figma design exactly
- */
-
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, ViewStyle, Modal, TouchableOpacity, Platform } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -80,110 +73,97 @@ export const TransportSearchForm: React.FC<TransportSearchFormProps> = ({
   onDateChange,
   onPassengersChange,
   onSearch,
-  // Icons
   originIconName,
   originIconFamily = 'ionicons',
   originIconColor,
   destinationIconName,
   destinationIconFamily = 'ionicons',
   destinationIconColor,
-  // Labels
   originLabel,
   destinationLabel,
   dateLabel,
   passengersLabel,
   searchButtonLabel,
-  // Placeholders
   originPlaceholder,
   destinationPlaceholder,
   datePlaceholder,
-  // Colors
   primaryColor,
   iconColor: globalIconColor,
   buttonBackgroundColor,
-  // Pre-filled
   originPreFilled,
-  // Layout
   containerStyle,
   cardStyle,
-  // Other
   showPassengers = true,
   passengersMin = 1,
   passengersMax = 10,
 }) => {
   const { t } = useTranslation();
   
-  // Get default colors based on transport type
-  const getDefaultPrimaryColor = () => {
-    if (primaryColor) return primaryColor;
-    switch (transportType) {
-      case 'flight':
-        return colors.transport.flight.primary;
-      case 'train':
-        return colors.transport.train.primary;
-      case 'car':
-        return colors.transport.car.primary;
-      default:
-        return colors.primary.normal;
-    }
-  };
+  // Simple linear color assignment
+  let defaultPrimaryColor: string = colors.primary.normal;
+  if (primaryColor) {
+    defaultPrimaryColor = primaryColor;
+  } else if (transportType === 'flight') {
+    defaultPrimaryColor = colors.transport.flight.primary;
+  } else if (transportType === 'train') {
+    defaultPrimaryColor = colors.transport.train.primary;
+  } else if (transportType === 'car') {
+    defaultPrimaryColor = colors.transport.car.primary;
+  }
   
-  const defaultPrimaryColor = getDefaultPrimaryColor();
-  // Use global iconColor if provided, otherwise use individual colors or default
-  const iconColor = globalIconColor || originIconColor || destinationIconColor || defaultPrimaryColor;
+  // Simple linear background color assignment
+  let defaultSearchButtonBackground: string = colors.transport.flight.searchButtonBackground;
+  if (buttonBackgroundColor) {
+    defaultSearchButtonBackground = buttonBackgroundColor;
+  } else if (transportType === 'flight') {
+    defaultSearchButtonBackground = colors.transport.flight.searchButtonBackground;
+  } else if (transportType === 'train') {
+    defaultSearchButtonBackground = colors.transport.train.searchButtonBackground;
+  } else if (transportType === 'car') {
+    defaultSearchButtonBackground = colors.transport.car.searchButtonBackground;
+  }
   
-  // Get background color for input fields based on transport type
-  const getInputBackgroundColor = () => {
-    switch (transportType) {
-      case 'train':
-        return colors.transport.train.card; // Light gold background for train
-      case 'flight':
-      case 'car':
-      default:
-        return colors.secondary.light; // Light grey background for flight/car
-    }
-  };
+  const defaultSearchButtonTextColor: string = colors.primary.dark;
   
-  const inputBackgroundColor = getInputBackgroundColor();
+  const iconColor: string = globalIconColor || originIconColor || destinationIconColor || defaultPrimaryColor;
   
-  // Date picker state
+  // Simple linear input background color assignment
+  let inputBackgroundColor: string = colors.secondary.light;
+  if (transportType === 'train') {
+    inputBackgroundColor = colors.transport.train.card;
+  } else if (transportType === 'flight' || transportType === 'car') {
+    inputBackgroundColor = colors.secondary.light;
+  }
+  
   const [showDatePicker, setShowDatePicker] = useState(false);
   
-  // Get default icons based on transport type
-  const getDefaultOriginIcon = () => {
-    if (originIconName) return originIconName;
-    switch (transportType) {
-      case 'flight':
-        return 'airplane'; // Airplane taking off
-      case 'train':
-        return 'train';
-      case 'car':
-        return 'car';
-      default:
-        return 'location';
-    }
-  };
+  // Simple linear icon assignment
+  let defaultOriginIcon: string = 'location';
+  if (originIconName) {
+    defaultOriginIcon = originIconName;
+  } else if (transportType === 'flight') {
+    defaultOriginIcon = 'airplane';
+  } else if (transportType === 'train') {
+    defaultOriginIcon = 'train';
+  } else if (transportType === 'car') {
+    defaultOriginIcon = 'car';
+  }
   
-  const getDefaultDestinationIcon = () => {
-    if (destinationIconName) return destinationIconName;
-    switch (transportType) {
-      case 'flight':
-        return 'airplane'; // Airplane landing/in flight
-      case 'train':
-        return 'train';
-      case 'car':
-        return 'car';
-      default:
-        return 'airplane';
-    }
-  };
+  let defaultDestinationIcon: string = 'airplane';
+  if (destinationIconName) {
+    defaultDestinationIcon = destinationIconName;
+  } else if (transportType === 'flight') {
+    defaultDestinationIcon = 'airplane';
+  } else if (transportType === 'train') {
+    defaultDestinationIcon = 'train';
+  } else if (transportType === 'car') {
+    defaultDestinationIcon = 'car';
+  }
   
-  // Get translation keys based on transport type
   const getTranslationKey = (key: string) => {
     return `transport.${transportType}.search.${key}`;
   };
   
-  // Date formatting helpers
   const formatDate = (dateString: string): string => {
     return dateString || datePlaceholder || '10-11-2025';
   };
@@ -208,7 +188,7 @@ export const TransportSearchForm: React.FC<TransportSearchFormProps> = ({
           onChangeText={onOriginChange}
           placeholder={originPlaceholder || t(getTranslationKey('positionPlaceholder'))}
           containerStyle={styles.inputField}
-          iconName={originIconName || getDefaultOriginIcon()}
+          iconName={defaultOriginIcon}
           iconFamily={originIconFamily}
           iconColor={iconColor}
           backgroundColor={inputBackgroundColor}
@@ -222,7 +202,7 @@ export const TransportSearchForm: React.FC<TransportSearchFormProps> = ({
           onChangeText={onDestinationChange}
           placeholder={destinationPlaceholder || t(getTranslationKey('destinationPlaceholder'))}
           containerStyle={styles.inputField}
-          iconName={destinationIconName || getDefaultDestinationIcon()}
+          iconName={defaultDestinationIcon}
           iconFamily={destinationIconFamily}
           iconColor={iconColor}
           backgroundColor={inputBackgroundColor}
@@ -265,10 +245,9 @@ export const TransportSearchForm: React.FC<TransportSearchFormProps> = ({
           variant="primary"
           size="large"
           fullWidth
-          style={{
-            ...styles.searchButton,
-            ...(buttonBackgroundColor ? { backgroundColor: buttonBackgroundColor } : {}),
-          }}
+          backgroundColor={defaultSearchButtonBackground}
+          textColor={defaultSearchButtonTextColor}
+          style={styles.searchButton}
         />
       </View>
       
@@ -337,7 +316,7 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   inputField: {
-    marginBottom: spacing.base,
+    marginBottom: spacing.md,
   },
   searchButton: {
     marginTop: spacing.base,
@@ -388,7 +367,7 @@ const styles = StyleSheet.create({
   modalButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: spacing.base,
+    marginTop: spacing.md,
     gap: spacing.base,
   },
   modalButton: {
