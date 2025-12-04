@@ -87,11 +87,8 @@ export const FlightCard: React.FC<FlightCardProps> = ({
             <View style={styles.timeConnector}>
               <View style={styles.singleDot} />
               
-              <View style={styles.dashedLineSection}>
-                {Array.from({ length: 35 }).map((_, index) => (
-                  <View key={index} style={styles.dashDot} />
-                ))}
-              </View>
+              {/* Left dashed line section - adapts to screen */}
+              <View style={styles.dashedLineLeft} />
               
               {/* Plane icon close to second dot */}
               <View style={styles.planeIconContainer}>
@@ -253,18 +250,13 @@ const styles = StyleSheet.create({
     flex: 1,
     minWidth: 0,
   },
-  dashedLineSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  dashedLineLeft: {
     flex: 1,
-    justifyContent: 'center',
-  },
-  dashDot: {
-    width: 3,
-    height: 2,
-    borderRadius: 1,
-    backgroundColor: colors.text.secondary,
-    marginHorizontal: 1,
+    height: 1,
+    borderTopWidth: 1,
+    borderTopColor: colors.text.secondary,
+    borderStyle: 'dashed',
+    alignSelf: 'center',
   },
   singleDot: {
     width: 6,
