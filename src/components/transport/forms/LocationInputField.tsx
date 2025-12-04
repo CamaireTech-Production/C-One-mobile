@@ -22,6 +22,10 @@ interface LocationInputFieldProps {
   editable?: boolean;
   containerStyle?: ViewStyle;
   preFilledValue?: string; // Pre-filled value based on context (e.g., geolocation)
+  // Custom icon props
+  iconName?: string;
+  iconFamily?: 'ionicons' | 'material' | 'fontawesome' | 'fontawesome6' | 'materialcommunity';
+  iconColor?: string;
 }
 
 const getLocationIcon = (type: LocationInputType) => {
@@ -46,9 +50,16 @@ export const LocationInputField: React.FC<LocationInputFieldProps> = ({
   editable = true,
   containerStyle,
   preFilledValue,
+  iconName,
+  iconFamily = 'ionicons',
+  iconColor,
 }) => {
   const displayValue = preFilledValue || value || '';
   const displayPlaceholder = placeholder || 'Entrer votre adresse';
+  
+  // Use custom icon if provided, otherwise use default based on type
+  const finalIconName = iconName || getLocationIcon(type);
+  const finalIconColor = iconColor || colors.text.secondary;
 
   return (
     <View style={[styles.container, containerStyle]}>
@@ -61,10 +72,10 @@ export const LocationInputField: React.FC<LocationInputFieldProps> = ({
         editable={editable}
         leftIcon={
           <Icon
-            name={getLocationIcon(type)}
+            name={finalIconName}
             size={20}
-            color={colors.text.secondary}
-            family="ionicons"
+            color={finalIconColor}
+            family={iconFamily}
           />
         }
         style={styles.input}

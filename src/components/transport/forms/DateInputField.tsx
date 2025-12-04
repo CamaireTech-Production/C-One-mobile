@@ -19,6 +19,8 @@ interface DateInputFieldProps {
   maximumDate?: Date;
   containerStyle?: ViewStyle;
   editable?: boolean;
+  // Custom icon props
+  iconColor?: string;
 }
 
 const formatDate = (date: Date): string => {
@@ -47,6 +49,7 @@ export const DateInputField: React.FC<DateInputFieldProps> = ({
   maximumDate,
   containerStyle,
   editable = true,
+  iconColor,
 }) => {
   const [showPicker, setShowPicker] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date>(
@@ -85,7 +88,7 @@ export const DateInputField: React.FC<DateInputFieldProps> = ({
             <Icon
               name="calendar-outline"
               size={20}
-              color={colors.text.secondary}
+              color={iconColor || colors.text.secondary}
               family="ionicons"
             />
           }

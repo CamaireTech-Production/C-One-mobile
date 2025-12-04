@@ -21,9 +21,7 @@ import {
   Button,
 } from '../../../components/common';
 import {
-  LocationInputField,
-  DateInputField,
-  PassengerCounter,
+  TransportSearchForm,
   FlightCard,
 } from '../../../components/transport';
 import { OverlayHeader } from '../../../components/transport/headers/OverlayHeader';
@@ -144,52 +142,28 @@ export const FlightSearchScreen: React.FC = () => {
 
       {/* Search Form Card - Positioned absolutely to overlap header */}
       <View style={styles.formCardWrapper}>
-        <View style={styles.formCard}>
-          <LocationInputField
-            type="position"
-            label={t('transport.flight.search.positionLabel')}
-            value={origin}
-            onChangeText={setOrigin}
-            preFilledValue={
-              context === 'client-location' && geolocationLocation?.city
-                ? geolocationLocation.city
-                : undefined
-            }
-            placeholder={t('transport.flight.search.positionPlaceholder')}
-          />
-
-          <LocationInputField
-            type="destination"
-            label={t('transport.flight.search.destinationLabel')}
-            value={destination}
-            onChangeText={setDestination}
-            placeholder={t('transport.flight.search.destinationPlaceholder')}
-          />
-
-          <DateInputField
-            label={t('transport.flight.search.dateLabel')}
-            value={date}
-            onChange={setDate}
-            placeholder={t('transport.flight.search.datePlaceholder')}
-          />
-
-          <PassengerCounter
-            label={t('transport.flight.search.passengersLabel')}
-            value={passengers}
-            onChange={setPassengers}
-            min={1}
-            max={10}
-          />
-
-          <Button
-            title={t('transport.flight.search.title')}
-            onPress={handleSearch}
-            variant="primary"
-            size="large"
-            fullWidth
-            style={styles.searchButton}
-          />
-        </View>
+        <TransportSearchForm
+          transportType="flight"
+          origin={origin}
+          destination={destination}
+          date={date}
+          passengers={passengers}
+          onOriginChange={setOrigin}
+          onDestinationChange={setDestination}
+          onDateChange={setDate}
+          onPassengersChange={setPassengers}
+          onSearch={handleSearch}
+          originPreFilled={
+            context === 'client-location' && geolocationLocation?.city
+              ? geolocationLocation.city
+              : undefined
+          }
+          originIconName="airplane"
+          destinationIconName="airplane"
+          iconColor={colors.transport.flight.primary}
+          buttonBackgroundColor={colors.transport.flight.primary}
+          containerStyle={styles.formCard}
+        />
       </View>
 
       {/* Scrollable Content - Starts below the form card */}
@@ -248,14 +222,7 @@ const styles = StyleSheet.create({
     zIndex: 1000,
   },
   formCard: {
-    backgroundColor: colors.background.primary,
-    borderRadius: 16, // Increased border radius according to Figma
-    padding: spacing.lg,
-    ...shadows.medium,
-    elevation: 8, // Higher elevation for Android
-  },
-  searchButton: {
-    marginTop: spacing.base,
+    // Styles are handled by TransportSearchForm component
   },
   previewSection: {
     marginTop: spacing.base,
