@@ -216,7 +216,12 @@ export const OverlayHeader: React.FC<OverlayHeaderProps> = ({
     </View>
   );
 
-  // If background image is provided, wrap in ImageBackground
+  // Get status bar height
+  const statusBarHeight = insets.top;
+
+  // If background image is provided, use layered approach:
+  // - Color background covers everything (including status bar)
+  // - Image starts below status bar
   if (backgroundImage) {
     // Handle both string URLs and require() images
     const imageSource = typeof backgroundImage === 'string'
@@ -230,21 +235,33 @@ export const OverlayHeader: React.FC<OverlayHeaderProps> = ({
           translucent={statusBarTranslucent} 
           backgroundColor="transparent" 
         />
-        <ImageBackground
-          source={imageSource}
+        {/* Color background layer - covers everything including status bar */}
+        <View
           style={[
-            styles.imageBackground, 
+            styles.colorBackgroundLayer,
             { backgroundColor, minHeight: finalHeight },
             imageBackgroundStyle
           ]}
-          imageStyle={[
-            styles.imageStyle, 
-            { opacity: backgroundImageOpacity },
-            imageStyle
-          ]}
         >
-          {HeaderContent}
-        </ImageBackground>
+          {/* Image layer - starts below status bar */}
+          <ImageBackground
+            source={imageSource}
+            style={[
+              styles.imageBackground,
+              { top: statusBarHeight, minHeight: finalHeight - statusBarHeight },
+            ]}
+            imageStyle={[
+              styles.imageStyle,
+              { opacity: backgroundImageOpacity },
+              imageStyle
+            ]}
+          >
+            {/* Content starts below status bar */}
+            <View style={styles.imageContentWrapper}>
+              {HeaderContent}
+            </View>
+          </ImageBackground>
+        </View>
       </>
     );
   }
@@ -272,7 +289,21 @@ const styles = StyleSheet.create({
   container: {
     paddingBottom: spacing.base,
   },
+  colorBackgroundLayer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    width: '100%',
+  },
   imageBackground: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    width: '100%',
+  },
+  imageContentWrapper: {
+    flex: 1,
     width: '100%',
   },
   imageStyle: {
