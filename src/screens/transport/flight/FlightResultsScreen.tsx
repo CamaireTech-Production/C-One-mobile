@@ -168,8 +168,9 @@ export const FlightResultsScreen: React.FC = () => {
         rightIconName="calendar-outline"
         rightIconFamily="ionicons"
         rightIconSize={20}
-        rightIconColor={colors.text.inverse}
-        rightIconWithContainer={false}
+        rightIconColor={colors.primary.normal}
+        rightIconWithContainer={true}
+        onRightIconPress={() => navigation.navigate('HomeMain')}
         backgroundColor={colors.transport.flight.primary}
         backgroundImage={images.mapVector}
         backgroundImageOpacity={0.8}
