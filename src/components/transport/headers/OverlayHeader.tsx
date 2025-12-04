@@ -264,7 +264,7 @@ export const OverlayHeader: React.FC<OverlayHeaderProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    paddingBottom: spacing['2xl'], // Extra padding for subtitle section and form overlap
+    paddingBottom: spacing.base,
   },
   imageBackground: {
     width: '100%',
@@ -313,15 +313,12 @@ const styles = StyleSheet.create({
   },
   subtitleContainer: {
     paddingHorizontal: spacing.lg,
-    paddingTop: spacing.lg,
-    paddingBottom: spacing['2xl'], // Extra padding for form overlap
+    paddingBottom: spacing.base,
+    paddingTop: spacing.base,
   },
   subtitle: {
     ...typography.styles.h2,
     color: colors.text.inverse,
-    fontWeight: '700',
-    fontSize: 24,
-    lineHeight: 32,
   },
   childrenContainer: {
     paddingHorizontal: spacing.lg,
