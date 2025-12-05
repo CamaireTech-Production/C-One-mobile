@@ -4,7 +4,7 @@
  * Shows selected date with highlight
  */
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -93,6 +93,7 @@ export const DateFilterBar: React.FC<DateFilterBarProps> = ({
   monthTextColor = colors.text.inverse,
 }) => {
   const scrollViewRef = useRef<ScrollView>(null);
+  const hasScrolledRef = useRef(false); // Track if we've already scrolled on mount
   const currentYear = new Date().getFullYear();
   
   // Get today's date and current month as defaults
@@ -130,38 +131,33 @@ export const DateFilterBar: React.FC<DateFilterBarProps> = ({
   const dates = generateDates(activeMonth, currentYear);
 
   // Scroll to center the selected date when component mounts or date changes
-  useEffect(() => {
-    if (dates.length === 0) return;
+  const scrollToSelectedDate = useCallback(() => {
+    if (dates.length === 0 || !scrollViewRef.current) return;
     
     const selectedIndex = dates.findIndex((d) => d.date === activeDate);
     if (selectedIndex >= 0) {
       // Calculate scroll position to center the selected card
+      // Account for the padding: paddingLeft = SCREEN_WIDTH / 2 - CARD_WIDTH / 2
       // Position = (index * card width) - (screen width / 2) + (card width / 2)
       const scrollPosition = selectedIndex * CARD_TOTAL_WIDTH - SCREEN_WIDTH / 2 + CARD_WIDTH / 2;
       
-      // Use multiple timeouts to ensure the ScrollView is fully laid out
-      let timeoutId1: NodeJS.Timeout;
-      let timeoutId2: NodeJS.Timeout;
-      
-      timeoutId1 = setTimeout(() => {
-        requestAnimationFrame(() => {
-          timeoutId2 = setTimeout(() => {
-            if (scrollViewRef.current) {
-              scrollViewRef.current.scrollTo({
-                x: Math.max(0, scrollPosition),
-                animated: false, // No animation on initial load
-              });
-            }
-          }, 200);
-        });
-      }, 200);
-      
-      return () => {
-        if (timeoutId1) clearTimeout(timeoutId1);
-        if (timeoutId2) clearTimeout(timeoutId2);
-      };
+      scrollViewRef.current.scrollTo({
+        x: Math.max(0, scrollPosition),
+        animated: false, // No animation on initial load
+      });
     }
-  }, [activeDate, activeMonth, dates.length]); // Use dates.length instead of dates array
+  }, [dates, activeDate]);
+
+  // Scroll when date or month changes (but not on initial mount - that's handled by onLayout)
+  useEffect(() => {
+    if (hasScrolledRef.current && dates.length > 0) {
+      // Use a small delay to ensure dates array is updated
+      const timeoutId = setTimeout(() => {
+        scrollToSelectedDate();
+      }, 100);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [activeDate, activeMonth, dates.length, scrollToSelectedDate]); // Include scrollToSelectedDate and dates.length in dependencies
 
   const handleDatePress = (date: string) => {
     onDateSelect?.(date);
@@ -181,23 +177,15 @@ export const DateFilterBar: React.FC<DateFilterBarProps> = ({
     return activeDate === date;
   };
 
-  // Scroll to selected date when layout is complete
-  const scrollToSelectedDate = () => {
-    if (dates.length === 0) return;
-    
-    const selectedIndex = dates.findIndex((d) => d.date === activeDate);
-    if (selectedIndex >= 0) {
-      const scrollPosition = selectedIndex * CARD_TOTAL_WIDTH - SCREEN_WIDTH / 2 + CARD_WIDTH / 2;
+  // Handle layout completion - scroll to selected date on initial mount
+  const handleLayout = () => {
+    if (!hasScrolledRef.current) {
+      hasScrolledRef.current = true;
       // Use requestAnimationFrame and setTimeout to ensure layout is complete
       requestAnimationFrame(() => {
         setTimeout(() => {
-          if (scrollViewRef.current) {
-            scrollViewRef.current.scrollTo({
-              x: Math.max(0, scrollPosition),
-              animated: false,
-            });
-          }
-        }, 300);
+          scrollToSelectedDate();
+        }, 100);
       });
     }
   };
@@ -239,7 +227,7 @@ export const DateFilterBar: React.FC<DateFilterBarProps> = ({
         ]}
         style={styles.daysScrollView}
         bounces={true}
-        onLayout={scrollToSelectedDate}
+        onLayout={handleLayout}
       >
         {dates.map((dateItem) => {
           const selected = isSelected(dateItem.date);

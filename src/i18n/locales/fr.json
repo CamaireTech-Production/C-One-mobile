@@ -269,6 +269,7 @@
         "datePlaceholder": "10-11-2025",
         "availableFlights": "Vols disponible",
         "allFlights": "Tous les vols {{origin}} - {{destination}}",
+        "noFlights": "Aucun vol disponible",
         "seeAll": "Voir tout"
       }
     },
@@ -288,6 +289,7 @@
         "datePlaceholder": "10-11-2025",
         "availableTrains": "Trains disponible",
         "allTrains": "Tous les trains {{origin}} - {{destination}}",
+        "noTrains": "Aucun train disponible",
         "seeAll": "Voir tout"
       }
     },
