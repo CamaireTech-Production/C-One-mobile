@@ -14,6 +14,8 @@ interface FlightCardProps {
   onPress?: () => void;
   onReserve?: () => void;
   style?: ViewStyle;
+  selected?: boolean;
+  onSelect?: () => void;
 }
 
 export const FlightCard: React.FC<FlightCardProps> = (props) => {

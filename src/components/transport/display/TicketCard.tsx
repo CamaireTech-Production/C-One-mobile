@@ -53,10 +53,31 @@ export const TicketCard: React.FC<TicketCardProps> = ({
           <Text style={styles.label}>HEURES</Text>
           <Text style={styles.value}>{ticket.departureTime} - {ticket.arrivalTime}</Text>
 
+          {ticket.type === 'plane' && ticket.terminal && (
+            <>
+              <Text style={styles.label}>TERMINAL</Text>
+              <Text style={styles.value}>{ticket.terminal}</Text>
+            </>
+          )}
+
+          {ticket.type === 'plane' && ticket.gate && (
+            <>
+              <Text style={styles.label}>PORTE</Text>
+              <Text style={styles.value}>{ticket.gate}</Text>
+            </>
+          )}
+
           {ticket.type === 'plane' && ticket.seat && (
             <>
               <Text style={styles.label}>PLACE</Text>
               <Text style={styles.value}>{ticket.seat}</Text>
+            </>
+          )}
+
+          {ticket.type === 'train' && ticket.platform && (
+            <>
+              <Text style={styles.label}>VOIE</Text>
+              <Text style={styles.value}>{ticket.platform}</Text>
             </>
           )}
 

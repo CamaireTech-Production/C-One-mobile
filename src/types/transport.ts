@@ -121,6 +121,10 @@ export type TransportTicket = {
   departureTime: string; // "12:20"
   arrivalTime: string; // "14:17"
   duration: string; // "6h 28m"
+  // Airport/Train station details
+  terminal?: string; // For flights (e.g., "Terminal 1", "T1")
+  gate?: string; // For flights (e.g., "Gate A12", "A12")
+  platform?: string; // For trains (e.g., "Platform 3", "Voie 3")
   // Booking details
   seat?: string; // For flights (e.g., "2", "12A")
   numberOfSeats: number; // For trains

@@ -52,6 +52,8 @@ const createMockTicket = (type: 'plane' | 'train'): TransportTicket => {
       departureTime: '12:20',
       arrivalTime: '14:17',
       duration: '2h 30min',
+      terminal: 'Terminal 1',
+      gate: 'Gate A12',
       seat: '2',
       numberOfSeats: 1,
       baggage: 1,
@@ -81,6 +83,7 @@ const createMockTicket = (type: 'plane' | 'train'): TransportTicket => {
       departureTime: '12:20',
       arrivalTime: '18:10',
       duration: '6h 20m',
+      platform: 'Platform 3',
       numberOfSeats: 2,
       baggage: 1,
       totalWeight: '40kg',
@@ -130,7 +133,7 @@ export const BookingConfirmationScreen: React.FC = () => {
       <SuccessModal
         visible={showSuccessModal}
         message="Votre réservation a été confirmée avec succès!"
-        primaryButtonLabel="Consulter"
+        primaryButtonLabel="Consulter votre ticket"
         secondaryButtonLabel="Retour à l'accueil"
         onPrimaryPress={handleViewTicket}
         onSecondaryPress={handleGoHome}

@@ -1,10 +1,10 @@
 /**
  * FlightSearchScreen
  * Flight search form with origin, destination, date, passengers
- * Supports context: client-location (ma position) or other-country
+ * Simple white background design matching screenshot 1
  */
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -18,17 +18,18 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { HomeStackParamList } from '../../../types';
 
 import {
+  ScreenBackground,
+  DetailHeader,
   Button,
 } from '../../../components/common';
 import {
-  TransportSearchForm,
-  FlightCard,
+  TransportInputField,
+  CalendarModal,
 } from '../../../components/transport';
-import { OverlayHeader } from '../../../components/transport/headers/OverlayHeader';
-import { SkeletonTransportCard } from '../../../components/skeleton';
-import { colors, spacing, typography, shadows } from '../../../theme';
-import { images } from '../../../config';
-import { useFlightData, useGeolocation, useHideTabBar } from '../../../hooks';
+import type { City } from '../../../components/transport';
+import { colors, spacing, typography } from '../../../theme';
+import { useGeolocation, useHideTabBar } from '../../../hooks';
+import { Icon } from '../../../components/common/icons/Icon';
 import type { SearchContext } from '../../../types/transport';
 
 interface FlightSearchScreenParams {
@@ -42,22 +43,11 @@ type FlightSearchScreenNavigationProp = NativeStackNavigationProp<
   'FlightSearch'
 >;
 
-// Header and form positioning constants
-// Based on Figma design: header is ~350px, form overlaps by ~150px
-const HEADER_HEIGHT = 350;
-const FORM_OVERLAP_OFFSET = 140; // How much the form overlaps the header
-const FORM_TOP_POSITION = HEADER_HEIGHT - FORM_OVERLAP_OFFSET; // ~200px from top
-
 export const FlightSearchScreen: React.FC = () => {
   const { t } = useTranslation();
   const route = useRoute();
   const navigation = useNavigation<FlightSearchScreenNavigationProp>();
   const params = route.params as FlightSearchScreenParams;
-
-  // Refs for measuring component heights
-  const formCardRef = useRef<View>(null);
-  const [formCardHeight, setFormCardHeight] = useState<number>(280); // Estimated initial height
-  const [formCardTop, setFormCardTop] = useState<number>(FORM_TOP_POSITION);
 
   // Determine context
   const { location: geolocationLocation } = useGeolocation({ useCache: true });
@@ -76,18 +66,27 @@ export const FlightSearchScreen: React.FC = () => {
     return `${day}-${month}-${year}`;
   };
 
+  // Format date for display (e.g., "Sun, Feb 04")
+  const formatDateDisplay = (dateStr: string): string => {
+    const parts = dateStr.split('-');
+    if (parts.length === 3) {
+      const day = parseInt(parts[0]);
+      const month = parseInt(parts[1]) - 1;
+      const year = parseInt(parts[2]);
+      const date = new Date(year, month, day);
+      const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      return `${days[date.getDay()]}, ${months[month]} ${String(day).padStart(2, '0')}`;
+    }
+    return dateStr;
+  };
+
   // Form state
   const [origin, setOrigin] = useState<string>('');
   const [destination, setDestination] = useState<string>('');
   const [date, setDate] = useState<string>(getTodayDate());
   const [passengers, setPassengers] = useState<number>(6);
-
-  // Get flights data
-  const { flights, loading } = useFlightData(
-    params.countryCode,
-    params.cityId,
-    context
-  );
+  const [showCalendarModal, setShowCalendarModal] = useState<boolean>(false);
 
   // Hide tab bar when this screen is focused
   useHideTabBar();
@@ -95,26 +94,12 @@ export const FlightSearchScreen: React.FC = () => {
   // Pre-fill origin if client-location context
   useEffect(() => {
     if (context === 'client-location' && geolocationLocation?.city) {
-      setOrigin(geolocationLocation.city);
+      // Format as "Quebec QBC" if we have city
+      const cityName = geolocationLocation.city;
+      const cityCode = cityName.substring(0, 3).toUpperCase();
+      setOrigin(`${cityName} ${cityCode}`);
     }
   }, [context, geolocationLocation]);
-
-  // Measure form card height and position dynamically
-  const handleFormCardLayout = (event: any) => {
-    const { height, y } = event.nativeEvent.layout;
-    if (height > 0 && height !== formCardHeight) {
-      setFormCardHeight(height);
-    }
-    // y should match FORM_TOP_POSITION, but we measure it to be sure
-    if (y > 0 && Math.abs(y - formCardTop) > 1) {
-      setFormCardTop(y);
-    }
-  };
-
-  const scrollContentPaddingTop = formCardTop + formCardHeight + spacing.sm;
-
-  // Get preview flights (first 2-3)
-  const previewFlights = flights.slice(0, 3);
 
   const handleBack = () => {
     navigation.goBack();
@@ -132,188 +117,273 @@ export const FlightSearchScreen: React.FC = () => {
     });
   };
 
-  const handleSeeAll = () => {
-    // Get today's date for "Voir tout"
-    const getTodayDate = (): string => {
-      const today = new Date();
-      const day = String(today.getDate()).padStart(2, '0');
-      const month = String(today.getMonth() + 1).padStart(2, '0');
-      const year = today.getFullYear();
-      return `${day}-${month}-${year}`;
-    };
-    
-    navigation.navigate('FlightResults', {
-      countryCode: params.countryCode,
-      cityId: params.cityId,
-      context,
-      origin,
-      destination,
-      date: getTodayDate(), // Use today's date for "Voir tout"
-      passengers,
+  const handleSwapOriginDestination = () => {
+    const temp = origin;
+    setOrigin(destination);
+    setDestination(temp);
+  };
+
+  const handleOriginPress = () => {
+    navigation.navigate('DestinationSelection', {
+      transportType: 'flight',
+      onDestinationSelect: (city: City) => {
+        setOrigin(city.name);
+      },
     });
   };
 
-  const handleFlightPress = (offerId: string) => {
-    const offer = flights.find((f) => f.id === offerId);
-    if (offer) {
-      navigation.navigate('FlightBooking', {
-        offerId,
-        offer,
-      });
+  const handleDestinationPress = () => {
+    navigation.navigate('DestinationSelection', {
+      transportType: 'flight',
+      onDestinationSelect: (city: City) => {
+        setDestination(city.name);
+      },
+    });
+  };
+
+  const handleDatePress = () => {
+    setShowCalendarModal(true);
+  };
+
+  const handleDateSelect = (selectedDate: string) => {
+    setDate(selectedDate);
+    setShowCalendarModal(false);
+  };
+
+  const handlePassengerDecrease = () => {
+    if (passengers > 1) {
+      setPassengers(passengers - 1);
     }
   };
 
+  const handlePassengerIncrease = () => {
+    setPassengers(passengers + 1);
+  };
+
   return (
-    <View style={styles.container}>
-      {/* Special Header with Background */}
-      <OverlayHeader
-        title={t('transport.flight.title')}
-        subtitle={t('transport.flight.subtitle')}
+    <ScreenBackground backgroundColor={colors.background.primary}>
+      <DetailHeader
+        title={t('transport.flight.reservation') || 'Réservation vols'}
         onBack={handleBack}
-        // Left icon - matching DetailHeader style
-        leftIconName="chevron-back"
-        leftIconFamily="ionicons"
-        leftIconSize={20}
-        leftIconColor={colors.text.primary}
-        leftIconWithContainer={true}
-        // Right icon - matching DetailHeader style
-        rightIconName="smart-toy"
-        rightIconFamily="material"
-        rightIconSize={20}
-        rightIconColor={colors.primary.normal}
-        rightIconWithContainer={true}
+        rightIconName="airplane"
+        rightIconFamily="ionicons"
         onRightIconPress={() => navigation.navigate('HomeMain')}
-        backgroundColor={colors.transport.flight.primary}
-        backgroundImage={images.mapVector}
-        backgroundImageOpacity={0.8}
-        headerHeight={HEADER_HEIGHT}
-        navBarPaddingTop={0}
-        imageBackgroundStyle={{
-          borderBottomLeftRadius: 20,
-          borderBottomRightRadius: 20,
-        }}
       />
 
-      {/* Search Form Card - Positioned absolutely to overlap header */}
-      <View 
-        ref={formCardRef}
-        style={styles.formCardWrapper}
-        onLayout={handleFormCardLayout}
-      >
-        <TransportSearchForm
-          transportType="flight"
-          origin={origin}
-          destination={destination}
-          date={date}
-          passengers={passengers}
-          onOriginChange={setOrigin}
-          onDestinationChange={setDestination}
-          onDateChange={setDate}
-          onPassengersChange={setPassengers}
-          onSearch={handleSearch}
-          originPreFilled={
-            context === 'client-location' && geolocationLocation?.city
-              ? geolocationLocation.city
-              : undefined
-          }
-          originIconName="airplane-takeoff"
-          originIconFamily="materialcommunity"
-          destinationIconName="airplane-landing"
-          destinationIconFamily="materialcommunity"
-          iconColor={colors.transport.flight.primary}
-          containerStyle={styles.formCard}
-        />
-      </View>
       <ScrollView
         style={styles.scrollView}
-        contentContainerStyle={[
-          styles.scrollContent,
-          { 
-            paddingTop: scrollContentPaddingTop || (FORM_TOP_POSITION + 280 + spacing.lg), // Fallback calculation
-          },
-        ]}
+        contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* Preview Flights Section */}
-        <View style={styles.previewSection}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>
-              {origin && destination
-                ? t('transport.flight.search.allFlights', { origin, destination })
-                : t('transport.flight.search.availableFlights')}
-            </Text>
-            {!loading && (
-              <TouchableOpacity onPress={handleSeeAll} activeOpacity={0.7}>
-                <Text style={styles.seeAllText}>{t('transport.flight.search.seeAll')}</Text>
-              </TouchableOpacity>
-            )}
-          </View>
-
-          {loading ? (
-            // Show skeleton loaders while loading
-            <>
-              <SkeletonTransportCard isFlight={true} style={styles.previewCard} />
-              <SkeletonTransportCard isFlight={true} style={styles.previewCard} />
-              <SkeletonTransportCard isFlight={true} style={styles.previewCard} />
-            </>
-          ) : previewFlights.length > 0 ? (
-            previewFlights.map((flight) => (
-              <FlightCard
-                key={flight.id}
-                offer={flight}
-                onReserve={() => handleFlightPress(flight.id)}
-                style={styles.previewCard}
-              />
-            ))
-          ) : null}
+        {/* MA POSITION */}
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>MA POSITION</Text>
+          <TransportInputField
+            type="text"
+            label=""
+            value={origin}
+            onChangeText={setOrigin}
+            onPress={handleOriginPress}
+            placeholder="Quebec QBC"
+            containerStyle={styles.inputField}
+            iconName="airplane-takeoff"
+            iconFamily="materialcommunity"
+            iconColor={colors.transport.flight.primary}
+            backgroundColor={colors.background.primary}
+            editable={!handleOriginPress}
+          />
         </View>
+
+        {/* À (Destination) with Swap Icon */}
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>À</Text>
+          <View style={styles.destinationRow}>
+            <View style={styles.destinationInputWrapper}>
+              <TransportInputField
+                type="text"
+                label=""
+                value={destination}
+                onChangeText={setDestination}
+                onPress={handleDestinationPress}
+                placeholder="Ma destination"
+                containerStyle={styles.inputField}
+                iconName="airplane-landing"
+                iconFamily="materialcommunity"
+                iconColor={colors.transport.flight.primary}
+                backgroundColor={colors.background.primary}
+                editable={!handleDestinationPress}
+              />
+            </View>
+            <TouchableOpacity
+              style={styles.swapButton}
+              onPress={handleSwapOriginDestination}
+              activeOpacity={0.7}
+            >
+              <Icon
+                name="swap-vertical"
+                size={24}
+                color={colors.transport.flight.primary}
+                family="ionicons"
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* DATE DE DEPART */}
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>DATE DE DEPART</Text>
+          <TransportInputField
+            type="text"
+            label=""
+            value={formatDateDisplay(date)}
+            onPress={handleDatePress}
+            placeholder="Sélectionner une date"
+            containerStyle={styles.inputField}
+            iconName="calendar-outline"
+            iconFamily="ionicons"
+            iconColor={colors.transport.flight.primary}
+            backgroundColor={colors.background.primary}
+            editable={false}
+          />
+        </View>
+
+        {/* NOMBRE DE PASSAGERS */}
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>NOMBRE DE PASSAGERS</Text>
+          <View style={styles.passengerRow}>
+            <View style={styles.passengerInputWrapper}>
+              <Text style={styles.passengerPlaceholder}>
+                Sélectionner un nombre
+              </Text>
+            </View>
+            <View style={styles.passengerControls}>
+              <TouchableOpacity
+                style={styles.passengerButton}
+                onPress={handlePassengerDecrease}
+                activeOpacity={0.7}
+              >
+                <Icon
+                  name="remove-circle-outline"
+                  size={24}
+                  color={colors.transport.flight.primary}
+                  family="ionicons"
+                />
+              </TouchableOpacity>
+              <Text style={styles.passengerCount}>
+                {String(passengers).padStart(2, '0')}
+              </Text>
+              <TouchableOpacity
+                style={styles.passengerButton}
+                onPress={handlePassengerIncrease}
+                activeOpacity={0.7}
+              >
+                <Icon
+                  name="add-circle-outline"
+                  size={24}
+                  color={colors.transport.flight.primary}
+                  family="ionicons"
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+
+        {/* Rechercher Button */}
+        <Button
+          title={t('transport.common.search') || 'Rechercher'}
+          onPress={handleSearch}
+          variant="primary"
+          size="large"
+          fullWidth
+          style={styles.searchButton}
+          backgroundColor={colors.transport.flight.primary}
+        />
       </ScrollView>
-    </View>
+
+      {/* Calendar Modal */}
+      <CalendarModal
+        visible={showCalendarModal}
+        selectedDate={date}
+        onDateSelect={handleDateSelect}
+        onClose={() => setShowCalendarModal(false)}
+        primaryColor={colors.transport.flight.primary}
+      />
+    </ScreenBackground>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.transport.flight.background,
-  },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
-    paddingHorizontal: spacing.base,
+    padding: spacing.lg,
     paddingBottom: spacing['4xl'],
   },
-  formCardWrapper: {
-    position: 'absolute',
-    top: FORM_TOP_POSITION, // Position from top of screen (~200px)
-    left: spacing.base,
-    right: spacing.base,
-    zIndex: 10, // Form overlaps header background (zIndex: 1-2) but stays below header content (zIndex: 100)
-    elevation: 4, // Android shadow/elevation
+  inputContainer: {
+    marginBottom: spacing.lg,
   },
-  formCard: {
-    // Styles are handled by TransportSearchForm component
+  label: {
+    ...typography.styles.bodyRegular12,
+    color: colors.text.secondary,
+    marginBottom: spacing.sm,
+    textTransform: 'uppercase',
   },
-  previewSection: {
-    marginTop: spacing.base,
+  inputField: {
+    marginBottom: 0,
   },
-  sectionHeader: {
+  destinationRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: spacing.base,
+    gap: spacing.sm,
   },
-  sectionTitle: {
-    ...typography.styles.h4,
+  destinationInputWrapper: {
+    flex: 1,
+  },
+  swapButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: colors.background.tertiary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: colors.border.light,
+  },
+  passengerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.background.primary,
+    borderRadius: 12,
+    paddingHorizontal: spacing.base,
+    paddingVertical: spacing.md,
+    borderWidth: 1,
+    borderColor: colors.border.light,
+  },
+  passengerInputWrapper: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  passengerPlaceholder: {
+    ...typography.styles.bodyRegular16,
+    color: colors.text.tertiary,
+  },
+  passengerControls: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+  },
+  passengerButton: {
+    padding: spacing.xs,
+  },
+  passengerCount: {
+    ...typography.styles.bodyBold18,
     color: colors.text.primary,
+    minWidth: 30,
+    textAlign: 'center',
   },
-  seeAllText: {
-    ...typography.styles.bodyMedium16,
-    color: colors.primary.normal,
-  },
-  previewCard: {
-    marginBottom: spacing.base,
+  searchButton: {
+    marginTop: spacing.xl,
   },
 });
 

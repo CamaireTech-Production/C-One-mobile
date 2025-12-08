@@ -44,6 +44,21 @@ export type HomeStackParamList = {
     cityId?: string;
     context?: 'client-location' | 'other-country';
   };
+  DestinationSelection: {
+    transportType: 'flight' | 'train' | 'car';
+    onDestinationSelect?: (city: any) => void; // City type from DestinationSelector
+    currentDestination?: string;
+  };
+  TransportFilters: {
+    transportType: 'flight' | 'train';
+    currentFilters?: any; // TransportFilters type
+    onApply?: (filters: any) => void; // TransportFilters type
+  };
+  PersonalInfoForm: {
+    transportType: 'flight' | 'train';
+    onContinue?: (data: any) => void; // PersonalInfoFormData type
+    initialData?: any; // Partial<PersonalInfoFormData> type
+  };
   FlightResults: {
     countryCode: string;
     cityId?: string;

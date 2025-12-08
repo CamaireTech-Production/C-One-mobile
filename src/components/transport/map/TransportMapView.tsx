@@ -13,6 +13,7 @@ interface TransportMapViewProps {
   origin?: { latitude: number; longitude: number; name?: string };
   destination?: { latitude: number; longitude: number; name?: string };
   stops?: Array<{ latitude: number; longitude: number; name: string; number?: number }>;
+  searchAddress?: string; // Address string for search/geocoding
   style?: ViewStyle;
 }
 
@@ -20,15 +21,22 @@ export const TransportMapView: React.FC<TransportMapViewProps> = ({
   origin,
   destination,
   stops = [],
+  searchAddress,
   style,
 }) => {
   // Placeholder implementation
   // In production, integrate with react-native-maps or expo-maps
+  // The searchAddress would be geocoded to get coordinates
   return (
     <View style={[styles.container, style]}>
       <View style={styles.mapPlaceholder}>
         <Icon name="map-outline" size={48} color={colors.text.secondary} family="ionicons" />
         <Text style={styles.placeholderText}>Map View</Text>
+        {searchAddress && (
+          <Text style={styles.searchAddressText}>
+            {searchAddress}
+          </Text>
+        )}
         <Text style={styles.placeholderSubtext}>
           {origin?.name && `From: ${origin.name}`}
           {destination?.name && ` To: ${destination.name}`}
@@ -68,6 +76,14 @@ const styles = StyleSheet.create({
     ...typography.styles.bodyRegular14,
     color: colors.text.tertiary,
     marginTop: spacing.xs,
+  },
+  searchAddressText: {
+    ...typography.styles.bodyMedium16,
+    color: colors.primary.normal,
+    marginTop: spacing.sm,
+    marginBottom: spacing.xs,
+    textAlign: 'center',
+    paddingHorizontal: spacing.base,
   },
 });
 

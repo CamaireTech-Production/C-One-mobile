@@ -22,6 +22,7 @@ import {
 import {
   TransportMapView,
   RideHailingCard,
+  TransportInputField,
 } from '../../../components/transport';
 import { colors, spacing, typography } from '../../../theme';
 import { useCarData, useGeolocation, useHideTabBar } from '../../../hooks';
@@ -46,6 +47,9 @@ export const CarSearchScreen: React.FC = () => {
   // Hide tab bar when this screen is focused
   useHideTabBar();
 
+  // State for address input
+  const [address, setAddress] = useState<string>('');
+
   // Get user location
   const { location: geolocationLocation } = useGeolocation({ useCache: true });
 
@@ -67,6 +71,11 @@ export const CarSearchScreen: React.FC = () => {
     }
   };
 
+  const handleAddressChange = (text: string) => {
+    setAddress(text);
+    // TODO: Implement address search/autocomplete
+  };
+
   return (
     <ScreenBackground backgroundColor={colors.transport.car.background}>
       <DetailHeader
@@ -82,6 +91,22 @@ export const CarSearchScreen: React.FC = () => {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
+        {/* Address Input Field */}
+        <View style={styles.addressInputContainer}>
+          <TransportInputField
+            type="text"
+            label={t('transport.car.enterAddress') || 'Entrer une adresse'}
+            value={address}
+            onChangeText={handleAddressChange}
+            placeholder={t('transport.car.addressPlaceholder') || 'Ex: 123 Rue de la Paix, Paris'}
+            containerStyle={styles.addressInput}
+            iconName="location-outline"
+            iconFamily="ionicons"
+            iconColor={colors.transport.car.primary}
+            backgroundColor={colors.background.tertiary}
+          />
+        </View>
+
         {/* Map View */}
         <View style={styles.mapContainer}>
           <TransportMapView
@@ -95,7 +120,13 @@ export const CarSearchScreen: React.FC = () => {
                 : undefined
             }
             destination={
-              params.cityId
+              address
+                ? {
+                    latitude: 0, // Mock coordinates - would be geocoded from address
+                    longitude: 0,
+                    name: address,
+                  }
+                : params.cityId
                 ? {
                     latitude: 0, // Mock coordinates
                     longitude: 0,
@@ -103,26 +134,38 @@ export const CarSearchScreen: React.FC = () => {
                   }
                 : undefined
             }
+            searchAddress={address}
           />
         </View>
 
         {/* Services Section */}
         <View style={styles.servicesSection}>
-          <Text style={styles.sectionTitle}>Services de transport disponible</Text>
+          <Text style={styles.promptText}>
+            {t('transport.car.needTransport') || 'Besoin d\'un transport?'}
+          </Text>
+          <Text style={styles.sectionTitle}>
+            {t('transport.car.availableServices') || 'Services de transport disponible'}
+          </Text>
 
           {loading ? (
-            <Text style={styles.loadingText}>Chargement des services...</Text>
+            <Text style={styles.loadingText}>
+              {t('transport.car.loadingServices') || 'Chargement des services...'}
+            </Text>
           ) : services.length > 0 ? (
-            services.map((service) => (
-              <RideHailingCard
-                key={service.id}
-                service={service}
-                onDownload={() => handleServiceDownload(service.id)}
-                style={styles.serviceCard}
-              />
-            ))
+            <View style={styles.servicesGrid}>
+              {services.map((service) => (
+                <RideHailingCard
+                  key={service.id}
+                  service={service}
+                  onDownload={() => handleServiceDownload(service.id)}
+                  style={styles.serviceCard}
+                />
+              ))}
+            </View>
           ) : (
-            <Text style={styles.emptyText}>Aucun service disponible</Text>
+            <Text style={styles.emptyText}>
+              {t('transport.car.noServices') || 'Aucun service disponible'}
+            </Text>
           )}
         </View>
       </ScrollView>
@@ -137,8 +180,16 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingBottom: spacing['4xl'],
   },
+  addressInputContainer: {
+    padding: spacing.base,
+    paddingBottom: spacing.sm,
+  },
+  addressInput: {
+    marginBottom: 0,
+  },
   mapContainer: {
     margin: spacing.base,
+    marginTop: spacing.sm,
     borderRadius: 12,
     overflow: 'hidden',
     ...colors.shadow.card,
@@ -149,14 +200,25 @@ const styles = StyleSheet.create({
   },
   servicesSection: {
     padding: spacing.base,
+    paddingTop: spacing.lg,
+  },
+  promptText: {
+    ...typography.styles.h3,
+    color: colors.text.primary,
+    marginBottom: spacing.sm,
+    textAlign: 'center',
   },
   sectionTitle: {
     ...typography.styles.h4,
-    color: colors.text.primary,
+    color: colors.text.secondary,
     marginBottom: spacing.base,
+    textAlign: 'center',
+  },
+  servicesGrid: {
+    gap: spacing.base,
   },
   serviceCard: {
-    marginBottom: spacing.base,
+    marginBottom: 0,
   },
   loadingText: {
     ...typography.styles.bodyRegular16,

@@ -23,8 +23,10 @@ import {
 import {
   TransportSearchForm,
   TrainCard,
+  CalendarModal,
 } from '../../../components/transport';
 import { OverlayHeader } from '../../../components/transport/headers/OverlayHeader';
+import type { City } from '../../../components/transport';
 import { SkeletonTransportCard } from '../../../components/skeleton';
 import { colors, spacing, typography, shadows } from '../../../theme';
 import { images } from '../../../config';
@@ -81,6 +83,8 @@ export const TrainSearchScreen: React.FC = () => {
   const [destination, setDestination] = useState<string>('');
   const [date, setDate] = useState<string>(getTodayDate());
   const [passengers, setPassengers] = useState<number>(6);
+  const [isOneWay, setIsOneWay] = useState<boolean>(true);
+  const [showCalendarModal, setShowCalendarModal] = useState<boolean>(false);
 
   // Get trains data
   const { trains, loading } = useTrainData(
@@ -163,6 +167,25 @@ export const TrainSearchScreen: React.FC = () => {
     }
   };
 
+  const handleDestinationPress = () => {
+    navigation.navigate('DestinationSelection', {
+      transportType: 'train',
+      currentDestination: destination,
+      onDestinationSelect: (city: City) => {
+        setDestination(city.name);
+      },
+    });
+  };
+
+  const handleDatePress = () => {
+    setShowCalendarModal(true);
+  };
+
+  const handleDateSelect = (selectedDate: string) => {
+    setDate(selectedDate);
+    setShowCalendarModal(false);
+  };
+
   return (
     <View style={styles.container}>
       {/* Special Header with Background */}
@@ -208,9 +231,17 @@ export const TrainSearchScreen: React.FC = () => {
           passengers={passengers}
           onOriginChange={setOrigin}
           onDestinationChange={setDestination}
-          onDateChange={setDate}
-          onPassengersChange={setPassengers}
+          onDateChange={handleDateSelect}
+          onDatePress={handleDatePress}
+          onPassengersChange={(passengers) => {
+            if (typeof passengers === 'number') {
+              setPassengers(passengers);
+            }
+          }}
           onSearch={handleSearch}
+          isOneWay={isOneWay}
+          onOneWayChange={setIsOneWay}
+          onDestinationPress={handleDestinationPress}
           originPreFilled={
             context === 'client-location' && geolocationLocation?.city
               ? geolocationLocation.city
@@ -222,6 +253,7 @@ export const TrainSearchScreen: React.FC = () => {
           destinationIconFamily="ionicons"
           iconColor={colors.transport.train.primary}
           containerStyle={styles.formCard}
+          destinationPlaceholder="Sélectionner une destination"
         />
       </View>
       <ScrollView
@@ -268,6 +300,15 @@ export const TrainSearchScreen: React.FC = () => {
           ) : null}
         </View>
       </ScrollView>
+
+      {/* Calendar Modal */}
+      <CalendarModal
+        visible={showCalendarModal}
+        selectedDate={date}
+        onDateSelect={handleDateSelect}
+        onClose={() => setShowCalendarModal(false)}
+        primaryColor={colors.transport.train.primary}
+      />
     </View>
   );
 };

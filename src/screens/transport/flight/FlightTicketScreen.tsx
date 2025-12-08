@@ -9,6 +9,7 @@ import {
   Text,
   StyleSheet,
   ScrollView,
+  Alert,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useRoute, useNavigation } from '@react-navigation/native';
@@ -53,6 +54,8 @@ const createMockTicket = (): TransportTicket => ({
   departureTime: '12:20',
   arrivalTime: '14:17',
   duration: '2h 30min',
+  terminal: 'Terminal 1',
+  gate: 'Gate A12',
   seat: '2',
   numberOfSeats: 1,
   baggage: 1,
@@ -82,8 +85,19 @@ export const FlightTicketScreen: React.FC = () => {
   };
 
   const handleDownload = () => {
-    // TODO: Implement ticket download
-    console.log('Download ticket');
+    // TODO: In production, implement actual file download using expo-file-system and expo-sharing
+    // For now, show success message
+    Alert.alert(
+      t('transport.ticket.downloadSuccess') || 'Téléchargement réussi',
+      t('transport.ticket.downloadMessage') || 'Votre ticket a été téléchargé avec succès.',
+      [
+        {
+          text: t('transport.common.ok') || 'OK',
+          style: 'default',
+        },
+      ],
+      { cancelable: true }
+    );
   };
 
   return (

@@ -25,7 +25,19 @@ import {
   PassengerSelector,
   BaggageSelector,
   ClassSelector,
+  SeatSelection,
+  BaggageSelection,
+  PaymentTypeSelector,
+  CardInputFields,
+  type SeatType,
+  type BaggageType,
+  type PaymentType,
+  type CardInputFieldsData,
 } from '../../../components/transport';
+import {
+  PersonalInfoForm,
+  type PersonalInfoFormData,
+} from '../../../components/transport/forms/PersonalInfoForm';
 import { colors, spacing, typography } from '../../../theme';
 import { useHideTabBar } from '../../../hooks';
 import { Icon } from '../../../components/common/icons/Icon';
@@ -60,14 +72,31 @@ export const FlightBookingScreen: React.FC = () => {
   // Form state
   const [passengers, setPassengers] = useState<PassengerCount>({
     adults: 1,
-    children: 1,
+    children: 0,
     babies: 0,
   });
   const [baggage, setBaggage] = useState<BaggageItem[]>([
     { id: 'baggage-1', weight: 1 },
-    { id: 'baggage-2', weight: 1 },
   ]);
   const [selectedClass, setSelectedClass] = useState<TransportClass>('standard');
+  const [selectedSeat, setSelectedSeat] = useState<SeatType | null>(null);
+  const [selectedBaggageTypes, setSelectedBaggageTypes] = useState<BaggageType[]>([]);
+  const [paymentType, setPaymentType] = useState<PaymentType>('standard');
+  const [cardData, setCardData] = useState<CardInputFieldsData>({
+    cardNumber: '',
+    expiryDate: '',
+    cvv: '',
+  });
+  const [personalInfo, setPersonalInfo] = useState<PersonalInfoFormData>({
+    nom: '',
+    prenom: '',
+    dateNaissance: '',
+    typeDocument: 'passport',
+    numeroDocument: '',
+    dateExpiration: '',
+    paysEmission: '',
+    nationalite: '',
+  });
   const [paymentMethod, setPaymentMethod] = useState<string>('VISA **** 1234');
 
   const handleBack = () => {
@@ -75,6 +104,12 @@ export const FlightBookingScreen: React.FC = () => {
   };
 
   const handlePay = () => {
+    // Validate form before proceeding
+    if (!personalInfo.nom || !personalInfo.prenom || !cardData.cardNumber || !cardData.cvv) {
+      // TODO: Show validation error
+      return;
+    }
+
     // Navigate to payment screen
     navigation.navigate('Payment', {
       bookingDetails: {
@@ -90,6 +125,11 @@ export const FlightBookingScreen: React.FC = () => {
         passengers,
         baggage,
         class: selectedClass,
+        seat: selectedSeat,
+        baggageTypes: selectedBaggageTypes,
+        paymentType,
+        cardData,
+        personalInfo,
         basePrice: offer.price,
         baggagePrice: baggage.length * 20, // Mock calculation
         classPrice: selectedClass === 'vip' ? 100 : 0,
@@ -173,28 +213,72 @@ export const FlightBookingScreen: React.FC = () => {
           </View>
         </View>
 
+        {/* Personal Information Form */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Informations personnelles</Text>
+          <PersonalInfoForm
+            data={personalInfo}
+            onChange={setPersonalInfo}
+            primaryColor={colors.transport.flight.primary}
+          />
+        </View>
+
         {/* Passenger Selection */}
-        <PassengerSelector
-          passengers={passengers}
-          onChange={setPassengers}
-          title="Qui veut vous voir?"
-        />
+        <View style={styles.section}>
+          <PassengerSelector
+            passengers={passengers}
+            onChange={setPassengers}
+            title="Qui veut vous voir?"
+          />
+        </View>
+
+        {/* Seat Selection */}
+        <View style={styles.section}>
+          <SeatSelection
+            selectedSeat={selectedSeat}
+            onSeatChange={setSelectedSeat}
+            primaryColor={colors.transport.flight.primary}
+          />
+        </View>
 
         {/* Baggage Selection */}
-        <BaggageSelector
-          baggage={baggage}
-          onChange={setBaggage}
-        />
+        <View style={styles.section}>
+          <BaggageSelection
+            selectedBaggage={selectedBaggageTypes}
+            onBaggageChange={setSelectedBaggageTypes}
+            primaryColor={colors.transport.flight.primary}
+          />
+        </View>
 
         {/* Class Selection */}
-        <ClassSelector
-          selectedClass={selectedClass}
-          onClassChange={setSelectedClass}
-        />
+        <View style={styles.section}>
+          <ClassSelector
+            selectedClass={selectedClass}
+            onClassChange={setSelectedClass}
+          />
+        </View>
 
-        {/* Payment Method Selection */}
+        {/* Payment Type Selection */}
+        <View style={styles.section}>
+          <PaymentTypeSelector
+            selectedType={paymentType}
+            onTypeChange={setPaymentType}
+            primaryColor={colors.transport.flight.primary}
+          />
+        </View>
+
+        {/* Card Input Fields */}
+        <View style={styles.section}>
+          <CardInputFields
+            data={cardData}
+            onChange={setCardData}
+            primaryColor={colors.transport.flight.primary}
+          />
+        </View>
+
+        {/* Payment Method Selection (Saved Cards) */}
         <View style={styles.paymentSection}>
-          <Text style={styles.sectionTitle}>Mode de paiement</Text>
+          <Text style={styles.sectionTitle}>Carte enregistrée</Text>
           <TouchableOpacity
             style={[
               styles.paymentOption,
@@ -350,6 +434,9 @@ const styles = StyleSheet.create({
   },
   payButton: {
     marginTop: spacing.base,
+  },
+  section: {
+    marginBottom: spacing.lg,
   },
 });
 

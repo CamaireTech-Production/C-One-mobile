@@ -95,6 +95,8 @@ export const FlightResultsScreen: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<string>(defaultDate);
   const [selectedTripType, setSelectedTripType] = useState<TripType>('non-stop');
   const [currentMonth, setCurrentMonth] = useState<string>(defaultMonth);
+  const [selectedFlightIds, setSelectedFlightIds] = useState<Set<string>>(new Set());
+  const [filters, setFilters] = useState<any>(null);
   
   // Update month when date changes
   useEffect(() => {
@@ -188,6 +190,27 @@ export const FlightResultsScreen: React.FC = () => {
     }
   };
 
+  const handleFlightSelect = (offerId: string) => {
+    const newSelection = new Set(selectedFlightIds);
+    if (newSelection.has(offerId)) {
+      newSelection.delete(offerId);
+    } else {
+      newSelection.add(offerId);
+    }
+    setSelectedFlightIds(newSelection);
+  };
+
+  const handleFilterPress = () => {
+    navigation.navigate('TransportFilters', {
+      transportType: 'flight',
+      currentFilters: filters,
+      onApply: (newFilters: any) => {
+        setFilters(newFilters);
+        // Apply filters to flights (this would be implemented based on filter logic)
+      },
+    });
+  };
+
   // Build section title with origin and destination
   const sectionTitle = params.origin && params.destination
     ? `${t('transport.flight.search.allFlights', { origin: params.origin, destination: params.destination })}`
@@ -254,9 +277,11 @@ export const FlightResultsScreen: React.FC = () => {
         <View style={styles.resultsSection}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>{sectionTitle}</Text>
-            <TouchableOpacity activeOpacity={0.7}>
-              <Text style={styles.searchText}>{t('transport.flight.search.searchButton')}</Text>
-            </TouchableOpacity>
+            <View style={styles.headerActions}>
+              <TouchableOpacity onPress={handleFilterPress} activeOpacity={0.7} style={styles.filterButton}>
+                <Text style={styles.filterText}>Filtres</Text>
+              </TouchableOpacity>
+            </View>
           </View>
 
           {loading ? (
@@ -273,6 +298,8 @@ export const FlightResultsScreen: React.FC = () => {
                 key={flight.id}
                 offer={flight}
                 onReserve={() => handleFlightPress(flight.id)}
+                onSelect={() => handleFlightSelect(flight.id)}
+                selected={selectedFlightIds.has(flight.id)}
                 style={styles.flightCard}
               />
             ))
@@ -320,6 +347,20 @@ const styles = StyleSheet.create({
     color: colors.text.primary,
   },
   searchText: {
+    ...typography.styles.bodyMedium16,
+    color: colors.primary.normal,
+  },
+  headerActions: {
+    flexDirection: 'row',
+    gap: spacing.base,
+  },
+  filterButton: {
+    paddingHorizontal: spacing.base,
+    paddingVertical: spacing.xs,
+    borderRadius: 8,
+    backgroundColor: colors.background.tertiary,
+  },
+  filterText: {
     ...typography.styles.bodyMedium16,
     color: colors.primary.normal,
   },

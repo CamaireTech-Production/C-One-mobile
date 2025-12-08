@@ -8,7 +8,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { HomeScreen } from '../screens/home/HomeScreen';
 import { DetailScreen } from '../screens/countryDetail';
-import { TransportListScreen, TransportDetailScreen } from '../screens/transport';
+import { TransportListScreen, TransportDetailScreen, DestinationSelectionScreen, TransportFiltersScreen } from '../screens/transport';
 import { HotelListScreen, HotelDetailScreen } from '../screens/hotel';
 import { TourismListScreen, TourismDetailScreen } from '../screens/tourism';
 import { RestaurantListScreen, RestaurantDetailScreen } from '../screens/restaurant';
@@ -38,6 +38,7 @@ import {
   BookingConfirmationScreen,
   PasswordScreen,
 } from '../screens/shared';
+import { PersonalInfoFormScreen } from '../screens/transport/booking/PersonalInfoFormScreen';
 import type { HomeStackParamList } from '../types';
 
 const Stack = createNativeStackNavigator<HomeStackParamList>();
@@ -55,6 +56,8 @@ export const HomeStackNavigator: React.FC = () => {
       {/* Transport routes */}
       <Stack.Screen name="TransportList" component={TransportListScreen} />
       <Stack.Screen name="TransportDetail" component={TransportDetailScreen} />
+      <Stack.Screen name="DestinationSelection" component={DestinationSelectionScreen} />
+      <Stack.Screen name="TransportFilters" component={TransportFiltersScreen} />
       
       {/* Flight routes */}
       <Stack.Screen name="FlightSearch" component={FlightSearchScreen} />
@@ -74,6 +77,7 @@ export const HomeStackNavigator: React.FC = () => {
       
       {/* Shared routes */}
       <Stack.Screen name="PersonalInformation" component={PersonalInformationScreen} />
+      <Stack.Screen name="PersonalInfoForm" component={PersonalInfoFormScreen} />
       <Stack.Screen name="Payment" component={PaymentScreen} />
       <Stack.Screen name="BookingConfirmation" component={BookingConfirmationScreen} />
       <Stack.Screen name="Password" component={PasswordScreen} />

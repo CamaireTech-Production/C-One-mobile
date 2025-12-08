@@ -14,7 +14,7 @@ import {
   ViewStyle,
 } from 'react-native';
 import { colors, typography, spacing } from '../../../theme';
-import { Button } from '../../common/forms/Button';
+import { Icon } from '../../common/icons/Icon';
 import type { RideHailingService } from '../../../types/transport';
 
 interface RideHailingCardProps {
@@ -54,22 +54,39 @@ export const RideHailingCard: React.FC<RideHailingCardProps> = ({
     <View style={[styles.container, { backgroundColor }, style]}>
       {/* Service Logo/Name */}
       <View style={styles.header}>
-        <Text style={styles.serviceName}>{service.name}</Text>
+        <View style={styles.logoContainer}>
+          {service.logoUrl ? (
+            <View style={styles.logoPlaceholder}>
+              <Text style={styles.logoText}>{service.name.charAt(0)}</Text>
+            </View>
+          ) : (
+            <View style={styles.logoPlaceholder}>
+              <Text style={styles.logoText}>{service.name.charAt(0)}</Text>
+            </View>
+          )}
+        </View>
+        <View style={styles.serviceInfo}>
+          <Text style={styles.serviceName}>{service.name}</Text>
+          <Text style={styles.coverage}>{service.coverage}</Text>
+        </View>
       </View>
 
-      {/* Coverage Text */}
-      <Text style={styles.coverage}>{service.coverage}</Text>
-
       {/* Download Button */}
-      <Button
-        title={t('transport.common.download')}
-        onPress={onDownload || (() => {})}
-        variant="primary"
-        size="medium"
-        fullWidth
+      <TouchableOpacity
         style={styles.downloadButton}
-        textStyle={styles.downloadButtonText}
-      />
+        onPress={onDownload || (() => {})}
+        activeOpacity={0.8}
+      >
+        <Text style={styles.downloadButtonText}>
+          {t('transport.common.download') || 'Télécharger'}
+        </Text>
+        <Icon
+          name="download-outline"
+          size={20}
+          color={colors.text.inverse}
+          family="ionicons"
+        />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -79,27 +96,63 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: spacing.lg,
     marginBottom: spacing.base,
-    minHeight: 150,
+    minHeight: 120,
     justifyContent: 'space-between',
+    shadowColor: colors.shadow.card.shadowColor,
+    shadowOffset: colors.shadow.card.shadowOffset,
+    shadowOpacity: colors.shadow.card.shadowOpacity,
+    shadowRadius: colors.shadow.card.shadowRadius,
+    elevation: colors.shadow.card.elevation,
   },
   header: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: spacing.md,
+  },
+  logoContainer: {
+    marginRight: spacing.md,
+  },
+  logoPlaceholder: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  logoText: {
+    ...typography.styles.h3,
+    color: colors.text.inverse,
+    fontWeight: 'bold',
+  },
+  serviceInfo: {
+    flex: 1,
   },
   serviceName: {
     ...typography.styles.h4,
     color: colors.text.inverse,
+    marginBottom: spacing.xs,
   },
   coverage: {
-    ...typography.styles.bodyRegular16,
+    ...typography.styles.bodyRegular14,
     color: colors.text.inverse,
     opacity: 0.9,
-    marginBottom: spacing.base,
   },
   downloadButton: {
-    backgroundColor: colors.transport.flight.primary,
+    backgroundColor: 'rgba(255, 255, 255, 0.25)',
+    borderRadius: 8,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.base,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   downloadButtonText: {
+    ...typography.styles.button,
     color: colors.text.inverse,
+    marginRight: spacing.sm,
   },
 });
 

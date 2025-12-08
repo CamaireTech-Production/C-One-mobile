@@ -14,6 +14,8 @@ interface TrainCardProps {
   onPress?: () => void;
   onReserve?: () => void;
   style?: ViewStyle;
+  selected?: boolean;
+  onSelect?: () => void;
 }
 
 export const TrainCard: React.FC<TrainCardProps> = (props) => {

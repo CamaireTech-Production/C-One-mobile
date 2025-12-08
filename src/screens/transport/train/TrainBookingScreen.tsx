@@ -26,7 +26,19 @@ import {
   PassengerSelector,
   BaggageSelector,
   ClassSelector,
+  SeatSelection,
+  BaggageSelection,
+  PaymentTypeSelector,
+  CardInputFields,
+  type SeatType,
+  type BaggageType,
+  type PaymentType,
+  type CardInputFieldsData,
 } from '../../../components/transport';
+import {
+  PersonalInfoForm,
+  type PersonalInfoFormData,
+} from '../../../components/transport/forms/PersonalInfoForm';
 import { colors, spacing, typography } from '../../../theme';
 import { useHideTabBar } from '../../../hooks';
 import { Icon } from '../../../components/common/icons/Icon';
@@ -61,13 +73,31 @@ export const TrainBookingScreen: React.FC = () => {
   // Form state
   const [passengers, setPassengers] = useState<PassengerCount>({
     adults: 1,
-    children: 1,
+    children: 0,
     babies: 0,
   });
   const [baggage, setBaggage] = useState<BaggageItem[]>([
     { id: 'baggage-1', weight: 1 },
   ]);
   const [selectedClass, setSelectedClass] = useState<TransportClass>('standard');
+  const [selectedSeat, setSelectedSeat] = useState<SeatType | null>(null);
+  const [selectedBaggageTypes, setSelectedBaggageTypes] = useState<BaggageType[]>([]);
+  const [paymentType, setPaymentType] = useState<PaymentType>('standard');
+  const [cardData, setCardData] = useState<CardInputFieldsData>({
+    cardNumber: '',
+    expiryDate: '',
+    cvv: '',
+  });
+  const [personalInfo, setPersonalInfo] = useState<PersonalInfoFormData>({
+    nom: '',
+    prenom: '',
+    dateNaissance: '',
+    typeDocument: 'passport',
+    numeroDocument: '',
+    dateExpiration: '',
+    paysEmission: '',
+    nationalite: '',
+  });
   const [paymentMethod, setPaymentMethod] = useState<string>('Mastercard **** 1234');
 
   const handleBack = () => {
@@ -75,6 +105,12 @@ export const TrainBookingScreen: React.FC = () => {
   };
 
   const handlePay = () => {
+    // Validate form before proceeding
+    if (!personalInfo.nom || !personalInfo.prenom || !cardData.cardNumber || !cardData.cvv) {
+      // TODO: Show validation error
+      return;
+    }
+
     // Navigate to payment screen
     navigation.navigate('Payment', {
       bookingDetails: {
@@ -90,6 +126,11 @@ export const TrainBookingScreen: React.FC = () => {
         passengers,
         baggage,
         class: selectedClass,
+        seat: selectedSeat,
+        baggageTypes: selectedBaggageTypes,
+        paymentType,
+        cardData,
+        personalInfo,
         basePrice: offer.price,
         baggagePrice: baggage.length * 20,
         classPrice: selectedClass === 'vip' ? 100 : 0,
@@ -173,31 +214,72 @@ export const TrainBookingScreen: React.FC = () => {
           </View>
         </View>
 
-        {/* Passenger Information */}
-        <View style={styles.passengerInfoSection}>
-          <Text style={styles.sectionTitle}>Nom et prénom</Text>
-          <Text style={styles.passengerName}>Dany Mckery</Text>
-
-          <Text style={styles.sectionTitle}>Type de document (Passeport, CNI)</Text>
-          <Text style={styles.documentType}>Passeport</Text>
-
-          <Text style={styles.sectionTitle}>Id du document</Text>
-          <Text style={styles.documentId}>AB12005</Text>
-
-          <Text style={styles.sectionTitle}>Date d'expiration</Text>
-          <Text style={styles.expirationDate}>10-11-2002</Text>
+        {/* Personal Information Form */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Informations personnelles</Text>
+          <PersonalInfoForm
+            data={personalInfo}
+            onChange={setPersonalInfo}
+            primaryColor={colors.transport.train.primary}
+          />
         </View>
 
         {/* Travelers Count */}
-        <PassengerSelector
-          passengers={passengers}
-          onChange={setPassengers}
-          title="Qui viens avec vous?"
-        />
+        <View style={styles.section}>
+          <PassengerSelector
+            passengers={passengers}
+            onChange={setPassengers}
+            title="Qui viens avec vous?"
+          />
+        </View>
 
-        {/* Payment Method Selection */}
+        {/* Seat Selection */}
+        <View style={styles.section}>
+          <SeatSelection
+            selectedSeat={selectedSeat}
+            onSeatChange={setSelectedSeat}
+            primaryColor={colors.transport.train.primary}
+          />
+        </View>
+
+        {/* Baggage Selection */}
+        <View style={styles.section}>
+          <BaggageSelection
+            selectedBaggage={selectedBaggageTypes}
+            onBaggageChange={setSelectedBaggageTypes}
+            primaryColor={colors.transport.train.primary}
+          />
+        </View>
+
+        {/* Class Selection */}
+        <View style={styles.section}>
+          <ClassSelector
+            selectedClass={selectedClass}
+            onClassChange={setSelectedClass}
+          />
+        </View>
+
+        {/* Payment Type Selection */}
+        <View style={styles.section}>
+          <PaymentTypeSelector
+            selectedType={paymentType}
+            onTypeChange={setPaymentType}
+            primaryColor={colors.transport.train.primary}
+          />
+        </View>
+
+        {/* Card Input Fields */}
+        <View style={styles.section}>
+          <CardInputFields
+            data={cardData}
+            onChange={setCardData}
+            primaryColor={colors.transport.train.primary}
+          />
+        </View>
+
+        {/* Payment Method Selection (Saved Cards) */}
         <View style={styles.paymentSection}>
-          <Text style={styles.sectionTitle}>Mode de paiement</Text>
+          <Text style={styles.sectionTitle}>Carte enregistrée</Text>
           <TouchableOpacity
             style={[
               styles.paymentOption,
@@ -372,6 +454,9 @@ const styles = StyleSheet.create({
   },
   validateButton: {
     marginTop: spacing.base,
+  },
+  section: {
+    marginBottom: spacing.lg,
   },
 });
 

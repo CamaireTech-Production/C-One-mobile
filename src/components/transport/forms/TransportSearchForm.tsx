@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, ViewStyle, Modal, TouchableOpacity, Platform } from 'react-native';
+import { View, Text, TextInput, StyleSheet, ViewStyle, Modal, TouchableOpacity, Platform, Switch } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { colors, spacing, shadows, typography } from '../../../theme';
 import { TransportInputField } from './TransportInputField';
 import { Button } from '../../common/forms/Button';
+import type { PassengerCount } from '../../../types/transport';
 
 export type TransportType = 'flight' | 'train' | 'car';
 
@@ -15,14 +16,20 @@ export interface TransportSearchFormProps {
   origin: string;
   destination: string;
   date: string;
-  passengers: number;
+  passengers: PassengerCount | number; // Support both old number format and new PassengerCount format
   
   // Form handlers
   onOriginChange: (text: string) => void;
   onDestinationChange: (text: string) => void;
   onDateChange: (date: string) => void;
-  onPassengersChange: (count: number) => void;
+  onPassengersChange: (passengers: PassengerCount | number) => void;
   onSearch: () => void;
+  onDestinationPress?: () => void; // Callback when destination field is pressed
+  onDatePress?: () => void; // Callback when date field is pressed (overrides default modal)
+  
+  // One-way trip toggle
+  isOneWay?: boolean;
+  onOneWayChange?: (isOneWay: boolean) => void;
   
   // Customization - Icons
   originIconName?: string;
@@ -60,6 +67,8 @@ export interface TransportSearchFormProps {
   showPassengers?: boolean; // For car, might not need passengers
   passengersMin?: number;
   passengersMax?: number;
+  showOneWayToggle?: boolean; // Show one-way trip toggle (default: true for flight/train)
+  usePassengerBreakdown?: boolean; // Use PassengerCount format instead of simple number
 }
 
 export const TransportSearchForm: React.FC<TransportSearchFormProps> = ({
@@ -73,6 +82,8 @@ export const TransportSearchForm: React.FC<TransportSearchFormProps> = ({
   onDateChange,
   onPassengersChange,
   onSearch,
+  onDestinationPress,
+  onDatePress: customDatePress,
   originIconName,
   originIconFamily = 'ionicons',
   originIconColor,
@@ -96,8 +107,49 @@ export const TransportSearchForm: React.FC<TransportSearchFormProps> = ({
   showPassengers = true,
   passengersMin = 1,
   passengersMax = 10,
+  isOneWay = true,
+  onOneWayChange,
+  showOneWayToggle,
+  usePassengerBreakdown = false,
 }) => {
   const { t } = useTranslation();
+  
+  // Determine if one-way toggle should be shown (default: true for flight/train, false for car)
+  const shouldShowOneWayToggle = showOneWayToggle !== undefined ? showOneWayToggle : transportType !== 'car';
+  
+  // Convert passengers to PassengerCount if needed
+  const getPassengerCount = (): PassengerCount => {
+    if (usePassengerBreakdown && typeof passengers === 'object') {
+      return passengers as PassengerCount;
+    }
+    // Default: 1 adult, 0 children, 0 babies
+    return {
+      adults: typeof passengers === 'number' ? passengers : 1,
+      children: 0,
+      babies: 0,
+    };
+  };
+  
+  const passengerCount = getPassengerCount();
+  
+  // Format passenger display text
+  const formatPassengerDisplay = (): string => {
+    if (usePassengerBreakdown) {
+      const parts: string[] = [];
+      if (passengerCount.adults > 0) {
+        parts.push(`${passengerCount.adults} ${passengerCount.adults === 1 ? 'adulte' : 'adultes'}`);
+      }
+      if (passengerCount.children > 0) {
+        parts.push(`${passengerCount.children} ${passengerCount.children === 1 ? 'enfant' : 'enfants'}`);
+      }
+      if (passengerCount.babies > 0) {
+        parts.push(`${passengerCount.babies} ${passengerCount.babies === 1 ? 'bébé' : 'bébés'}`);
+      }
+      return parts.length > 0 ? parts.join(', ') : '1 adulte, 0 enfant';
+    }
+    // Fallback to simple number display
+    return typeof passengers === 'number' ? `${passengers} ${passengers === 1 ? 'passager' : 'passagers'}` : '1 passager';
+  };
   
   // Simple linear color assignment
   let defaultPrimaryColor: string = colors.primary.normal;
@@ -176,7 +228,17 @@ export const TransportSearchForm: React.FC<TransportSearchFormProps> = ({
   };
   
   const handleDatePress = () => {
-    setShowDatePicker(true);
+    if (customDatePress) {
+      customDatePress();
+    } else {
+      setShowDatePicker(true);
+    }
+  };
+  
+  const handleDestinationPress = () => {
+    if (onDestinationPress) {
+      onDestinationPress();
+    }
   };
   
   const handleDateConfirm = (newDate: string) => {
@@ -207,12 +269,14 @@ export const TransportSearchForm: React.FC<TransportSearchFormProps> = ({
           label={destinationLabel || t(getTranslationKey('destinationLabel'))}
           value={destination}
           onChangeText={onDestinationChange}
+          onPress={onDestinationPress ? handleDestinationPress : undefined}
           placeholder={destinationPlaceholder || t(getTranslationKey('destinationPlaceholder'))}
           containerStyle={styles.inputField}
           iconName={defaultDestinationIcon}
           iconFamily={destinationIconFamily}
           iconColor={iconColor}
           backgroundColor={inputBackgroundColor}
+          editable={!onDestinationPress} // Make non-editable if onDestinationPress is provided
         />
         
         {/* Date Input */}
@@ -233,16 +297,41 @@ export const TransportSearchForm: React.FC<TransportSearchFormProps> = ({
         {/* Passengers Counter */}
         {showPassengers && (
           <TransportInputField
-            type="counter"
+            type="text"
             label={passengersLabel || t(getTranslationKey('passengersLabel'))}
-            value={passengers}
-            onChange={onPassengersChange}
-            min={passengersMin}
-            max={passengersMax}
+            value={formatPassengerDisplay()}
+            onPress={() => {
+              // TODO: Open passenger selector modal/screen
+              // For now, just increment adults if simple number format
+              if (!usePassengerBreakdown && typeof passengers === 'number') {
+                onPassengersChange(Math.min(passengers + 1, passengersMax));
+              } else if (usePassengerBreakdown) {
+                // Open passenger breakdown selector
+                // This will be handled by parent component or modal
+              }
+            }}
+            placeholder={formatPassengerDisplay()}
             containerStyle={styles.inputField}
+            iconName="people-outline"
+            iconFamily="ionicons"
+            iconColor={iconColor}
             backgroundColor={inputBackgroundColor}
-            formatValue={(val) => String(val).padStart(2, '0')}
+            editable={false}
           />
+        )}
+        
+        {/* One-Way Trip Toggle */}
+        {shouldShowOneWayToggle && (
+          <View style={styles.toggleContainer}>
+            <Text style={styles.toggleLabel}>Un aller simple</Text>
+            <Switch
+              value={isOneWay}
+              onValueChange={onOneWayChange || (() => {})}
+              trackColor={{ false: colors.border.normal, true: iconColor }}
+              thumbColor={colors.background.primary}
+              ios_backgroundColor={colors.border.normal}
+            />
+          </View>
         )}
         
         {/* Search Button */}
@@ -401,6 +490,17 @@ const styles = StyleSheet.create({
   modalButtonTextConfirm: {
     ...typography.styles.button,
     color: colors.text.inverse,
+  },
+  toggleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: spacing.md,
+    paddingVertical: spacing.sm,
+  },
+  toggleLabel: {
+    ...typography.styles.bodyRegular16,
+    color: colors.text.primary,
   },
 });
 

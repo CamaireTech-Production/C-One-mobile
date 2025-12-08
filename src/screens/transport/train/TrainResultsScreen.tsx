@@ -96,6 +96,8 @@ export const TrainResultsScreen: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<string>(defaultDate);
   const [selectedTripType, setSelectedTripType] = useState<TripType>('non-stop');
   const [currentMonth, setCurrentMonth] = useState<string>(defaultMonth);
+  const [selectedTrainIds, setSelectedTrainIds] = useState<Set<string>>(new Set());
+  const [filters, setFilters] = useState<any>(null);
   
   // Update month when date changes
   useEffect(() => {
@@ -188,6 +190,27 @@ export const TrainResultsScreen: React.FC = () => {
     }
   };
 
+  const handleTrainSelect = (offerId: string) => {
+    const newSelection = new Set(selectedTrainIds);
+    if (newSelection.has(offerId)) {
+      newSelection.delete(offerId);
+    } else {
+      newSelection.add(offerId);
+    }
+    setSelectedTrainIds(newSelection);
+  };
+
+  const handleFilterPress = () => {
+    navigation.navigate('TransportFilters', {
+      transportType: 'train',
+      currentFilters: filters,
+      onApply: (newFilters: any) => {
+        setFilters(newFilters);
+        // Apply filters to trains (this would be implemented based on filter logic)
+      },
+    });
+  };
+
   // Build section title with origin and destination
   const sectionTitle = params.origin && params.destination
     ? `${t('transport.train.search.allTrains', { origin: params.origin, destination: params.destination })}`
@@ -254,9 +277,11 @@ export const TrainResultsScreen: React.FC = () => {
         <View style={styles.resultsSection}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>{sectionTitle}</Text>
-            <TouchableOpacity activeOpacity={0.7}>
-              <Text style={styles.searchText}>{t('transport.train.search.searchButton')}</Text>
-            </TouchableOpacity>
+            <View style={styles.headerActions}>
+              <TouchableOpacity onPress={handleFilterPress} activeOpacity={0.7} style={styles.filterButton}>
+                <Text style={styles.filterText}>Filtres</Text>
+              </TouchableOpacity>
+            </View>
           </View>
 
           {loading ? (
@@ -273,6 +298,8 @@ export const TrainResultsScreen: React.FC = () => {
                 key={train.id}
                 offer={train}
                 onReserve={() => handleTrainPress(train.id)}
+                onSelect={() => handleTrainSelect(train.id)}
+                selected={selectedTrainIds.has(train.id)}
                 style={styles.trainCard}
               />
             ))
@@ -320,6 +347,20 @@ const styles = StyleSheet.create({
     color: colors.text.primary,
   },
   searchText: {
+    ...typography.styles.bodyMedium16,
+    color: colors.transport.train.primary,
+  },
+  headerActions: {
+    flexDirection: 'row',
+    gap: spacing.base,
+  },
+  filterButton: {
+    paddingHorizontal: spacing.base,
+    paddingVertical: spacing.xs,
+    borderRadius: 8,
+    backgroundColor: colors.background.tertiary,
+  },
+  filterText: {
     ...typography.styles.bodyMedium16,
     color: colors.transport.train.primary,
   },

@@ -23,6 +23,8 @@ interface TransportCardProps {
   onPress?: () => void;
   onReserve?: () => void;
   style?: ViewStyle;
+  selected?: boolean; // Selection state
+  onSelect?: () => void; // Callback when card is selected
 }
 
 export const TransportCard: React.FC<TransportCardProps> = ({
@@ -30,6 +32,8 @@ export const TransportCard: React.FC<TransportCardProps> = ({
   onPress,
   onReserve,
   style,
+  selected = false,
+  onSelect,
 }) => {
   const { t } = useTranslation();
   
@@ -57,9 +61,25 @@ export const TransportCard: React.FC<TransportCardProps> = ({
   const destinationIconFamily = isFlight ? 'materialcommunity' : 'ionicons';
   const connectorIconFamily = isFlight ? 'ionicons' : 'ionicons';
 
+  const handleReservePress = () => {
+    if (onSelect) {
+      onSelect();
+    }
+    if (onReserve) {
+      onReserve();
+    } else if (onPress) {
+      onPress();
+    }
+  };
+
   return (
     <TouchableOpacity
-      style={[styles.container, { backgroundColor: theme.card, borderColor: theme.border }, style]}
+      style={[
+        styles.container,
+        { backgroundColor: selected ? '#d1fae5' : theme.card, borderColor: selected ? '#10b981' : theme.border },
+        selected ? styles.containerSelected : undefined,
+        style,
+      ]}
       onPress={onPress}
       activeOpacity={0.85}
     >
@@ -185,13 +205,14 @@ export const TransportCard: React.FC<TransportCardProps> = ({
 
       {/* Row 4: Reserve Button */}
       <Button
-        title={t('transport.common.reserve')}
-        onPress={onReserve || onPress || (() => {})}
+        title={selected ? '✓ ' + t('transport.common.reserve') : t('transport.common.reserve')}
+        onPress={handleReservePress}
         variant="primary"
         size="medium"
         fullWidth
-        style={[styles.reserveButton, { backgroundColor: isFlight ? theme.buttonGreen : theme.success }]}
-        backgroundColor={isFlight ? theme.buttonGreen : theme.success}
+        backgroundColor={selected
+          ? '#10b981'
+          : (isFlight ? '#10b981' : theme.success || '#10b981')}
         textColor={colors.text.inverse}
       />
     </TouchableOpacity>
@@ -351,5 +372,8 @@ const styles = StyleSheet.create({
   reserveButton: {
     // backgroundColor will be set dynamically
   },
+  containerSelected: {
+    borderWidth: 2,
+  } as ViewStyle,
 });
 
