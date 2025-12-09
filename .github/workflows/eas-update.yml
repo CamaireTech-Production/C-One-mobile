@@ -12,5 +12,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 18
-      - run: npm install
-      - run: npx eas update --branch prod --message "CI update from prod"
+      - run: npm install --legacy-peer-deps
+      - name: Publish update to production channel
+        run: npx eas-cli update --branch production --message "CI update from prod"
+      - name: Publish update to development channel
+        run: npx eas-cli update --branch development --message "CI update from prod"

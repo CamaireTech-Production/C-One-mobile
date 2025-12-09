@@ -164,9 +164,58 @@ Si vous voulez voir les logs de l'app installée :
 
 ---
 
+## 🔗 Expo Go Link pour Testeurs (Permanent)
+
+### Pour les testeurs qui utilisent Expo Go
+
+Si vous voulez que vos testeurs utilisent Expo Go avec un lien permanent qui se met à jour automatiquement :
+
+#### 1. **Première Publication (Une seule fois)**
+
+Après avoir fait un build development, publiez sur le channel development :
+
+```bash
+eas update --branch development --message "Initial development version"
+```
+
+#### 2. **Obtenir le Lien Expo Go Permanent**
+
+1. Allez sur votre dashboard Expo : https://expo.dev
+2. Naviguez vers votre projet : **C-One-mobile**
+3. Cliquez sur **"Updates"** dans le menu de gauche
+4. Sélectionnez le channel **"development"**
+5. Vous verrez un **QR Code** et un **lien permanent**
+6. Partagez ce lien/QR code avec vos testeurs **UNE SEULE FOIS**
+
+#### 3. **Comment ça fonctionne pour les testeurs**
+
+- **Première fois :** Ils scannent le QR code ou ouvrent le lien dans Expo Go
+- Le projet est sauvegardé dans leur Expo Go
+- **Chaque fois qu'ils ouvrent le projet :** Expo Go vérifie automatiquement le channel `development` et charge la dernière version
+- **Pas besoin de scanner un nouveau QR code !**
+
+#### 4. **Mises à jour automatiques**
+
+Quand vous poussez du code sur la branche `prod` :
+- Le workflow publie automatiquement sur le channel `development`
+- Les testeurs voient la dernière version quand ils ouvrent le projet dans Expo Go
+- **Aucune action requise de leur part !**
+
+#### 5. **Format du Lien**
+
+Le lien permanent ressemble à :
+```
+exp://expo.dev/@theaarc/C-One-mobile?release-channel=development
+```
+
+Ou vous pouvez utiliser le QR code depuis le dashboard Expo.
+
+---
+
 ## 📚 Ressources
 
 - [Documentation EAS Build](https://docs.expo.dev/build/introduction/)
 - [Dashboard Expo](https://expo.dev)
 - [EAS CLI Reference](https://docs.expo.dev/eas/)
+- [EAS Update Documentation](https://docs.expo.dev/eas-update/introduction/)
 
