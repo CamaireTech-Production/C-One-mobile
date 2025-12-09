@@ -99,12 +99,37 @@ export const OtpInput: React.FC<OtpInputProps> = ({
       filteredText = text.replace(/[^0-9]/g, '');
     }
 
-    // Only allow single character
+    // Handle paste: if multiple characters, distribute across boxes
     if (filteredText.length > 1) {
-      filteredText = filteredText.slice(-1);
+      // Get current value as array
+      const newValue = value.split('');
+      
+      // Distribute pasted characters starting from current index
+      for (let i = 0; i < filteredText.length && (index + i) < length; i++) {
+        newValue[index + i] = filteredText[i];
+      }
+      
+      const updatedValue = newValue.join('').slice(0, length);
+      onChangeText(updatedValue);
+
+      // Focus the next empty box or the last box if all are filled
+      const nextEmptyIndex = Math.min(index + filteredText.length, length - 1);
+      if (nextEmptyIndex < length) {
+        setTimeout(() => {
+          inputRefs.current[nextEmptyIndex]?.focus();
+          setFocusedIndex(nextEmptyIndex);
+        }, 0);
+      } else {
+        // All boxes filled, blur
+        setTimeout(() => {
+          inputRefs.current[length - 1]?.blur();
+          setFocusedIndex(null);
+        }, 0);
+      }
+      return;
     }
 
-    // Update value
+    // Single character input (normal typing)
     const newValue = value.split('');
     newValue[index] = filteredText;
     const updatedValue = newValue.join('').slice(0, length);

@@ -15,3 +15,6 @@ export { GeolocationConfirmationModal } from './GeolocationConfirmationModal';
 export { GeolocationAlertModal } from './GeolocationAlertModal';
 export type { GeolocationAlertType } from './GeolocationAlertModal';
 
+export { ComingSoon } from './ComingSoon';
+export type { ComingSoonProps } from './ComingSoon';
+

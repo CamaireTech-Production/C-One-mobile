@@ -9,3 +9,4 @@ export * from './animations';
 export * from './feedback';
 export * from './icons';
 export * from './tabs';
+export * from './menu';

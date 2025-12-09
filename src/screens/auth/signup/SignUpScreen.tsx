@@ -20,6 +20,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Input, Button, AnimatedView, SocialButton, Icon, ScreenBackground } from '../../../components/common';
 import { colors, typography, spacing } from '../../../theme';
 import { VALIDATION } from '../../../utils/constants';
+import { validatePasswordForSignup } from '../../../utils/passwordValidation';
 import { RootStackParamList } from '../../../types';
 import { useAuth } from '../../../services/auth/authContext';
 import { extractApiError } from '../../../services/api/apiClient';
@@ -84,10 +85,11 @@ export const SignUpScreen: React.FC<SignUpScreenProps> = ({
       newErrors.email = t('validation.email.invalid');
     }
 
-    if (!password) {
-      newErrors.password = t('validation.password.required');
-    } else if (password.length < VALIDATION.passwordMinLength) {
-      newErrors.password = t('validation.newPassword.minLength');
+    // Use comprehensive password validation for signup
+    const passwordValidation = validatePasswordForSignup(password);
+    if (!passwordValidation.isValid) {
+      // Show the first error, or combine all errors if needed
+      newErrors.password = passwordValidation.error || passwordValidation.errors?.[0] || t('validation.password.required');
     }
 
     setErrors(newErrors);

@@ -13,7 +13,11 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.theaarc.COneMobileIOS",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -37,12 +41,6 @@
     "owner": "theaarc",
     "plugins": [
       "expo-localization"
-    ],
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
-    "updates": {
-      "url": "https://u.expo.dev/66251e34-8fab-41dc-a33c-ea2e10ab62f7"
-    }
+    ]
   }
 }

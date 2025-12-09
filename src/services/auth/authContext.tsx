@@ -121,10 +121,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       await authService.logout();
       // Tokens are automatically cleared by authService
-      setUser(null);
-      // Don't reset onboarding here - it will be reset on next app start
-      // This allows immediate redirect to Login without showing onboarding
+    } catch (error) {
+      // Even if API call fails, tokens are already cleared by authService
+      // We still want to log out the user locally
     } finally {
+      // Always clear user state to trigger navigation, even if API failed
+      setUser(null);
       setIsLoading(false);
     }
   }, []);
