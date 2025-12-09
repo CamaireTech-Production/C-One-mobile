@@ -163,7 +163,7 @@ export const FlightSearchScreen: React.FC = () => {
   return (
     <ScreenBackground backgroundColor={colors.background.primary}>
       <DetailHeader
-        title={t('transport.flight.reservation') || 'Réservation vols'}
+        title={t('transport.flight.reservation')}
         onBack={handleBack}
         rightIconName="airplane"
         rightIconFamily="ionicons"
@@ -177,14 +177,14 @@ export const FlightSearchScreen: React.FC = () => {
       >
         {/* MA POSITION */}
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>MA POSITION</Text>
+          <Text style={styles.label}>{t('transport.flight.search.myPositionLabel')}</Text>
           <TransportInputField
             type="text"
             label=""
             value={origin}
             onChangeText={setOrigin}
             onPress={handleOriginPress}
-            placeholder="Quebec QBC"
+            placeholder={t('transport.flight.search.positionPlaceholder')}
             containerStyle={styles.inputField}
             iconName="airplane-takeoff"
             iconFamily="materialcommunity"
@@ -196,7 +196,7 @@ export const FlightSearchScreen: React.FC = () => {
 
         {/* À (Destination) with Swap Icon */}
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>À</Text>
+          <Text style={styles.label}>{t('transport.flight.search.toLabel')}</Text>
           <View style={styles.destinationRow}>
             <View style={styles.destinationInputWrapper}>
               <TransportInputField
@@ -205,7 +205,7 @@ export const FlightSearchScreen: React.FC = () => {
                 value={destination}
                 onChangeText={setDestination}
                 onPress={handleDestinationPress}
-                placeholder="Ma destination"
+                placeholder={t('transport.flight.search.myDestination')}
                 containerStyle={styles.inputField}
                 iconName="airplane-landing"
                 iconFamily="materialcommunity"
@@ -231,13 +231,13 @@ export const FlightSearchScreen: React.FC = () => {
 
         {/* DATE DE DEPART */}
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>DATE DE DEPART</Text>
+          <Text style={styles.label}>{t('transport.flight.search.departureDateLabel')}</Text>
           <TransportInputField
             type="text"
             label=""
             value={formatDateDisplay(date)}
             onPress={handleDatePress}
-            placeholder="Sélectionner une date"
+            placeholder={t('transport.flight.search.selectDate')}
             containerStyle={styles.inputField}
             iconName="calendar-outline"
             iconFamily="ionicons"
@@ -249,11 +249,11 @@ export const FlightSearchScreen: React.FC = () => {
 
         {/* NOMBRE DE PASSAGERS */}
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>NOMBRE DE PASSAGERS</Text>
+          <Text style={styles.label}>{t('transport.flight.search.passengersCountLabel')}</Text>
           <View style={styles.passengerRow}>
             <View style={styles.passengerInputWrapper}>
               <Text style={styles.passengerPlaceholder}>
-                Sélectionner un nombre
+                {t('transport.flight.search.selectNumber')}
               </Text>
             </View>
             <View style={styles.passengerControls}>
@@ -290,7 +290,7 @@ export const FlightSearchScreen: React.FC = () => {
 
         {/* Rechercher Button */}
         <Button
-          title={t('transport.common.search') || 'Rechercher'}
+          title={t('transport.common.search')}
           onPress={handleSearch}
           variant="primary"
           size="large"
