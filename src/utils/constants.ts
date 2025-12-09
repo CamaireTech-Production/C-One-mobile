@@ -15,6 +15,14 @@ export const ANIMATION_DURATION = {
 // Input Validation
 export const VALIDATION = {
   email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-  passwordMinLength: 8,
+  password: {
+    minLength: 8,
+    maxLength: 128,
+    uppercase: /[A-Z]/,
+    lowercase: /[a-z]/,
+    number: /[0-9]/,
+    specialChar: /[!@#$%^&*()_+\-=\[\]{}|;:,.<>?]/,
+  },
+  passwordMinLength: 8, // Keep for backward compatibility
 } as const;
 

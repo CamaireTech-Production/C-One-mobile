@@ -231,9 +231,12 @@
     },
     "password": {
       "required": "Mot de passe requis",
-      "minLength": "Ceci est un mot de passe incorrect",
+      "minLength": "Minimum 8 caractères",
+      "maxLength": "Maximum 128 caractères",
       "uppercase": "Doit contenir au moins une majuscule",
-      "number": "Doit contenir au moins un chiffre"
+      "lowercase": "Doit contenir au moins une minuscule",
+      "number": "Doit contenir au moins un chiffre",
+      "specialChar": "Doit contenir au moins un caractère spécial (!@#$%^&*()_+-=[]{}|;:,.<>?)"
     },
     "fullName": {
       "required": "Nom complet requis (min. 2 caractères)"

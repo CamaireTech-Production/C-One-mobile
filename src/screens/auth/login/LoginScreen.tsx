@@ -18,6 +18,7 @@ import { useTranslation } from 'react-i18next';
 import { Input, Button, AnimatedView, SocialButton, Icon, ScreenBackground } from '../../../components/common';
 import { colors, typography, spacing } from '../../../theme';
 import { VALIDATION } from '../../../utils/constants';
+import { validatePasswordForLogin } from '../../../utils/passwordValidation';
 import { useAuth } from '../../../services/auth/authContext';
 import { extractApiError } from '../../../services/api/apiClient';
 
@@ -65,10 +66,10 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
       newErrors.email = t('validation.email.invalid');
     }
 
-    if (!password) {
-      newErrors.password = t('validation.password.required');
-    } else if (password.length < VALIDATION.passwordMinLength) {
-      newErrors.password = t('validation.password.minLength');
+    // Use minimal password validation for login (don't reveal requirements)
+    const passwordValidation = validatePasswordForLogin(password);
+    if (!passwordValidation.isValid) {
+      newErrors.password = passwordValidation.error || t('validation.password.required');
     }
 
     setErrors(newErrors);
