@@ -77,6 +77,7 @@ export const colors = {
     secondary: '#f9fafb',
     tertiary: '#f5f7f9',
     searhbarbg: '#F7F7FA',
+    menuCard: '#F7F7FA',
   },
 
   // Text Colors
