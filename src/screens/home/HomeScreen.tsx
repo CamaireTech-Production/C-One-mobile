@@ -14,6 +14,7 @@ import {
   Dimensions,
   AppState,
   AppStateStatus,
+  Animated as RNAnimated,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
@@ -64,6 +65,11 @@ export const HomeScreen: React.FC = () => {
   const [filteredCities, setFilteredCities] = useState<HomeCity[]>([]);
   const [hasRequestedLocation, setHasRequestedLocation] = useState(false);
   const [hasShownConfirmationForCurrentLocation, setHasShownConfirmationForCurrentLocation] = useState(false);
+
+  // Scroll animation for sticky search bar
+  const scrollY = useRef(new Animated.Value(0)).current;
+  const HEADER_HEIGHT = 120; // Approximate height of header section
+  const SEARCH_STICKY_OFFSET = HEADER_HEIGHT; // When search bar should stick
 
   // Mapping country IDs to ISO country codes (temporary - should be in data.ts)
   const getCountryCode = (countryId: string): string => {
@@ -320,13 +326,31 @@ export const HomeScreen: React.FC = () => {
       subscription.remove();
     };
   }, [countryTab, showAlertModal, recheckPermissions, clearGeolocationError, handleRequestLocation]);
+
+  // Handle scroll event
+  const handleScroll = Animated.event(
+    [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+    { useNativeDriver: false } // We need to use translateY which requires false
+  );
+
+  // Animated value for search bar position
+  const searchBarTranslateY = scrollY.interpolate({
+    inputRange: [0, SEARCH_STICKY_OFFSET],
+    outputRange: [0, -SEARCH_STICKY_OFFSET],
+    extrapolate: 'clamp',
+  });
+
+  // Animated value for search bar opacity (fade in when sticky)
+  const searchBarOpacity = scrollY.interpolate({
+    inputRange: [SEARCH_STICKY_OFFSET - 20, SEARCH_STICKY_OFFSET],
+    outputRange: [0, 1],
+    extrapolate: 'clamp',
+  });
+
   return (
     <ScreenBackground backgroundColor={colors.background.primary}>
-      <ScrollView
-        style={styles.container}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
+      {/* Fixed Header */}
+      <View style={styles.fixedHeader}>
         <View style={styles.header}>
           <View style={styles.headerTextContainer}>
             {loading ? (
@@ -354,6 +378,59 @@ export const HomeScreen: React.FC = () => {
             </TouchableOpacity>
           </View>
         </View>
+      </View>
+
+      {/* Sticky Search Bar (shown when scrolled) */}
+      <Animated.View
+        style={[
+          styles.stickySearchBar,
+          {
+            transform: [{ translateY: searchBarTranslateY }],
+            opacity: searchBarOpacity,
+          },
+        ]}
+        pointerEvents="box-none"
+      >
+        {!loading && (
+          <View style={styles.stickySearchBarContainer}>
+            <SearchBar
+              placeholder={t('home.search.placeholder')}
+              styleConfig={{
+                backgroundColor: colors.background.searhbarbg,
+                borderColor: colors.primary.light,
+                borderWidth: 1,
+                borderRadius: 100,
+                iconColor: colors.grey.normal,
+                iconSize: 20,
+                separatorColor: colors.border.light,
+                placeholderColor: colors.text.tertiary,
+                textColor: colors.text.primary,
+                textStyle: typography.styles.bodyRegular16,
+                dotColor: colors.text.tertiary,
+                dotSize: 4,
+                paddingHorizontal: spacing.base,
+                paddingVertical: spacing.md,
+                gap: spacing.sm,
+                minHeight: 56,
+              }}
+              showSeparator
+              showDot
+              leftIconName="search"
+              leftIconFamily="ionicons"
+            />
+          </View>
+        )}
+      </Animated.View>
+
+      <Animated.ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+      >
+        {/* Spacer for fixed header */}
+        <View style={styles.headerSpacer} />
 
         <View style={styles.sectionSpacing}>
           <Tabs
@@ -482,7 +559,7 @@ export const HomeScreen: React.FC = () => {
           alertType={alertType}
           onClose={handleAlertClose}
         />
-      </ScrollView>
+      </Animated.ScrollView>
     </ScreenBackground>
   );
 };
@@ -662,13 +739,40 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     padding: spacing.lg,
+    paddingTop: 0, // Remove top padding since we have headerSpacer
     paddingBottom: spacing['4xl'],
+  },
+  fixedHeader: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 100,
+    backgroundColor: colors.background.primary,
+    paddingTop: spacing['2xl'],
+    paddingHorizontal: spacing.lg,
+    paddingBottom: spacing.md,
+  },
+  headerSpacer: {
+    height: 120, // Same as HEADER_HEIGHT to prevent content from going under header
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: spacing['2xl'],
+  },
+  stickySearchBar: {
+    position: 'absolute',
+    top: 120, // HEADER_HEIGHT value
+    left: 0,
+    right: 0,
+    zIndex: 99,
+    paddingHorizontal: spacing.lg,
+  },
+  stickySearchBarContainer: {
+    backgroundColor: colors.background.primary,
+    paddingTop: spacing.sm,
+    paddingBottom: spacing.sm,
   },
   headerTextContainer: {
     flex: 1,
