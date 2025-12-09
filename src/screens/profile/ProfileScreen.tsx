@@ -103,57 +103,29 @@ export const ProfileScreen: React.FC = () => {
     }
   };
 
-  // Create dotted pattern overlay component (world map pattern)
-  const DottedPattern = () => {
-    const dots = [];
-    const rows = 12;
-    const cols = 8;
-    const dotSize = 3;
-    const spacingX = 25;
-    const spacingY = 25;
-
-    for (let row = 0; row < rows; row++) {
-      for (let col = 0; col < cols; col++) {
-        // Create a more organic pattern (not perfectly aligned)
-        const offsetX = (row % 2 === 0 ? 0 : spacingX / 2);
-        dots.push(
-          <View
-            key={`${row}-${col}`}
-            style={[
-              styles.dot,
-              {
-                left: col * spacingX + offsetX,
-                top: row * spacingY,
-                width: dotSize,
-                height: dotSize,
-              },
-            ]}
-          />
-        );
-      }
-    }
-
-    return <View style={styles.patternContainer}>{dots}</View>;
-  };
-
   // Get avatar from user - backend returns it as 'avatar' in /me endpoint
   // For now, use default avatar if not available
   const profileImageUri = (user as any)?.avatar || images.defaultAvatar;
   const userName = user?.name || 'Danielle mckeny';
 
+  const HEADER_HEIGHT = 300;
+
   return (
-    <ScreenBackground backgroundColor={colors.background.primary}>
+    <View style={styles.container}>
       <OverlayHeader
         title={t('navigation.tabs.profile', 'Profil')}
         onBack={handleBack}
         backgroundColor={colors.primary.normal}
-        headerHeight={280}
+        backgroundImage={images.mapVector}
+        backgroundImageOpacity={0.8}
+        headerHeight={HEADER_HEIGHT}
         statusBarStyle="light-content"
         leftIconColor={colors.text.inverse}
+        imageBackgroundStyle={{
+          borderBottomLeftRadius: 20,
+          borderBottomRightRadius: 20,
+        }}
       >
-        {/* Dotted Pattern Overlay */}
-        <DottedPattern />
-
         {/* Profile Picture Section */}
         <View style={styles.profileSection}>
           <View style={styles.avatarContainer}>
@@ -192,7 +164,7 @@ export const ProfileScreen: React.FC = () => {
       {/* Menu Items Section */}
       <ScrollView
         style={styles.scrollView}
-        contentContainerStyle={styles.content}
+        contentContainerStyle={[styles.content, { paddingTop: HEADER_HEIGHT }]}
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.menuContainer}>
@@ -248,32 +220,20 @@ export const ProfileScreen: React.FC = () => {
           />
         </View>
       </ScrollView>
-    </ScreenBackground>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.background.primary,
+  },
   scrollView: {
     flex: 1,
   },
   content: {
     padding: spacing.lg,
-    paddingTop: spacing.base,
-  },
-  patternContainer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    opacity: 0.2,
-    overflow: 'hidden',
-  },
-  dot: {
-    position: 'absolute',
-    backgroundColor: colors.text.inverse,
-    borderRadius: 1.5,
-    opacity: 0.4,
   },
   profileSection: {
     alignItems: 'center',
