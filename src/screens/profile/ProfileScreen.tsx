@@ -146,29 +146,10 @@ export const ProfileScreen: React.FC = () => {
       <OverlayHeader
         title={t('navigation.tabs.profile', 'Profil')}
         onBack={handleBack}
-        // Left icon - matching train screen style
-        leftIconName="chevron-back"
-        leftIconFamily="ionicons"
-        leftIconSize={20}
-        leftIconColor={colors.text.primary}
-        leftIconWithContainer={true}
-        // Right icon - matching train screen style
-        rightIconName="smart-toy"
-        rightIconFamily="material"
-        rightIconSize={20}
-        rightIconColor={colors.primary.normal}
-        rightIconWithContainer={true}
-        onRightIconPress={() => navigation.navigate('HomeMain')}
         backgroundColor={colors.primary.normal}
-        backgroundImage={images.mapVector}
-        backgroundImageOpacity={0.8}
         headerHeight={280}
-        navBarPaddingTop={0}
-        imageBackgroundStyle={{
-          borderBottomLeftRadius: 20,
-          borderBottomRightRadius: 20,
-        }}
         statusBarStyle="light-content"
+        leftIconColor={colors.text.inverse}
       >
         {/* Dotted Pattern Overlay */}
         <DottedPattern />

@@ -37,10 +37,6 @@
       "loggedInInfo": "Vous êtes maintenant connecté à C-one"
     }
   },
-  "comingSoon": {
-    "title": "Bientôt disponible",
-    "message": "Cette fonctionnalité sera bientôt disponible. Restez à l'écoute !"
-  },
   "navigation": {
     "tabs": {
       "home": "Accueil",
