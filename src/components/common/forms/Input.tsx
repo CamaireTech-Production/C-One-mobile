@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background.primary,
     borderWidth: 1,
     borderColor: colors.border.normal,
-    borderRadius: 8,
+    borderRadius: 12, // Increased border radius for transport forms
     minHeight: 48,
   },
   input: {

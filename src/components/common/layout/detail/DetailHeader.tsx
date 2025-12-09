@@ -13,8 +13,8 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { colors, spacing, typography } from '../../../theme';
-import { Icon } from '../icons/Icon';
+import { colors, spacing, typography } from '@theme';
+import { Icon } from '@components/common/icons';
 
 interface DetailHeaderProps {
   title: string;
@@ -51,12 +51,14 @@ export const DetailHeader: React.FC<DetailHeaderProps> = ({
           style={styles.backButton}
           activeOpacity={0.7}
         >
-          <Icon
-            name="chevron-back"
-            size={24}
-            color={colors.text.primary}
-            family="ionicons"
-          />
+          <View style={styles.iconContainer}>
+            <Icon
+              name="chevron-back"
+              size={20}
+              color={colors.text.primary}
+              family="ionicons"
+            />
+          </View>
         </TouchableOpacity>
 
         <Text style={styles.title} numberOfLines={1}>
@@ -84,10 +86,10 @@ export const DetailHeader: React.FC<DetailHeaderProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.background.tertiary,
+    // backgroundColor: colors.background.tertiary,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
-    paddingBottom: spacing.md,
+    // paddingBottom: spacing.md,
   },
   content: {
     flexDirection: 'row',
@@ -98,12 +100,17 @@ const styles = StyleSheet.create({
   backButton: {
     marginRight: spacing.base,
   },
+  iconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 100,
+    backgroundColor: colors.background.tertiary, // #F5F7F9
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   title: {
     flex: 1,
-    // Urbanist 18 semi bold
-    fontFamily: 'Urbanist-SemiBold',
-    fontSize: 18,
-    fontWeight: '600',
+    ...typography.styles.h4,
     lineHeight: 21.6, // 18 * 1.2
     color: colors.text.primary,
   },

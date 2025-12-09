@@ -21,7 +21,9 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.theaarc.COnemobile",
+      "usesCleartextTraffic": true
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -29,9 +31,13 @@
     "extra": {
       "eas": {
         "projectId": "66251e34-8fab-41dc-a33c-ea2e10ab62f7"
-      }
+      },
+      "apiUrl": "http://staging.api.c-one.camairetech.com"
     },
     "owner": "theaarc",
+    "plugins": [
+      "expo-localization"
+    ],
     "runtimeVersion": {
       "policy": "appVersion"
     },

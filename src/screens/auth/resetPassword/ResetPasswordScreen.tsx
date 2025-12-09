@@ -14,26 +14,43 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { useRoute, useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { Input, Button, AnimatedView, Icon, ScreenBackground, SuccessModal, LoadingOverlay } from '../../../components/common';
 import { colors, typography, spacing } from '../../../theme';
 import { VALIDATION } from '../../../utils/constants';
+import { RootStackParamList } from '../../../types';
+import { authService } from '../../../services';
+import { extractApiError } from '../../../services/api/apiClient';
+
+type RouteProp = {
+  params: {
+    email: string;
+    otp: string;
+  };
+};
+
+type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'ResetPassword'>;
 
 interface ResetPasswordScreenProps {
-  onComplete: () => void;
   onBack: () => void;
 }
 
 export const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
-  onComplete,
   onBack,
 }) => {
   const { t } = useTranslation();
+  const route = useRoute<RouteProp>();
+  const navigation = useNavigation<NavigationProp>();
+  const { email, otp } = route.params || { email: '', otp: '' };
+  
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errors, setErrors] = useState<{
     newPassword?: string;
     confirmPassword?: string;
+    general?: string;
   }>({});
   const [loading, setLoading] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -80,10 +97,34 @@ export const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
     if (!validate()) return;
 
     setLoading(true);
+    setErrors({});
     try {
-      // TODO: Call API to reset password
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      await authService.resetPassword({
+        email,
+        otp,
+        password: newPassword,
+        password_confirmation: confirmPassword,
+      });
       setShowSuccessModal(true);
+    } catch (error: any) {
+      const apiError = extractApiError(error);
+      
+      if (apiError.errors) {
+        const fieldErrors: { newPassword?: string; confirmPassword?: string } = {};
+        if (apiError.errors.password) {
+          fieldErrors.newPassword = Array.isArray(apiError.errors.password)
+            ? apiError.errors.password[0]
+            : apiError.errors.password;
+        }
+        if (apiError.errors.password_confirmation) {
+          fieldErrors.confirmPassword = Array.isArray(apiError.errors.password_confirmation)
+            ? apiError.errors.password_confirmation[0]
+            : apiError.errors.password_confirmation;
+        }
+        setErrors(fieldErrors);
+      } else {
+        setErrors({ general: apiError.message || t('auth.resetPassword.error') });
+      }
     } finally {
       setLoading(false);
     }
@@ -91,7 +132,7 @@ export const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
 
   const handleSuccessModalPrimary = () => {
     setShowSuccessModal(false);
-    onComplete();
+    navigation.navigate('Login');
   };
 
   const handleSuccessModalClose = () => {
@@ -140,6 +181,10 @@ export const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
                 leftIcon={<Icon name="eye-outline" size={20} color={colors.text.secondary} />}
                 rightIcon={<Icon name="help-circle-outline" size={20} color={colors.text.secondary} />}
               />
+
+              {errors.general && (
+                <Text style={styles.errorMessage}>{errors.general}</Text>
+              )}
 
               <Button
                 title={t('auth.resetPassword.button')}
@@ -194,6 +239,12 @@ const styles = StyleSheet.create({
   },
   form: {
     marginBottom: spacing.xl,
+  },
+  errorMessage: {
+    ...typography.styles.caption,
+    color: colors.error,
+    marginTop: spacing.xs,
+    marginBottom: spacing.sm,
   },
 });
 

@@ -36,13 +36,15 @@ import { Image } from '../../components/media';
 import { images } from '../../config';
 import { SkeletonBlock } from '../../components/skeleton';
 import { HomeCity } from '../../data/data';
+import { useAuth } from '../../services/auth/authContext';
 
-type HomeScreenNavigationProp = NativeStackNavigationProp<HomeStackParamList, 'Home'>;
+type HomeScreenNavigationProp = NativeStackNavigationProp<HomeStackParamList, 'HomeMain'>;
 
 export const HomeScreen: React.FC = () => {
   const { t } = useTranslation();
   const navigation = useNavigation<HomeScreenNavigationProp>();
   const { data, loading } = useHomeData();
+  const { user } = useAuth();
 
   const [countryTab, setCountryTab] = useState('others');
   
@@ -63,86 +65,76 @@ export const HomeScreen: React.FC = () => {
   const [hasRequestedLocation, setHasRequestedLocation] = useState(false);
   const [hasShownConfirmationForCurrentLocation, setHasShownConfirmationForCurrentLocation] = useState(false);
 
+  // Mapping country IDs to ISO country codes (temporary - should be in data.ts)
+  const getCountryCode = (countryId: string): string => {
+    const countryCodeMap: Record<string, string> = {
+      'usa': 'US',
+      'canada': 'CA',
+      'france': 'FR',
+      'uk': 'GB',
+      'germany': 'DE',
+      'italy': 'IT',
+      'spain': 'ES',
+      'japan': 'JP',
+      'australia': 'AU',
+    };
+    return countryCodeMap[countryId] || countryId.toUpperCase();
+  };
+
   const handleCountryPress = (countryId: string, countryName: string, countryImageUrl?: string) => {
     navigation.navigate('Detail', {
       id: countryId,
       title: countryName,
       imageUrl: countryImageUrl,
+      type: 'country',
+      countryCode: getCountryCode(countryId),
     });
   };
 
-  const handleCityPress = (cityId: string, cityName: string, cityImageUrl?: string) => {
+  const handleCityPress = (cityId: string, cityName: string, cityImageUrl?: string, cityCountryCode?: string) => {
     navigation.navigate('Detail', {
       id: cityId,
       title: cityName,
       imageUrl: cityImageUrl,
+      type: 'city',
+      countryCode: cityCountryCode || '',
+      cityId: cityId,
     });
   };
-
-  // Handle tab change
-  const handleTabChange = (tab: string) => {
-    setCountryTab(tab);
-    
-    // When switching to "position" tab
-    if (tab === 'position') {
-      // If we already have a location (from cache), show confirmation modal
-      if (geolocationLocation?.city && !hasShownConfirmationForCurrentLocation) {
-        filterCitiesByCountry(geolocationLocation.countryCode);
-        setShowConfirmationModal(true);
-        setHasShownConfirmationForCurrentLocation(true);
-      } else if (!hasRequestedLocation) {
-        // Otherwise, request location
-        handleRequestLocation();
-      }
-    } else {
-      // Reset confirmation flag when switching away from position tab
-      setHasShownConfirmationForCurrentLocation(false);
-    }
-  };
-
-  // Request location when "position" tab is selected
-  const handleRequestLocation = useCallback(async () => {
-    setHasRequestedLocation(true);
-    
-    try {
-      const location = await getCurrentLocation();
-      
-      if (location && location.countryCode) {
-        // Filter cities based on country code
-        filterCitiesByCountry(location.countryCode);
-        
-        // Show confirmation modal if we have a city name and haven't shown it yet
-        if (location.city && !hasShownConfirmationForCurrentLocation) {
-          setShowConfirmationModal(true);
-          setHasShownConfirmationForCurrentLocation(true);
-        }
-      } else {
-        // No location retrieved - check if it's an error or just no data
-        // Only show alert if there's an actual error status and no cached location
-        if ((geolocationStatus === 'denied' || geolocationStatus === 'error') && !geolocationLocation) {
-          handleGeolocationError();
-        }
-      }
-    } catch (error) {
-      // Only show error if we don't have a cached location
-      if (!geolocationLocation) {
-        handleGeolocationError();
-      }
-    }
-  }, [getCurrentLocation, filterCitiesByCountry, hasShownConfirmationForCurrentLocation, geolocationStatus, geolocationLocation, handleGeolocationError]);
 
   // Filter cities by country code
   const filterCitiesByCountry = useCallback((countryCode?: string) => {
     if (!data || !countryCode) {
+      console.log('🏠 [HomeScreen] No data or country code, showing all cities');
       setFilteredCities(data?.cities || []);
       return;
     }
 
+    console.log('🏠 [HomeScreen] Filtering cities. Total cities:', data.cities.length);
+    console.log('🏠 [HomeScreen] Looking for country code:', countryCode);
+    
     const filtered = data.cities.filter(
       (city) => city.countryCode?.toUpperCase() === countryCode.toUpperCase()
     );
     
+    console.log('🏠 [HomeScreen] Filtered cities result:', {
+      filteredCount: filtered.length,
+      filteredCities: filtered.map(c => ({
+        id: c.id,
+        labelKey: c.labelKey,
+        countryCode: c.countryCode,
+      })),
+      allCitiesWithCodes: data.cities.map(c => ({
+        id: c.id,
+        countryCode: c.countryCode,
+      })),
+    });
+    
     setFilteredCities(filtered.length > 0 ? filtered : data.cities);
+    
+    if (filtered.length === 0) {
+      console.warn('🏠 [HomeScreen] No cities found for country code, showing all cities');
+    }
   }, [data]);
 
   // Handle geolocation errors
@@ -169,6 +161,77 @@ export const HomeScreen: React.FC = () => {
     setAlertType(alertType);
     setShowAlertModal(true);
   }, [geolocationStatus, geolocationError]);
+
+  // Request location when "position" tab is selected
+  const handleRequestLocation = useCallback(async () => {
+    console.log('🏠 [HomeScreen] Requesting location...');
+    setHasRequestedLocation(true);
+    
+    try {
+      const location = await getCurrentLocation();
+      
+      console.log('🏠 [HomeScreen] Location received:', {
+        hasLocation: !!location,
+        countryCode: location?.countryCode,
+        countryName: location?.countryName,
+        city: location?.city,
+        coordinates: location ? {
+          latitude: location.latitude,
+          longitude: location.longitude,
+        } : null,
+      });
+      
+      if (location && location.countryCode) {
+        console.log('🏠 [HomeScreen] Filtering cities for country code:', location.countryCode);
+        // Filter cities based on country code
+        filterCitiesByCountry(location.countryCode);
+        
+        // Show confirmation modal if we have a city name and haven't shown it yet
+        if (location.city && !hasShownConfirmationForCurrentLocation) {
+          console.log('🏠 [HomeScreen] Showing confirmation modal for city:', location.city);
+          setShowConfirmationModal(true);
+          setHasShownConfirmationForCurrentLocation(true);
+        }
+      } else {
+        console.warn('🏠 [HomeScreen] No location or country code found:', {
+          hasLocation: !!location,
+          hasCountryCode: !!location?.countryCode,
+        });
+        // No location retrieved - check if it's an error or just no data
+        // Only show alert if there's an actual error status and no cached location
+        if ((geolocationStatus === 'denied' || geolocationStatus === 'error') && !geolocationLocation) {
+          handleGeolocationError();
+        }
+      }
+    } catch (error) {
+      console.error('🏠 [HomeScreen] Error requesting location:', error);
+      // Only show error if we don't have a cached location
+      if (!geolocationLocation) {
+        handleGeolocationError();
+      }
+    }
+  }, [getCurrentLocation, filterCitiesByCountry, hasShownConfirmationForCurrentLocation, geolocationStatus, geolocationLocation, handleGeolocationError]);
+
+  // Handle tab change
+  const handleTabChange = (tab: string) => {
+    setCountryTab(tab);
+    
+    // When switching to "position" tab
+    if (tab === 'position') {
+      // If we already have a location (from cache), show confirmation modal
+      if (geolocationLocation?.city && !hasShownConfirmationForCurrentLocation) {
+        filterCitiesByCountry(geolocationLocation.countryCode);
+        setShowConfirmationModal(true);
+        setHasShownConfirmationForCurrentLocation(true);
+      } else if (!hasRequestedLocation) {
+        // Otherwise, request location
+        handleRequestLocation();
+      }
+    } else {
+      // Reset confirmation flag when switching away from position tab
+      setHasShownConfirmationForCurrentLocation(false);
+    }
+  };
 
   // Handle confirmation modal actions
   const handleConfirmLocation = () => {
@@ -277,7 +340,9 @@ export const HomeScreen: React.FC = () => {
                   {t('home.header.greeting')}
                 </Text>
                 <View style={styles.headerUserContainer}>
-                  <Text style={styles.headerUser}>{data?.hero.userName}</Text>
+                  <Text style={styles.headerUser}>
+                    @{user?.name || data?.hero.userName || 'Utilisateur'}
+                  </Text>
                   <Text style={styles.headerEmoji}>👋</Text>
                 </View>
               </>
@@ -396,7 +461,7 @@ export const HomeScreen: React.FC = () => {
                   type="city"
                   title={t(city.labelKey)}
                   imageUrl={city.imageUrl}
-                  onPress={() => handleCityPress(city.id, t(city.labelKey), city.imageUrl)}
+                  onPress={() => handleCityPress(city.id, t(city.labelKey), city.imageUrl, city.countryCode)}
                 />
               ))}
             </HorizontalCards>

@@ -55,6 +55,12 @@ export const colors = {
     darkHover: '#7a6c4a',
     darkActive: '#5c5137',
     darker: '#473f2b',
+    starActive: '#FFCC00', // Active star color
+  },
+  // Star Colors
+  star: {
+    active: '#FFCC00', // Active star color
+    inactive: '#DFEEF5', // Inactive star color
   },
 
   // Semantic Colors
@@ -80,7 +86,10 @@ export const colors = {
     tertiary: '#a3a4a5',
     disabled: '#a3a4a5',
     inverse: '#FFFFFF',
-    map: '#373B51', // Text color for map overlays
+    map: '#373B51',
+    destinationTown: '#000F3A80',
+    timeText: '#333538',
+    airlineName: '#000F3A'
   },
 
   // Border Colors
@@ -88,6 +97,64 @@ export const colors = {
     light: '#e5e7eb',
     normal: '#d1d5db',
     dark: '#9ca3af',
+    counter: '#000F3A4D', // Border color for counter buttons
+  },
+
+  // Shadow Colors
+  shadow: {
+    card: '#00000026', // Hotel card shadow color with opacity
+  },
+
+  // Overlay Colors
+  overlay: {
+    white33: '#FFFFFF33', // White with 33% opacity for carousel button
+  },
+
+  // Transport Theme Colors
+  transport: {
+    // Flight Theme (Blue)
+    flight: {
+      primary: '#288cbe', // Same as primary.normal
+      primaryHover: '#247eab',
+      primaryActive: '#207098',
+      background: '#FFFFFF', // White
+      card: '#F7F7FA', // Card background color
+      text: '#333538', // Primary text
+      textSecondary: '#7a7c7e', // Secondary text
+      success: '#10b981', // Green for "Réserver" button
+      buttonGreen: '#34C759', // Green for flight card reserve button
+      border: '#e5e7eb', // Light border
+      searchButtonBackground: '#EAF4F9', // Light blue background for search button
+      connector: '#A3A4A5', // Color for connector dots and plane icon
+    },
+    // Train Theme (Gold)
+    train: {
+      primary: '#ccb47b', // Yellow normal (gold)
+      primaryHover: '#b8a26f',
+      primaryActive: '#a39062',
+      background: '#FFFFFF', // White
+      card: '#faf8f2', // Yellow light (light gold background)
+      header: '#ccb47b', // Golden-beige header
+      text: '#333538', // Primary text
+      textSecondary: '#7a7c7e', // Secondary text
+      success: '#10b981', // Green for "Réserver" button
+      border: '#efebde', // Yellow lightActive border
+      searchButtonBackground: '#EAF4F9', // Light blue background for search button
+      connector: '#A3A4A5', // Color for connector dots and train icon
+    },
+    // Car Theme (Same as Flight - Blue)
+    car: {
+      primary: '#288cbe',
+      primaryHover: '#247eab',
+      primaryActive: '#207098',
+      background: '#FFFFFF',
+      card: '#FFFFFF',
+      text: '#333538',
+      textSecondary: '#7a7c7e',
+      success: '#10b981',
+      border: '#e5e7eb',
+      searchButtonBackground: '#EAF4F9', // Light blue background for search button
+    },
   },
 } as const;
 

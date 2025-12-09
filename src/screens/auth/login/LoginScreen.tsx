@@ -18,22 +18,23 @@ import { useTranslation } from 'react-i18next';
 import { Input, Button, AnimatedView, SocialButton, Icon, ScreenBackground } from '../../../components/common';
 import { colors, typography, spacing } from '../../../theme';
 import { VALIDATION } from '../../../utils/constants';
+import { useAuth } from '../../../services/auth/authContext';
+import { extractApiError } from '../../../services/api/apiClient';
 
 interface LoginScreenProps {
-  onLogin: (email: string, password: string) => void;
   onSignUp: () => void;
   onForgotPassword: () => void;
 }
 
 export const LoginScreen: React.FC<LoginScreenProps> = ({
-  onLogin,
   onSignUp,
   onForgotPassword,
 }) => {
   const { t } = useTranslation();
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const [errors, setErrors] = useState<{ email?: string; password?: string; general?: string }>({});
   const [loading, setLoading] = useState(false);
 
   const clearFieldError = (field: keyof typeof errors) => {
@@ -78,8 +79,31 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
     if (!validate()) return;
 
     setLoading(true);
+    setErrors({});
     try {
-      await onLogin(email, password);
+      await login(email, password);
+      // Navigation will be handled by AppNavigator when isAuthenticated changes
+    } catch (error: any) {
+      const apiError = extractApiError(error);
+      
+      // Handle field-specific errors
+      if (apiError.errors) {
+        const fieldErrors: { email?: string; password?: string } = {};
+        if (apiError.errors.email) {
+          fieldErrors.email = Array.isArray(apiError.errors.email) 
+            ? apiError.errors.email[0] 
+            : apiError.errors.email;
+        }
+        if (apiError.errors.password) {
+          fieldErrors.password = Array.isArray(apiError.errors.password)
+            ? apiError.errors.password[0]
+            : apiError.errors.password;
+        }
+        setErrors(fieldErrors);
+      } else {
+        // General error message
+        setErrors({ general: apiError.message || t('auth.login.error') });
+      }
     } finally {
       setLoading(false);
     }
@@ -130,6 +154,10 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
               showPasswordToggle
               leftIcon={<Icon name="eye-outline" size={20} color={colors.text.secondary} />}
             />
+
+            {errors.general && (
+              <Text style={styles.errorMessage}>{errors.general}</Text>
+            )}
 
             <View style={styles.forgotPasswordContainer}>
               <TouchableOpacity onPress={onForgotPassword}>

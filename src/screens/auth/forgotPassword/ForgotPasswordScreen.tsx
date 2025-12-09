@@ -15,23 +15,29 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { Input, Button, AnimatedView, Icon, ScreenBackground, LoadingOverlay } from '../../../components/common';
 import { colors, typography, spacing } from '../../../theme';
 import { VALIDATION } from '../../../utils/constants';
+import { RootStackParamList } from '../../../types';
+import { authService } from '../../../services';
+import { extractApiError } from '../../../services/api/apiClient';
+
+type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'ForgotPassword'>;
 
 interface ForgotPasswordScreenProps {
-  onComplete: () => void;
   onBack: () => void;
 }
 
 export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
-  onComplete,
   onBack,
 }) => {
   const { t } = useTranslation();
+  const navigation = useNavigation<NavigationProp>();
   const [email, setEmail] = useState('');
-  const [errors, setErrors] = useState<{ email?: string }>({});
+  const [errors, setErrors] = useState<{ email?: string; general?: string }>({});
   const [loading, setLoading] = useState(false);
 
   const clearFieldError = (field: keyof typeof errors) => {
@@ -62,15 +68,29 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
   };
 
   const handleContinue = async () => {
-    // Valider l'email avant de continuer
     if (!validate()) return;
 
     setLoading(true);
+    setErrors({});
     try {
-      // TODO: Call API to send reset code
-      // Simuler un délai pour l'envoi de l'email
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      onComplete();
+      await authService.forgotPassword({ email });
+      // Navigate to OTP verification screen with email and type
+      navigation.navigate('OtpVerification', { 
+        email, 
+        type: 'password-reset' 
+      });
+    } catch (error: any) {
+      const apiError = extractApiError(error);
+      
+      if (apiError.errors?.email) {
+        setErrors({ 
+          email: Array.isArray(apiError.errors.email)
+            ? apiError.errors.email[0]
+            : apiError.errors.email 
+        });
+      } else {
+        setErrors({ general: apiError.message || t('auth.forgotPassword.error') });
+      }
     } finally {
       setLoading(false);
     }
@@ -108,6 +128,10 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
                 leftIcon={<Icon name="mail-outline" size={20} color={colors.text.secondary} />}
                 rightIcon={<Icon name="help-circle-outline" size={20} color={colors.text.secondary} />}
               />
+
+              {errors.general && (
+                <Text style={styles.errorMessage}>{errors.general}</Text>
+              )}
 
               <Button
                 title={t('auth.forgotPassword.button')}
@@ -158,6 +182,12 @@ const styles = StyleSheet.create({
   },
   form: {
     marginBottom: spacing.xl,
+  },
+  errorMessage: {
+    ...typography.styles.caption,
+    color: colors.error,
+    marginTop: spacing.xs,
+    marginBottom: spacing.sm,
   },
 });
 
