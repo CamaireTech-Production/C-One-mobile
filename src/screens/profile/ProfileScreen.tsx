@@ -217,11 +217,13 @@ export const ProfileScreen: React.FC = () => {
 
           <MenuItem
             title={t('profile.menu.logout', 'Deconnexion')}
-            leftIconName="log-out-outline"
+            leftIconName="exit-outline"
             leftIconFamily="ionicons"
             variant="danger"
             onPress={handleLogout}
             disabled={isLoggingOut || isLoading}
+            showBackground={false}
+            showRightIcon={false}
           />
         </View>
       </ScrollView>

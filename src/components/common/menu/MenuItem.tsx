@@ -33,6 +33,8 @@ export interface MenuItemProps {
   containerStyle?: ViewStyle;
   textStyle?: TextStyle;
   disabled?: boolean;
+  showBackground?: boolean; // Whether to show background color (default: true)
+  showRightIcon?: boolean; // Whether to show right icon (default: true)
 }
 
 export const MenuItem: React.FC<MenuItemProps> = ({
@@ -50,6 +52,8 @@ export const MenuItem: React.FC<MenuItemProps> = ({
   containerStyle,
   textStyle,
   disabled = false,
+  showBackground = true,
+  showRightIcon = true,
 }) => {
   const isDanger = variant === 'danger';
   const finalLeftIconColor = leftIconColor || (isDanger ? colors.error : colors.text.primary);
@@ -60,6 +64,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
     <TouchableOpacity
       style={[
         styles.container,
+        !showBackground && styles.containerNoBackground,
         containerStyle,
         disabled && styles.disabled,
       ]}
@@ -92,7 +97,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
       </Text>
 
       {/* Right Icon */}
-      {rightIconName && (
+      {showRightIcon && rightIconName && (
         <View style={styles.rightIconContainer}>
           <Icon
             name={rightIconName}
@@ -116,6 +121,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.base,
     marginBottom: spacing.sm,
     minHeight: 56,
+  },
+  containerNoBackground: {
+    backgroundColor: 'transparent',
   },
   leftIconContainer: {
     marginRight: spacing.base,
