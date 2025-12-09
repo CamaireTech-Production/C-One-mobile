@@ -86,6 +86,24 @@
       "successSecondary": "Fermer"
     }
   },
+  "profile": {
+    "menu": {
+      "personalInfo": "Infos personnelles",
+      "accountSecurity": "comptes et sécurité",
+      "paymentMethod": "Méthode de paiement",
+      "appLanguage": "App Language",
+      "helpSupport": "Aide et Support",
+      "shareApp": "Partager l'application",
+      "logout": "Deconnexion"
+    },
+    "logout": {
+      "title": "Déconnexion",
+      "message": "Êtes-vous sûr de vouloir vous déconnecter ?",
+      "confirm": "Déconnexion",
+      "error": "Erreur",
+      "errorMessage": "Une erreur est survenue lors de la déconnexion."
+    }
+  },
   "onboarding": {
     "cta": {
       "prompt": "Vous n'avez pas de compte ?",

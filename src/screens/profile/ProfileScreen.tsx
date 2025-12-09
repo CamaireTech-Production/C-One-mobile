@@ -1,6 +1,6 @@
 /**
  * Profile Screen
- * Simple profile page with logout functionality
+ * Pixel perfect implementation matching Figma design
  */
 
 import React, { useState } from 'react';
@@ -10,17 +10,36 @@ import {
   StyleSheet,
   ScrollView,
   Alert,
+  TouchableOpacity,
+  Image,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { useNavigation } from '@react-navigation/native';
+import { CompositeNavigationProp } from '@react-navigation/native';
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { Button, ScreenBackground, Icon } from '../../components/common';
+import { ScreenBackground, Icon, MenuItem } from '../../components/common';
+import { OverlayHeader } from '../../components/transport/headers/OverlayHeader';
 import { colors, typography, spacing } from '../../theme';
 import { useAuth } from '../../services/auth/authContext';
+import { MainTabParamList, HomeStackParamList } from '../../types';
+import { images } from '../../config/images';
+
+type ProfileScreenNavigationProp = CompositeNavigationProp<
+  BottomTabNavigationProp<MainTabParamList, 'Profile'>,
+  NativeStackNavigationProp<HomeStackParamList>
+>;
 
 export const ProfileScreen: React.FC = () => {
   const { t } = useTranslation();
+  const navigation = useNavigation<ProfileScreenNavigationProp>();
   const { user, logout, isLoading } = useAuth();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const handleBack = () => {
+    navigation.goBack();
+  };
 
   const handleLogout = async () => {
     Alert.alert(
@@ -53,80 +72,179 @@ export const ProfileScreen: React.FC = () => {
     );
   };
 
+  const handleMenuItemPress = (item: string) => {
+    switch (item) {
+      case 'personalInfo':
+        // Navigate to personal information screen
+        navigation.navigate('PersonalInformation' as any, {});
+        break;
+      case 'accountSecurity':
+        // Navigate to account and security screen
+        // TODO: Implement account and security screen
+        break;
+      case 'paymentMethod':
+        // Navigate to payment method screen
+        // TODO: Implement payment method screen
+        break;
+      case 'appLanguage':
+        // Navigate to app language screen
+        // TODO: Implement app language screen
+        break;
+      case 'helpSupport':
+        // Navigate to help and support screen
+        // TODO: Implement help and support screen
+        break;
+      case 'shareApp':
+        // Share app functionality
+        // TODO: Implement share app functionality
+        break;
+      default:
+        break;
+    }
+  };
+
+  // Create dotted pattern overlay component (world map pattern)
+  const DottedPattern = () => {
+    const dots = [];
+    const rows = 12;
+    const cols = 8;
+    const dotSize = 3;
+    const spacingX = 25;
+    const spacingY = 25;
+
+    for (let row = 0; row < rows; row++) {
+      for (let col = 0; col < cols; col++) {
+        // Create a more organic pattern (not perfectly aligned)
+        const offsetX = (row % 2 === 0 ? 0 : spacingX / 2);
+        dots.push(
+          <View
+            key={`${row}-${col}`}
+            style={[
+              styles.dot,
+              {
+                left: col * spacingX + offsetX,
+                top: row * spacingY,
+                width: dotSize,
+                height: dotSize,
+              },
+            ]}
+          />
+        );
+      }
+    }
+
+    return <View style={styles.patternContainer}>{dots}</View>;
+  };
+
+  // Get avatar from user - backend returns it as 'avatar' in /me endpoint
+  // For now, use default avatar if not available
+  const profileImageUri = (user as any)?.avatar || images.defaultAvatar;
+  const userName = user?.name || 'Danielle mckeny';
+
   return (
     <ScreenBackground backgroundColor={colors.background.primary}>
+      <OverlayHeader
+        title={t('navigation.tabs.profile', 'Profil')}
+        onBack={handleBack}
+        backgroundColor={colors.primary.normal}
+        headerHeight={280}
+        statusBarStyle="light-content"
+        leftIconColor={colors.text.inverse}
+      >
+        {/* Dotted Pattern Overlay */}
+        <DottedPattern />
+
+        {/* Profile Picture Section */}
+        <View style={styles.profileSection}>
+          <View style={styles.avatarContainer}>
+            {typeof profileImageUri === 'string' && profileImageUri.startsWith('http') ? (
+              <Image
+                source={{ uri: profileImageUri }}
+                style={styles.avatarImage}
+                defaultSource={images.defaultAvatar}
+              />
+            ) : (
+              <Image
+                source={images.defaultAvatar}
+                style={styles.avatarImage}
+              />
+            )}
+            {/* Camera Icon Overlay */}
+            <TouchableOpacity
+              style={styles.cameraIconContainer}
+              activeOpacity={0.7}
+              onPress={() => {
+                // TODO: Implement image picker
+              }}
+            >
+              <Icon
+                name="camera"
+                size={20}
+                color={colors.text.inverse}
+                family="ionicons"
+              />
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.userName}>{userName}</Text>
+        </View>
+      </OverlayHeader>
+
+      {/* Menu Items Section */}
       <ScrollView
-        style={styles.container}
+        style={styles.scrollView}
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.header}>
-          <View style={styles.avatarContainer}>
-            <Icon 
-              name="user" 
-              size={64} 
-              color={colors.primary.normal} 
-              family="fontawesome6" 
-              fa6Style="solid" 
-            />
-          </View>
-          <Text style={styles.name}>{user?.name || 'Utilisateur'}</Text>
-          <Text style={styles.email}>{user?.email || ''}</Text>
-        </View>
+        <View style={styles.menuContainer}>
+          <MenuItem
+            title={t('profile.menu.personalInfo', 'Infos personnelles')}
+            leftIconName="person-outline"
+            leftIconFamily="ionicons"
+            onPress={() => handleMenuItemPress('personalInfo')}
+          />
 
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>
-              {t('profile.settings', 'Paramètres')}
-            </Text>
-          </View>
+          <MenuItem
+            title={t('profile.menu.accountSecurity', 'comptes et sécurité')}
+            leftIconName="eye-outline"
+            leftIconFamily="ionicons"
+            onPress={() => handleMenuItemPress('accountSecurity')}
+          />
 
-          <View style={styles.infoRow}>
-            <View style={styles.infoItem}>
-              <Icon 
-                name="user" 
-                size={20} 
-                color={colors.text.secondary} 
-                family="fontawesome6" 
-                fa6Style="regular" 
-              />
-              <Text style={styles.infoLabel}>
-                {t('profile.role', 'Rôle')}
-              </Text>
-              <Text style={styles.infoValue}>
-                {user?.role || 'CUSTOMER'}
-              </Text>
-            </View>
-          </View>
+          <MenuItem
+            title={t('profile.menu.paymentMethod', 'Méthode de paiement')}
+            leftIconName="wallet-outline"
+            leftIconFamily="ionicons"
+            onPress={() => handleMenuItemPress('paymentMethod')}
+          />
 
-          <View style={styles.infoRow}>
-            <View style={styles.infoItem}>
-              <Icon 
-                name="circle-check" 
-                size={20} 
-                color={colors.text.secondary} 
-                family="fontawesome6" 
-                fa6Style="solid" 
-              />
-              <Text style={styles.infoLabel}>
-                {t('profile.status', 'Statut')}
-              </Text>
-              <Text style={styles.infoValue}>
-                {user?.status || 'ACTIVE'}
-              </Text>
-            </View>
-          </View>
-        </View>
+          <MenuItem
+            title={t('profile.menu.appLanguage', 'App Language')}
+            leftIconName="globe-outline"
+            leftIconFamily="ionicons"
+            onPress={() => handleMenuItemPress('appLanguage')}
+          />
 
-        <View style={styles.logoutSection}>
-          <Button
-            title={t('profile.logout.button', 'Se déconnecter')}
+          <MenuItem
+            title={t('profile.menu.helpSupport', 'Aide et Support')}
+            leftIconName="thumbs-up-outline"
+            leftIconFamily="ionicons"
+            onPress={() => handleMenuItemPress('helpSupport')}
+          />
+
+          <MenuItem
+            title={t('profile.menu.shareApp', 'Partager l\'application')}
+            leftIconName="share-social-outline"
+            leftIconFamily="ionicons"
+            onPress={() => handleMenuItemPress('shareApp')}
+          />
+
+          <MenuItem
+            title={t('profile.menu.logout', 'Deconnexion')}
+            leftIconName="log-out-outline"
+            leftIconFamily="ionicons"
+            variant="danger"
             onPress={handleLogout}
-            variant="primary"
-            size="large"
-            fullWidth
-            loading={isLoggingOut || isLoading}
-            style={styles.logoutButton}
+            disabled={isLoggingOut || isLoading}
           />
         </View>
       </ScrollView>
@@ -135,72 +253,64 @@ export const ProfileScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
+  scrollView: {
     flex: 1,
   },
   content: {
     padding: spacing.lg,
-    paddingTop: spacing['4xl'],
+    paddingTop: spacing.base,
   },
-  header: {
+  patternContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    opacity: 0.2,
+    overflow: 'hidden',
+  },
+  dot: {
+    position: 'absolute',
+    backgroundColor: colors.text.inverse,
+    borderRadius: 1.5,
+    opacity: 0.4,
+  },
+  profileSection: {
     alignItems: 'center',
-    marginBottom: spacing.xl,
+    marginTop: spacing.xl,
+    marginBottom: spacing.base,
   },
   avatarContainer: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
+    position: 'relative',
+    marginBottom: spacing.md,
+  },
+  avatarImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
     backgroundColor: colors.primary.light,
+    borderWidth: 3,
+    borderColor: colors.text.inverse,
+  },
+  cameraIconContainer: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: colors.primary.normal,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: spacing.md,
+    borderWidth: 2,
+    borderColor: colors.text.inverse,
   },
-  name: {
-    ...typography.styles.h2,
-    color: colors.text.primary,
-    marginBottom: spacing.xs,
-  },
-  email: {
-    ...typography.styles.bodyRegular16,
-    color: colors.text.secondary,
-  },
-  section: {
-    marginBottom: spacing.xl,
-  },
-  sectionHeader: {
-    marginBottom: spacing.md,
-  },
-  sectionTitle: {
+  userName: {
     ...typography.styles.bodyBold18,
-    color: colors.text.primary,
+    color: colors.text.inverse,
+    textAlign: 'center',
   },
-  infoRow: {
-    marginBottom: spacing.md,
-  },
-  infoItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.base,
-    backgroundColor: colors.background.secondary,
-    borderRadius: 12,
-    gap: spacing.sm,
-  },
-  infoLabel: {
-    ...typography.styles.bodyRegular14,
-    color: colors.text.secondary,
-    flex: 1,
-  },
-  infoValue: {
-    ...typography.styles.bodyBold14,
-    color: colors.text.primary,
-  },
-  logoutSection: {
-    marginTop: spacing.xl,
-    marginBottom: spacing['4xl'],
-  },
-  logoutButton: {
-    backgroundColor: colors.error,
+  menuContainer: {
+    marginTop: spacing.base,
   },
 });
-
