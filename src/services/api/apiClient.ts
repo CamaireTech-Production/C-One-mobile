@@ -26,10 +26,14 @@ type RetriableRequestConfig = InternalAxiosRequestConfig & {
  * 
  * Pour le développement local : Modifiez directement l'URL ci-dessous
  * Pour la production : Configurez dans app.json -> extra.apiUrl
+ * 
+ * IMPORTANT: Base URL should NOT include /api/v1 as it's already in the endpoints
+ * TEMPORARY: Using HTTP instead of HTTPS due to certificate name mismatch
+ * TODO: Switch back to HTTPS once backend fixes the SSL certificate
  */
 // const DEFAULT_API_URL = 'http://192.168.1.130:8000';
 // const DEFAULT_API_URL = 'http://192.168.1.140:8000';
-const DEFAULT_API_URL = 'http://staging.api.c-one.camairetech.com/api/v1/auth';
+const DEFAULT_API_URL = 'http://staging.api.c-one.camairetech.com';
 
 
 // Utilise la config de app.json si disponible, sinon utilise la valeur par défaut

@@ -22,7 +22,8 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.theaarc.COnemobile"
+      "package": "com.theaarc.COnemobile",
+      "usesCleartextTraffic": true
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -31,7 +32,7 @@
       "eas": {
         "projectId": "66251e34-8fab-41dc-a33c-ea2e10ab62f7"
       },
-      "apiUrl": "http://192.168.1.140:8000"
+      "apiUrl": "http://staging.api.c-one.camairetech.com"
     },
     "owner": "theaarc",
     "plugins": [

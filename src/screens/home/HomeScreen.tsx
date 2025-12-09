@@ -38,7 +38,7 @@ import { SkeletonBlock } from '../../components/skeleton';
 import { HomeCity } from '../../data/data';
 import { useAuth } from '../../services/auth/authContext';
 
-type HomeScreenNavigationProp = NativeStackNavigationProp<HomeStackParamList, 'Home'>;
+type HomeScreenNavigationProp = NativeStackNavigationProp<HomeStackParamList, 'HomeMain'>;
 
 export const HomeScreen: React.FC = () => {
   const { t } = useTranslation();
@@ -102,77 +102,6 @@ export const HomeScreen: React.FC = () => {
     });
   };
 
-  // Handle tab change
-  const handleTabChange = (tab: string) => {
-    setCountryTab(tab);
-    
-    // When switching to "position" tab
-    if (tab === 'position') {
-      // If we already have a location (from cache), show confirmation modal
-      if (geolocationLocation?.city && !hasShownConfirmationForCurrentLocation) {
-        filterCitiesByCountry(geolocationLocation.countryCode);
-        setShowConfirmationModal(true);
-        setHasShownConfirmationForCurrentLocation(true);
-      } else if (!hasRequestedLocation) {
-        // Otherwise, request location
-        handleRequestLocation();
-      }
-    } else {
-      // Reset confirmation flag when switching away from position tab
-      setHasShownConfirmationForCurrentLocation(false);
-    }
-  };
-
-  // Request location when "position" tab is selected
-  const handleRequestLocation = useCallback(async () => {
-    console.log('🏠 [HomeScreen] Requesting location...');
-    setHasRequestedLocation(true);
-    
-    try {
-      const location = await getCurrentLocation();
-      
-      console.log('🏠 [HomeScreen] Location received:', {
-        hasLocation: !!location,
-        countryCode: location?.countryCode,
-        countryName: location?.countryName,
-        city: location?.city,
-        coordinates: location ? {
-          latitude: location.latitude,
-          longitude: location.longitude,
-        } : null,
-      });
-      
-      if (location && location.countryCode) {
-        console.log('🏠 [HomeScreen] Filtering cities for country code:', location.countryCode);
-        // Filter cities based on country code
-        filterCitiesByCountry(location.countryCode);
-        
-        // Show confirmation modal if we have a city name and haven't shown it yet
-        if (location.city && !hasShownConfirmationForCurrentLocation) {
-          console.log('🏠 [HomeScreen] Showing confirmation modal for city:', location.city);
-          setShowConfirmationModal(true);
-          setHasShownConfirmationForCurrentLocation(true);
-        }
-      } else {
-        console.warn('🏠 [HomeScreen] No location or country code found:', {
-          hasLocation: !!location,
-          hasCountryCode: !!location?.countryCode,
-        });
-        // No location retrieved - check if it's an error or just no data
-        // Only show alert if there's an actual error status and no cached location
-        if ((geolocationStatus === 'denied' || geolocationStatus === 'error') && !geolocationLocation) {
-          handleGeolocationError();
-        }
-      }
-    } catch (error) {
-      console.error('🏠 [HomeScreen] Error requesting location:', error);
-      // Only show error if we don't have a cached location
-      if (!geolocationLocation) {
-        handleGeolocationError();
-      }
-    }
-  }, [getCurrentLocation, filterCitiesByCountry, hasShownConfirmationForCurrentLocation, geolocationStatus, geolocationLocation, handleGeolocationError]);
-
   // Filter cities by country code
   const filterCitiesByCountry = useCallback((countryCode?: string) => {
     if (!data || !countryCode) {
@@ -232,6 +161,77 @@ export const HomeScreen: React.FC = () => {
     setAlertType(alertType);
     setShowAlertModal(true);
   }, [geolocationStatus, geolocationError]);
+
+  // Request location when "position" tab is selected
+  const handleRequestLocation = useCallback(async () => {
+    console.log('🏠 [HomeScreen] Requesting location...');
+    setHasRequestedLocation(true);
+    
+    try {
+      const location = await getCurrentLocation();
+      
+      console.log('🏠 [HomeScreen] Location received:', {
+        hasLocation: !!location,
+        countryCode: location?.countryCode,
+        countryName: location?.countryName,
+        city: location?.city,
+        coordinates: location ? {
+          latitude: location.latitude,
+          longitude: location.longitude,
+        } : null,
+      });
+      
+      if (location && location.countryCode) {
+        console.log('🏠 [HomeScreen] Filtering cities for country code:', location.countryCode);
+        // Filter cities based on country code
+        filterCitiesByCountry(location.countryCode);
+        
+        // Show confirmation modal if we have a city name and haven't shown it yet
+        if (location.city && !hasShownConfirmationForCurrentLocation) {
+          console.log('🏠 [HomeScreen] Showing confirmation modal for city:', location.city);
+          setShowConfirmationModal(true);
+          setHasShownConfirmationForCurrentLocation(true);
+        }
+      } else {
+        console.warn('🏠 [HomeScreen] No location or country code found:', {
+          hasLocation: !!location,
+          hasCountryCode: !!location?.countryCode,
+        });
+        // No location retrieved - check if it's an error or just no data
+        // Only show alert if there's an actual error status and no cached location
+        if ((geolocationStatus === 'denied' || geolocationStatus === 'error') && !geolocationLocation) {
+          handleGeolocationError();
+        }
+      }
+    } catch (error) {
+      console.error('🏠 [HomeScreen] Error requesting location:', error);
+      // Only show error if we don't have a cached location
+      if (!geolocationLocation) {
+        handleGeolocationError();
+      }
+    }
+  }, [getCurrentLocation, filterCitiesByCountry, hasShownConfirmationForCurrentLocation, geolocationStatus, geolocationLocation, handleGeolocationError]);
+
+  // Handle tab change
+  const handleTabChange = (tab: string) => {
+    setCountryTab(tab);
+    
+    // When switching to "position" tab
+    if (tab === 'position') {
+      // If we already have a location (from cache), show confirmation modal
+      if (geolocationLocation?.city && !hasShownConfirmationForCurrentLocation) {
+        filterCitiesByCountry(geolocationLocation.countryCode);
+        setShowConfirmationModal(true);
+        setHasShownConfirmationForCurrentLocation(true);
+      } else if (!hasRequestedLocation) {
+        // Otherwise, request location
+        handleRequestLocation();
+      }
+    } else {
+      // Reset confirmation flag when switching away from position tab
+      setHasShownConfirmationForCurrentLocation(false);
+    }
+  };
 
   // Handle confirmation modal actions
   const handleConfirmLocation = () => {
