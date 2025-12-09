@@ -18,6 +18,7 @@ import { useNavigation } from '@react-navigation/native';
 import { CompositeNavigationProp } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ScreenBackground, Icon, MenuItem } from '../../components/common';
 import { OverlayHeader } from '../../components/transport/headers/OverlayHeader';
@@ -36,6 +37,7 @@ export const ProfileScreen: React.FC = () => {
   const navigation = useNavigation<ProfileScreenNavigationProp>();
   const { user, logout, isLoading } = useAuth();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const insets = useSafeAreaInsets();
 
   const handleBack = () => {
     navigation.goBack();
@@ -121,6 +123,9 @@ export const ProfileScreen: React.FC = () => {
         headerHeight={HEADER_HEIGHT}
         statusBarStyle="light-content"
         leftIconColor={colors.text.inverse}
+        navBarPaddingTop={0}
+        containerStyle={{ paddingTop: insets.top }}
+        navBarStyle={{ marginTop: -spacing.md }}
         imageBackgroundStyle={{
           borderBottomLeftRadius: 20,
           borderBottomRightRadius: 20,
