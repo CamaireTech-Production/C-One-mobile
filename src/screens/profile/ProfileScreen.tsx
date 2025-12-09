@@ -242,12 +242,14 @@ const styles = StyleSheet.create({
   },
   profileSection: {
     alignItems: 'center',
-    marginTop: spacing.xl,
+    marginTop: spacing.md,
     marginBottom: spacing.base,
+    width: '100%',
   },
   avatarContainer: {
     position: 'relative',
     marginBottom: spacing.md,
+    alignItems: 'center',
   },
   avatarImage: {
     width: 100,
@@ -271,9 +273,10 @@ const styles = StyleSheet.create({
     borderColor: colors.text.inverse,
   },
   userName: {
-    ...typography.styles.bodyBold18,
+    ...typography.styles.bodyBold24,
     color: colors.text.inverse,
     textAlign: 'center',
+    width: '100%',
   },
   menuContainer: {
     marginTop: spacing.base,

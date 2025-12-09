@@ -28,6 +28,7 @@ export interface OverlayHeaderProps {
   subtitle?: string;
   onBack?: () => void;
   onRightIconPress?: () => void;
+  titleAlign?: 'left' | 'center' | 'right'; // Title alignment in navigation bar
   
   // Left Icon (Back Button) customization
   leftIconName?: string;
@@ -81,6 +82,7 @@ export const OverlayHeader: React.FC<OverlayHeaderProps> = ({
   subtitle,
   onBack,
   onRightIconPress,
+  titleAlign = 'center',
   // Left icon props
   leftIconName = 'chevron-back',
   leftIconFamily = 'ionicons',
@@ -135,43 +137,57 @@ export const OverlayHeader: React.FC<OverlayHeaderProps> = ({
           navBarStyle
         ]}>
           {/* Left Icon / Back Button */}
-          {showBackButton && (onBack || leftIconComponent) && (
-            <TouchableOpacity
-              onPress={onBack}
-              style={[styles.backButton, leftIconButtonStyle]}
-              activeOpacity={0.7}
-              disabled={!onBack}
-            >
-              {leftIconComponent ? (
-                leftIconComponent
-              ) : leftIconWithContainer ? (
-                <View style={[styles.leftIconContainer, leftIconContainerStyle]}>
+          <View style={styles.navBarLeft}>
+            {showBackButton && (onBack || leftIconComponent) && (
+              <TouchableOpacity
+                onPress={onBack}
+                style={[styles.backButton, leftIconButtonStyle]}
+                activeOpacity={0.7}
+                disabled={!onBack}
+              >
+                {leftIconComponent ? (
+                  leftIconComponent
+                ) : leftIconWithContainer ? (
+                  <View style={[styles.leftIconContainer, leftIconContainerStyle]}>
+                    <Icon
+                      name={leftIconName}
+                      size={leftIconSize}
+                      color={leftIconColor || colors.text.primary}
+                      family={leftIconFamily}
+                    />
+                  </View>
+                ) : (
                   <Icon
                     name={leftIconName}
                     size={leftIconSize}
-                    color={leftIconColor || colors.text.primary}
+                    color={leftIconColor || colors.text.inverse}
                     family={leftIconFamily}
                   />
-                </View>
-              ) : (
-                <Icon
-                  name={leftIconName}
-                  size={leftIconSize}
-                  color={leftIconColor || colors.text.inverse}
-                  family={leftIconFamily}
-                />
-              )}
-            </TouchableOpacity>
-          )}
+                )}
+              </TouchableOpacity>
+            )}
+          </View>
 
+          {/* Title - Always Centered */}
           {title && (
-            <Text style={styles.navTitle} numberOfLines={1}>
-              {title}
-            </Text>
+            <View style={styles.navBarCenter}>
+              <Text 
+                style={[
+                  styles.navTitle,
+                  titleAlign === 'left' && styles.navTitleLeft,
+                  titleAlign === 'right' && styles.navTitleRight,
+                  titleAlign === 'center' && styles.navTitleCenter,
+                ]} 
+                numberOfLines={1}
+              >
+                {title}
+              </Text>
+            </View>
           )}
 
           {/* Right Icon */}
-          {(onRightIconPress || rightIconComponent) && (
+          <View style={styles.navBarRight}>
+            {(onRightIconPress || rightIconComponent) && (
             <TouchableOpacity
               onPress={onRightIconPress}
               style={[
@@ -197,9 +213,10 @@ export const OverlayHeader: React.FC<OverlayHeaderProps> = ({
                   color={rightIconColor || colors.text.inverse}
                   family={rightIconFamily}
                 />
-              )}
-            </TouchableOpacity>
-          )}
+            )}
+          </TouchableOpacity>
+            )}
+          </View>
         </View>
       )}
 
@@ -320,11 +337,36 @@ const styles = StyleSheet.create({
   navBar: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: spacing.lg,
     minHeight: 56,
+    position: 'relative',
+  },
+  navBarLeft: {
+    position: 'absolute',
+    left: spacing.lg,
+    zIndex: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 56,
+  },
+  navBarCenter: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 56,
+  },
+  navBarRight: {
+    position: 'absolute',
+    right: spacing.lg,
+    zIndex: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 56,
   },
   backButton: {
-    marginRight: spacing.base,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   leftIconContainer: {
     width: 35,
@@ -335,9 +377,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   navTitle: {
-    flex: 1,
     ...typography.styles.h4,
     color: colors.text.inverse,
+    textAlign: 'center',
+  },
+  navTitleLeft: {
+    textAlign: 'left',
+  },
+  navTitleCenter: {
+    textAlign: 'center',
+  },
+  navTitleRight: {
+    textAlign: 'right',
   },
   rightIconButton: {
     marginLeft: spacing.base,
