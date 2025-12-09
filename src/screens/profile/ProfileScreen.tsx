@@ -61,10 +61,8 @@ export const ProfileScreen: React.FC = () => {
               await logout();
               // Navigation will be handled by AppNavigator when isAuthenticated becomes false
             } catch (error) {
-              Alert.alert(
-                t('profile.logout.error', 'Erreur'),
-                t('profile.logout.errorMessage', 'Une erreur est survenue lors de la déconnexion.')
-              );
+              // User is still logged out locally even if API fails
+              // Navigation will happen automatically via AppNavigator
             } finally {
               setIsLoggingOut(false);
             }

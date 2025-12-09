@@ -99,7 +99,9 @@ const refreshAccessToken = async () => {
 };
 
 apiClient.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    return response;
+  },
   async (error: AxiosError<ApiErrorResponse>) => {
     const originalRequest = error.config as RetriableRequestConfig;
     const status = error.response?.status;
@@ -112,7 +114,6 @@ apiClient.interceptors.response.use(
 
         if (newAccessToken) {
           attachAuthorizationHeader(originalRequest, newAccessToken);
-
           return apiClient(originalRequest as AxiosRequestConfig);
         }
       } catch (refreshError) {
