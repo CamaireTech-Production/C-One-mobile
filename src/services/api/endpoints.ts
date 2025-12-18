@@ -17,6 +17,11 @@ export const ENDPOINTS = {
     me: `${API_PREFIX}/auth/me`,
     logout: `${API_PREFIX}/auth/logout`,
   },
+  catalog: {
+    featuredCountries: `${API_PREFIX}/catalog/discovery/featured-countries`,
+    nearby: `${API_PREFIX}/catalog/discovery/nearby`,
+    autocomplete: `${API_PREFIX}/catalog/locations/autocomplete`,
+  },
 } as const;
 
 export type EndpointGroup = typeof ENDPOINTS;

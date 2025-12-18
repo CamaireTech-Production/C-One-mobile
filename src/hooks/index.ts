@@ -25,4 +25,9 @@ export { useFlightData } from './transport/useFlightData';
 export { useTrainData } from './transport/useTrainData';
 export { useCarData } from './transport/useCarData';
 export { useTransportSearch } from './transport/useTransportSearch';
+// Catalog hooks
+export { useFeaturedCountries } from './useFeaturedCountries';
+export type { UseFeaturedCountriesReturn } from './useFeaturedCountries';
+export { useNearbyLocations } from './useNearbyLocations';
+export type { UseNearbyLocationsOptions, UseNearbyLocationsReturn } from './useNearbyLocations';
 

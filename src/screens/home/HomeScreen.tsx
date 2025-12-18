@@ -32,7 +32,7 @@ import {
 } from '../../components/common';
 import { HomeCard, SkeletonHorizontalCards } from '../../components/home';
 import { colors, typography, spacing } from '../../theme';
-import { useHomeData, useGeolocation } from '../../hooks';
+import { useHomeData, useGeolocation, useFeaturedCountries, useNearbyLocations } from '../../hooks';
 import { Image } from '../../components/media';
 import { images } from '../../config';
 import { SkeletonBlock } from '../../components/skeleton';
@@ -46,6 +46,14 @@ export const HomeScreen: React.FC = () => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
   const { data, loading } = useHomeData();
   const { user } = useAuth();
+
+  // Featured countries from API
+  const { 
+    countries: featuredCountries, 
+    loading: featuredCountriesLoading, 
+    error: featuredCountriesError,
+    refresh: refreshFeaturedCountries
+  } = useFeaturedCountries();
 
   const [countryTab, setCountryTab] = useState('others');
   
@@ -62,9 +70,20 @@ export const HomeScreen: React.FC = () => {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [showAlertModal, setShowAlertModal] = useState(false);
   const [alertType, setAlertType] = useState<GeolocationAlertType>('unknown');
-  const [filteredCities, setFilteredCities] = useState<HomeCity[]>([]);
   const [hasRequestedLocation, setHasRequestedLocation] = useState(false);
   const [hasShownConfirmationForCurrentLocation, setHasShownConfirmationForCurrentLocation] = useState(false);
+
+  // Nearby locations from API (only fetch when position tab is active and we have coordinates)
+  const { 
+    locations: nearbyLocations, 
+    loading: nearbyLocationsLoading, 
+    error: nearbyLocationsError,
+    refresh: refreshNearbyLocations
+  } = useNearbyLocations({
+    lat: geolocationLocation?.latitude ?? null,
+    lng: geolocationLocation?.longitude ?? null,
+    enabled: countryTab === 'position' && geolocationLocation !== null,
+  });
 
   // Scroll animation for sticky search bar
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -87,61 +106,29 @@ export const HomeScreen: React.FC = () => {
     return countryCodeMap[countryId] || countryId.toUpperCase();
   };
 
-  const handleCountryPress = (countryId: string, countryName: string, countryImageUrl?: string) => {
+  const handleCountryPress = (countryId: string | number, countryName: string, countryImageUrl?: string, countryIsoCode?: string) => {
     navigation.navigate('Detail', {
-      id: countryId,
+      id: String(countryId),
       title: countryName,
       imageUrl: countryImageUrl,
       type: 'country',
-      countryCode: getCountryCode(countryId),
+      countryCode: countryIsoCode || getCountryCode(String(countryId)),
     });
   };
 
-  const handleCityPress = (cityId: string, cityName: string, cityImageUrl?: string, cityCountryCode?: string) => {
+  const handleCityPress = (cityId: string | number, cityName: string, cityImageUrl?: string, cityCountryCode?: string) => {
     navigation.navigate('Detail', {
-      id: cityId,
+      id: String(cityId),
       title: cityName,
       imageUrl: cityImageUrl,
       type: 'city',
       countryCode: cityCountryCode || '',
-      cityId: cityId,
+      cityId: String(cityId),
     });
   };
 
-  // Filter cities by country code
-  const filterCitiesByCountry = useCallback((countryCode?: string) => {
-    if (!data || !countryCode) {
-      console.log('🏠 [HomeScreen] No data or country code, showing all cities');
-      setFilteredCities(data?.cities || []);
-      return;
-    }
-
-    console.log('🏠 [HomeScreen] Filtering cities. Total cities:', data.cities.length);
-    console.log('🏠 [HomeScreen] Looking for country code:', countryCode);
-    
-    const filtered = data.cities.filter(
-      (city) => city.countryCode?.toUpperCase() === countryCode.toUpperCase()
-    );
-    
-    console.log('🏠 [HomeScreen] Filtered cities result:', {
-      filteredCount: filtered.length,
-      filteredCities: filtered.map(c => ({
-        id: c.id,
-        labelKey: c.labelKey,
-        countryCode: c.countryCode,
-      })),
-      allCitiesWithCodes: data.cities.map(c => ({
-        id: c.id,
-        countryCode: c.countryCode,
-      })),
-    });
-    
-    setFilteredCities(filtered.length > 0 ? filtered : data.cities);
-    
-    if (filtered.length === 0) {
-      console.warn('🏠 [HomeScreen] No cities found for country code, showing all cities');
-    }
-  }, [data]);
+  // Note: filterCitiesByCountry is no longer needed as we use useNearbyLocations hook
+  // Keeping for backward compatibility if needed, but it won't be used
 
   // Handle geolocation errors
   const handleGeolocationError = useCallback(() => {
@@ -187,12 +174,9 @@ export const HomeScreen: React.FC = () => {
         } : null,
       });
       
-      if (location && location.countryCode) {
-        console.log('🏠 [HomeScreen] Filtering cities for country code:', location.countryCode);
-        // Filter cities based on country code
-        filterCitiesByCountry(location.countryCode);
-        
+      if (location) {
         // Show confirmation modal if we have a city name and haven't shown it yet
+        // Nearby locations will be fetched automatically by useNearbyLocations hook
         if (location.city && !hasShownConfirmationForCurrentLocation) {
           console.log('🏠 [HomeScreen] Showing confirmation modal for city:', location.city);
           setShowConfirmationModal(true);
@@ -216,7 +200,7 @@ export const HomeScreen: React.FC = () => {
         handleGeolocationError();
       }
     }
-  }, [getCurrentLocation, filterCitiesByCountry, hasShownConfirmationForCurrentLocation, geolocationStatus, geolocationLocation, handleGeolocationError]);
+  }, [getCurrentLocation, hasShownConfirmationForCurrentLocation, geolocationStatus, geolocationLocation, handleGeolocationError]);
 
   // Handle tab change
   const handleTabChange = (tab: string) => {
@@ -225,8 +209,8 @@ export const HomeScreen: React.FC = () => {
     // When switching to "position" tab
     if (tab === 'position') {
       // If we already have a location (from cache), show confirmation modal
+      // Nearby locations will be fetched automatically by useNearbyLocations hook
       if (geolocationLocation?.city && !hasShownConfirmationForCurrentLocation) {
-        filterCitiesByCountry(geolocationLocation.countryCode);
         setShowConfirmationModal(true);
         setHasShownConfirmationForCurrentLocation(true);
       } else if (!hasRequestedLocation) {
@@ -248,8 +232,7 @@ export const HomeScreen: React.FC = () => {
 
   const handleCancelLocation = () => {
     setShowConfirmationModal(false);
-    // User rejected, show all cities
-    setFilteredCities(data?.cities || []);
+    // User rejected - nearby locations will still be fetched but user can ignore them
     setHasShownConfirmationForCurrentLocation(true);
   };
 
@@ -259,17 +242,7 @@ export const HomeScreen: React.FC = () => {
     clearGeolocationError();
   };
 
-  // Initialize cities when data is loaded
-  useEffect(() => {
-    if (data) {
-      // If we have a cached location, filter cities immediately
-      if (geolocationLocation?.countryCode) {
-        filterCitiesByCountry(geolocationLocation.countryCode);
-      } else {
-        setFilteredCities(data.cities);
-      }
-    }
-  }, [data, geolocationLocation, filterCitiesByCountry]);
+  // Note: No longer need to initialize filteredCities as we use useNearbyLocations hook
 
   // Handle geolocation status changes - only show alert if we don't have a valid location
   useEffect(() => {
@@ -506,42 +479,118 @@ export const HomeScreen: React.FC = () => {
         {countryTab === 'others' && (
           <Section
             title={t('home.sections.countries')}
-            loading={loading}
+            loading={featuredCountriesLoading}
             skeleton={<SkeletonHorizontalCards />}
             showChevron
           >
-            <HorizontalCards>
-              {data?.countries.map((country) => (
-                <HomeCard
-                  key={country.id}
-                  type="country"
-                  title={t(country.labelKey)}
-                  imageUrl={country.imageUrl}
-                  onPress={() => handleCountryPress(country.id, t(country.labelKey), country.imageUrl)}
-                />
-              ))}
-            </HorizontalCards>
+            {featuredCountriesError ? (
+              <View style={styles.errorContainer}>
+                <Icon name="alert-circle-outline" size={48} color={colors.error} family="ionicons" />
+                <Text style={styles.errorTitle}>{t('home.errors.title', 'Erreur de chargement')}</Text>
+                <Text style={styles.errorMessage}>
+                  {featuredCountriesError.message?.includes('Authentication required')
+                    ? t('home.errors.authRequired', 'Veuillez vous connecter pour voir les pays disponibles.')
+                    : t('home.errors.countries', 'Impossible de charger les pays. Veuillez réessayer.')}
+                </Text>
+                {!featuredCountriesError.message?.includes('Authentication required') && (
+                  <TouchableOpacity
+                    style={styles.retryButton}
+                    onPress={() => refreshFeaturedCountries()}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={styles.retryButtonText}>
+                      {t('common.retry', 'Réessayer')}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            ) : featuredCountries.length === 0 && !featuredCountriesLoading ? (
+              <View style={styles.emptyContainer}>
+                <Icon name="globe-outline" size={48} color={colors.text.secondary} family="ionicons" />
+                <Text style={styles.emptyTitle}>{t('home.empty.countries.title', 'Aucun pays disponible')}</Text>
+                <Text style={styles.emptyMessage}>
+                  {t('home.empty.countries.message', 'Aucun pays n\'est disponible pour le moment.')}
+                </Text>
+              </View>
+            ) : (
+              <HorizontalCards>
+                {featuredCountries.map((country) => (
+                  <HomeCard
+                    key={country.id}
+                    type="country"
+                    title={country.name}
+                    subtitle={country.locations_count > 0 ? `${country.locations_count} locations` : undefined}
+                    imageUrl={country.image}
+                    onPress={() => handleCountryPress(country.id, country.name, country.image, country.iso_code)}
+                  />
+                ))}
+              </HorizontalCards>
+            )}
           </Section>
         )}
 
         {countryTab === 'position' && (
           <Section
             title={t('home.sections.cities')}
-            loading={loading || (geolocationStatus === 'requesting' && hasRequestedLocation)}
+            loading={nearbyLocationsLoading || (geolocationStatus === 'requesting' && hasRequestedLocation)}
             skeleton={<SkeletonHorizontalCards />}
             showChevron
           >
-            <HorizontalCards>
-              {(filteredCities.length > 0 ? filteredCities : data?.cities || []).map((city) => (
-                <HomeCard
-                  key={city.id}
-                  type="city"
-                  title={t(city.labelKey)}
-                  imageUrl={city.imageUrl}
-                  onPress={() => handleCityPress(city.id, t(city.labelKey), city.imageUrl, city.countryCode)}
-                />
-              ))}
-            </HorizontalCards>
+            {!geolocationLocation ? (
+              <View style={styles.emptyContainer}>
+                <Icon name="location-outline" size={48} color={colors.text.secondary} family="ionicons" />
+                <Text style={styles.emptyTitle}>
+                  {t('home.empty.location.title', 'Localisation requise')}
+                </Text>
+                <Text style={styles.emptyMessage}>
+                  {t('home.empty.location.message', 'Activez votre localisation pour voir les villes à proximité.')}
+                </Text>
+              </View>
+            ) : nearbyLocationsError ? (
+              <View style={styles.errorContainer}>
+                <Icon name="alert-circle-outline" size={48} color={colors.error} family="ionicons" />
+                <Text style={styles.errorTitle}>{t('home.errors.title', 'Erreur de chargement')}</Text>
+                <Text style={styles.errorMessage}>
+                  {nearbyLocationsError.message?.includes('Authentication required')
+                    ? t('home.errors.authRequired', 'Veuillez vous connecter pour voir les villes à proximité.')
+                    : t('home.errors.cities', 'Impossible de charger les villes à proximité. Veuillez réessayer.')}
+                </Text>
+                {!nearbyLocationsError.message?.includes('Authentication required') && (
+                  <TouchableOpacity
+                    style={styles.retryButton}
+                    onPress={() => refreshNearbyLocations()}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={styles.retryButtonText}>
+                      {t('common.retry', 'Réessayer')}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            ) : nearbyLocations.length === 0 && !nearbyLocationsLoading ? (
+              <View style={styles.emptyContainer}>
+                <Icon name="map-outline" size={48} color={colors.text.secondary} family="ionicons" />
+                <Text style={styles.emptyTitle}>
+                  {t('home.empty.cities.title', 'Aucune ville à proximité')}
+                </Text>
+                <Text style={styles.emptyMessage}>
+                  {t('home.empty.cities.message', 'Aucune ville n\'a été trouvée à proximité de votre position.')}
+                </Text>
+              </View>
+            ) : (
+              <HorizontalCards>
+                {nearbyLocations.map((location) => (
+                  <HomeCard
+                    key={location.id}
+                    type="city"
+                    title={location.name}
+                    subtitle={`${location.country_name} • ${location.distance_label}`}
+                    imageUrl={location.image}
+                    onPress={() => handleCityPress(location.id, location.name, location.image, location.country_name)}
+                  />
+                ))}
+              </HorizontalCards>
+            )}
           </Section>
         )}
 
@@ -935,6 +984,55 @@ const styles = StyleSheet.create({
   },
   bookingsList: {
     gap: spacing.sm,
+  },
+  errorContainer: {
+    padding: spacing.xl,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 200,
+  },
+  errorTitle: {
+    ...typography.styles.bodyBold18,
+    color: colors.text.primary,
+    marginTop: spacing.md,
+    textAlign: 'center',
+  },
+  errorMessage: {
+    ...typography.styles.bodyRegular14,
+    color: colors.text.secondary,
+    marginTop: spacing.sm,
+    textAlign: 'center',
+    paddingHorizontal: spacing.lg,
+  },
+  retryButton: {
+    marginTop: spacing.lg,
+    paddingHorizontal: spacing.xl,
+    paddingVertical: spacing.md,
+    borderRadius: 8,
+    backgroundColor: colors.primary.normal,
+  },
+  retryButtonText: {
+    ...typography.styles.bodyBold16,
+    color: colors.text.inverse,
+  },
+  emptyContainer: {
+    padding: spacing.xl,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 200,
+  },
+  emptyTitle: {
+    ...typography.styles.bodyBold18,
+    color: colors.text.primary,
+    marginTop: spacing.md,
+    textAlign: 'center',
+  },
+  emptyMessage: {
+    ...typography.styles.bodyRegular14,
+    color: colors.text.secondary,
+    marginTop: spacing.sm,
+    textAlign: 'center',
+    paddingHorizontal: spacing.lg,
   },
 });
 
